@@ -12,7 +12,7 @@ type Span struct {
 
 func NewStartSpan(ctx context.Context) *Span {
 	s := &Span{}
-	kind, _, fun, _ := TraceAtom(2)
+	kind, _, fun, _ := TraceDetail(2)
 	_, s.Span = trace.StartSpan(ctx, fun)
 	s.StringAttribute("location", kind)
 	return s

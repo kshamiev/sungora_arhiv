@@ -47,7 +47,7 @@ func Trace(step int) (kind string) {
 	return
 }
 
-func TraceAtom(step int) (kind, file, fun string, line int) {
+func TraceDetail(step int) (kind, file, fun string, line int) {
 	var ok bool
 	var pc uintptr
 	pc, file, line, ok = runtime.Caller(step)
