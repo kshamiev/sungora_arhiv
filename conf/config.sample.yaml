@@ -1,0 +1,59 @@
+app:
+  token: "sungora-dev" # cookie name
+  sessionTimeout: 604800s
+  domain: "localhost"
+  mode: "dev"
+  dirWork: "/home/konstantin/work/sungora"
+  dirStatic: "/template"
+  signingKey: "xxx-xxx-xxx"
+
+lg:
+  title: "sungora-dev" # Change
+  output: "stdout"
+  formatter: "json"
+  level: trace # Change enum (trace|info|error)
+
+http:
+  proto: "http"
+  host: "localhost"
+  port: 8080
+  writeTimeout: 60s  # Время ожидания окончания передачи ответа в секундах
+  readTimeout: 60s   # Время ожидания web запроса в секундах
+  requestTimeout: 60s # Время ожидания окончания выполнения запроса
+  maxHeaderBytes: 1048576 # Максимальный размер заголовка получаемого от браузера клиента в байтах
+
+postgresql:
+  postgres: "postgres://postgres:postgres@localhost:5432/sungora"
+  max_idle_conns: 0
+  max_open_conns: 0
+  ocsql_trace: true
+
+jaeger:
+  title: "sungora-dev"
+  oc_url: "http://localhost:14268/api/traces"
+  fraction: 1
+
+grpcServer:
+  host: "localhost"
+  port: 9090
+
+grpcClient:
+  host: "localhost"
+  port: 9090
+
+generate:
+  name_mapping:
+    duration:
+      null_yes: time.Duration
+      null_not: time.Duration
+      tag: " swaggertype:\"string\" example:\"5m\""
+  type_mapping:
+    uuid:
+      null_yes: uuid.UUID
+      null_not: uuid.UUID
+      tag: " example:\"ca6f30f9-7207-4741-8dba-7f288edf1161\""
+  table_ignore:
+    - goose_db_version
+  table_crud:
+    - users
+    - roles

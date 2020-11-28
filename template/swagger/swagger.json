@@ -1,0 +1,351 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Sungora",
+        "title": "Sungora API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "email": "konstantin@shamiev.ru"
+        },
+        "license": {
+            "name": "Sample License"
+        },
+        "version": "1.0.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/api/v1/gate": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "GRPC"
+                ],
+                "summary": "создание объекта",
+                "parameters": [
+                    {
+                        "description": "какой-то объект",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/typ.ReqSample"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "успех",
+                        "schema": {
+                            "$ref": "#/definitions/typ.ResSample"
+                        }
+                    },
+                    "400": {
+                        "description": "провал",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/gate/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "GRPC"
+                ],
+                "summary": "получение объекта",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ИД объекта",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "flag",
+                        "name": "flag",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "hobbit",
+                        "name": "hobbit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "объект",
+                        "schema": {
+                            "$ref": "#/definitions/typ.ResSample"
+                        }
+                    },
+                    "400": {
+                        "description": "провал",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/general/ping": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "ping",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/general/test/{id}": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "test",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user",
+                        "schema": {
+                            "$ref": "#/definitions/typ.Users"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/general/version": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "получение версии приложения",
+                "responses": {
+                    "200": {
+                        "description": "version",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/websocket/gorilla/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "General"
+                ],
+                "summary": "пример работы с вебсокетом (http://localhost:8080/template/gorilla/index.html)",
+                "responses": {
+                    "101": {
+                        "description": "Switching Protocols to websocket",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "typ.ReqSample": {
+            "type": "object",
+            "properties": {
+                "any": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "flag": {
+                    "type": "boolean"
+                },
+                "hobbit": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string",
+                    "example": "ca6f30f9-7207-4741-8dba-7f288edf1161"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "weight1": {
+                    "type": "number",
+                    "example": 0.1
+                },
+                "weight2": {
+                    "type": "number",
+                    "example": 0.1
+                }
+            }
+        },
+        "typ.ResSample": {
+            "type": "object",
+            "properties": {
+                "any": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "flag": {
+                    "type": "boolean"
+                },
+                "hobbit": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string",
+                    "example": "ca6f30f9-7207-4741-8dba-7f288edf1161"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "weight1": {
+                    "type": "number",
+                    "example": 0.1
+                },
+                "weight2": {
+                    "type": "number",
+                    "example": 0.1
+                }
+            }
+        },
+        "typ.Users": {
+            "type": "object",
+            "properties": {
+                "cnt2": {
+                    "type": "integer"
+                },
+                "cnt4": {
+                    "type": "integer"
+                },
+                "cnt8": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "deleted_at": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "duration": {
+                    "type": "string",
+                    "example": "5m"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "ca6f30f9-7207-4741-8dba-7f288edf1161"
+                },
+                "is_online": {
+                    "type": "boolean"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "metrika": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 0.1
+                },
+                "summa_one": {
+                    "type": "number",
+                    "example": 0.1
+                },
+                "summa_two": {
+                    "type": "number",
+                    "example": 0.1
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "Общие запросы",
+            "name": "General"
+        },
+        {
+            "description": "grpc gateway sample",
+            "name": "GRPC"
+        }
+    ]
+}
