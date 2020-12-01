@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 
@@ -30,10 +29,6 @@ func GetConfig() *Config {
 
 func SetConfig(fileConf string) error {
 	dir, _ := os.Getwd()
-	if os.Getenv("CONF") != "" {
-		dir, fileConf = path.Split(os.Getenv("CONF"))
-	}
-
 	for {
 		data, err := ioutil.ReadFile(dir + "/" + fileConf)
 		if err != nil {

@@ -13,10 +13,10 @@ include $(DIR)/.env
 ## Сценарий по умолчанию - отображение доступных команд
 default: help
 
-# Свагер
-# swag i --parseVendor --parseDependency -o template/swagger;
+# Сваггер
 swag:
-	@swag i -o template/swagger;
+	# swag i --parseVendor --parseDependency -o template/swagger;
+	swag i -o template/swagger;
 	@rm template/swagger/docs.go;
 	@rm template/swagger/swagger.yaml;
 .PHONY: swag
@@ -52,22 +52,6 @@ dev: fmt lint test com
 	$(DIR)/bin/app -c conf/config.yaml;
 .PHONY: dev
 
-# database dump
-dbdump:
-	pg_dump -F p -h $(PG_HOST) -p $(PG_PORT) -U $(PG_USER) -w -f bin/dump.sql -d $(PG_NAME)
-.PHONY: dbdump
-
-# database restore
-dbinit:
-	psql -h "$(PG_HOST)" -p "$(PG_PORT)" -U $(PG_USER) -w -f bin/dump.sql -d $(PG_NAME)
-.PHONY: dbinit
-
-# генерация типов по БД
-dbtype:
-	cd $(DIR) && go run cmd/gendb/main.go;
-	cd $(DIR)/src && go fmt ./typ && goimports -w typ;
-.PHONY: dbtype
-
 # Создание шаблона миграции
 mig:
 	@gsmigrate --dir=${PG_DIR} --drv="postgres" --dsn=${PG_DSN} create tpl;
@@ -88,51 +72,47 @@ mig-up:
 	gsmigrate --dir=${PG_DIR} --drv="postgres" --dsn=${PG_DSN} up;
 .PHONY: mig-up
 
+# database restore
+dbinit:
+	psql -h "$(PG_HOST)" -p "$(PG_PORT)" -U $(PG_USER) -w -f bin/dump.sql -d $(PG_NAME)
+.PHONY: dbinit
+
+# database dump
+dbdump:
+	pg_dump -F p -h $(PG_HOST) -p $(PG_PORT) -U $(PG_USER) -w -f bin/dump.sql -d $(PG_NAME)
+.PHONY: dbdump
+
+# генерация типов по БД
+db:
+	cd $(DIR) && go run cmd/gendb/main.go;
+	cd $(DIR)/src && go fmt ./typ && goimports -w typ;
+.PHONY: db
+
 # Инженеринг типов proto
 # @cd $(DIR) && protoc --proto_path=pb -I=thirdparty --go_out=plugins=grpc:pb --grpc-gateway_out=logtostderr=true:pb --swagger_out=logtostderr=true,allow_merge=true:pb pb/*.proto
 pb:
 	@cd $(DIR) && protoc --proto_path=pb -I=thirdparty --go_out=plugins=grpc:pb --grpc-gateway_out=logtostderr=true:pb pb/*.proto
 .PHONY: pb
 
-## Clearing project temporary files
-clean:
-	@GOPATH="$(DIR)" go clean -cache
-	@rm -rf ${DIR}/bin/*; true
-	@rm -rf ${DIR}/run/*.pid; true
-	@rm -rf ${DIR}/log/*.log; true
-	@rm -rf ${DIR}/rpmbuild; true
-	@rm -rf ${DIR}/*.log; true
-	@export DIR=
-.PHONY: clean
-
-## Help for main targets
-help:
+# Help
+h:
 	@echo "Usage: make [target]"
 	@echo "  target is:"
-	@echo "    dep                  - Загрузка и обновление зависимостей проекта"
-	@echo "    dep-dev              - Загрузка и обновление зависимостей проекта для среды разработки"
-	@echo "    gen                  - Кодогенерация с использованием go generate"
-	@echo "    build                - Компиляция приложения"
-	@echo "    run                  - Запуск приложения в продакшн режиме"
-	@echo "    dev                  - Запуск приложения в режиме разработки"
-	@echo "    kill                 - Отправка приложению сигнала kill -HUP, используется в случае зависания"
-	@echo "    m-[driver]-[command] - Работа с миграциями базы данных"
-	@echo "                           Используемые базы данных (driver) описываются в файле .env"
-	@echo "                           Доступные драйвера баз данных: mysql clickhouse sqlite3 postgres redshift tidb"
-	@echo "                           Доступные команды: up, down, create, status, redo, version"
-	@echo "                           Пример команд при включённой базе данных mysql:"
-	@echo "                             make m-mysql-up      - примернение миграций до самой последней версии"
-	@echo "                             make m-mysql-down    - отмена последней миграции"
-	@echo "                             make m-mysql-create  - создание нового файла миграции"
-	@echo "                             make m-mysql-status  - статус всех миграций базы данных"
-	@echo "                             make m-mysql-redo    - отмена и повторное применение последней миграции"
-	@echo "                             make m-mysql-version - отображение версии базы данных (применённой миграции)"
-	@echo "                           Подробная информаци по командам доступна в документации утилиты gsmigrate"
-	@echo "    version              - Вывод на экран версии приложения"
-	@echo "    rpm                  - Создание RPM пакета"
-	@#echo "    bench                - Запуск тестов производительности проекта"
-	@#echo "    test                 - Запуск тестов проекта"
-	@#echo "    cover                - Запуск тестов проекта с отображением процента покрытия кода тестами"
-	@#echo "    lint                 - Запуск проверки кода с помощью gometalinter"
-	@echo "    clean                - Очистка папки проекта от временных файлов"
+	@echo "    swag		- Генерация документации swagger"
+	@echo "    fmt			- Форматирование кодовой базы"
+	@echo "    lint		- Линтеры"
+	@echo "    test		- Тесты"
+	@echo "    run			- Запуск в режиме разработки"
+	@echo "    dev			- Запуск в режиме отладки"
+	@echo "    mig			- Создание шаблона миграции"
+	@echo "    mig-st		- Статус миграции"
+	@echo "    mig-down		- Миграция на одну позицию вниз"
+	@echo "    mig-up		- Миграция вверх до конца"
+	@echo "    dbinit		- Восстановление БД из дампа bin/dump.sql (БД должна существовать)"
+	@echo "    dbdump		- Создание дампа БД bin/dump.sql"
+	@echo "    db:			- Инженеринг типов по БД"
+	@echo "    pb			- Инженеринг GRPC"
+
+.PHONY: h
+help: h
 .PHONY: help
