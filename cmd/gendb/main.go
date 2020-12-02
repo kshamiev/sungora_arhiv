@@ -15,20 +15,10 @@ import (
 
 	"github.com/volatiletech/null"
 
+	"sungora/lib/app"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/tpl"
-	"sungora/src/config"
 )
-
-func getConfig(fileConfig ...string) (cfg *Config, err error) {
-	cfg = &Config{}
-	for i := range fileConfig {
-		if err = config.ConfigLoad(fileConfig[i], cfg); err == nil {
-			return
-		}
-	}
-	return
-}
 
 func nameConvert(name string) (nameType string) {
 	for _, s := range strings.Split(name, "_") {
@@ -42,10 +32,10 @@ func main() {
 	flag.Parse()
 	var err error
 
-	generator := &Generator{}
+	generator := &Generator{cfg: &Config{}}
 
 	// Config загрузка конфигурации & Logger
-	if generator.cfg, err = getConfig(*flagConfigPath); err != nil {
+	if err = app.LoadConfig(*flagConfigPath, generator.cfg); err != nil {
 		log.Fatal(err)
 	}
 

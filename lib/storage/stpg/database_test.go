@@ -27,7 +27,13 @@ var cntGo = 90
 var cntIteration = 100
 
 func TestPG(t *testing.T) {
-	if err := SetConfig("conf/config.yaml"); err != nil {
+	var cfg = struct {
+		Postgresql Config `json:"postgresql"`
+	}{}
+	if err := app.LoadConfig("conf/config.yaml", &cfg); err != nil {
+		t.Fatal(err)
+	}
+	if err := InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)
 	}
 	obj := &PGTest{}

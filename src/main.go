@@ -20,10 +20,10 @@ func Main() {
 
 	// Config загрузка конфигурации & Logger
 	lg := logger.NewLogger(nil)
-	if err := config.Set(*flagConfigPath); err != nil {
+	cfg := &config.Config{}
+	if err := config.Init(*flagConfigPath, cfg); err != nil {
 		lg.WithError(err).Fatal("couldn't get config")
 	}
-	cfg := config.Get()
 	lg = logger.Init(&cfg.Lg)
 
 	// Jaeger

@@ -3,6 +3,8 @@ package stpg
 import (
 	"context"
 	"testing"
+
+	"sungora/lib/app"
 )
 
 const SQL_USER = `
@@ -35,7 +37,13 @@ type PGTest struct {
 }
 
 func TestQuery(t *testing.T) {
-	if err := SetConfig("conf/config.yaml"); err != nil {
+	var cfg = struct {
+		Postgresql Config `json:"postgresql"`
+	}{}
+	if err := app.LoadConfig("conf/config.yaml", &cfg); err != nil {
+		t.Fatal(err)
+	}
+	if err := InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)
 	}
 	obj := &PGTest{}

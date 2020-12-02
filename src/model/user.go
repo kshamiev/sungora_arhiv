@@ -20,7 +20,7 @@ func NewUser() *User { return &User{&stpg.Storage{}} }
 
 // Load
 func (u *User) Load(ctx context.Context, id uuid.UUID) (*typ.Users, error) {
-	s := app.NewStartSpan(ctx)
+	s := app.NewSpan(ctx)
 	s.StringAttribute("param1", "fantik")
 	s.Int64Attribute("param2", 34)
 	s.Float64Attribute("param3", 45.76)

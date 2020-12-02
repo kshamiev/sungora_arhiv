@@ -10,7 +10,7 @@ type Span struct {
 	Span *trace.Span
 }
 
-func NewStartSpan(ctx context.Context) *Span {
+func NewSpan(ctx context.Context) *Span {
 	s := &Span{}
 	kind, _, fun, _ := TraceDetail(2)
 	_, s.Span = trace.StartSpan(ctx, fun)
@@ -18,7 +18,7 @@ func NewStartSpan(ctx context.Context) *Span {
 	return s
 }
 
-func NewStartSpanName(ctx context.Context, name string) *Span {
+func NewSpanName(ctx context.Context, name string) *Span {
 	s := &Span{}
 	_, s.Span = trace.StartSpan(ctx, name)
 	s.StringAttribute("location", Trace(2))

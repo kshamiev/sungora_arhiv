@@ -1,7 +1,11 @@
 package config
 
 import (
+	"fmt"
 	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 
@@ -31,24 +35,24 @@ func Get() *Config {
 	return config
 }
 
-// загрузка конфигурации приложения
-func Set(fileConfig ...string) error {
-	config = &Config{}
-	for i := range fileConfig {
-		if err := ConfigLoad(fileConfig[i], config); err == nil {
-			config.App.SetDefault()
-			return err
-		}
-	}
-	return nil
-}
-
-// ConfigLoad загрузка конфигурации
-func ConfigLoad(path string, cfg interface{}) error {
-	data, err := ioutil.ReadFile(path)
+func Init(fileConf string, cfg *Config) error {
+	dir, err := os.Getwd()
 	if err != nil {
 		return err
 	}
-
-	return yaml.Unmarshal(data, cfg)
+	for {
+		data, err := ioutil.ReadFile(dir + "/" + fileConf)
+		if err == nil {
+			if err = yaml.Unmarshal(data, cfg); err != nil {
+				return err
+			}
+			cfg.App.SetDefault()
+			config = cfg
+			return nil
+		}
+		if !strings.Contains(dir, "/") {
+			return fmt.Errorf("config '" + fileConf + "' not found")
+		}
+		dir = filepath.Dir(dir)
+	}
 }
