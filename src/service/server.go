@@ -48,8 +48,12 @@ func (*SampleServer) PostSample(ctx context.Context, req *pb.ReqSample) (*pb.Res
 // @Failure 400 {string} string "провал"
 // @Security ApiKeyAuth
 func (*SampleServer) GetSample(ctx context.Context, req *pb.ReqSample) (*pb.ResSample, error) {
-	app.Dumper(req)
-	return &pb.ResSample{}, nil
+	return &pb.ResSample{
+		Id:     req.Id,
+		Name:   req.Name,
+		Flag:   req.Flag,
+		Hobbit: req.Hobbit,
+	}, nil
 }
 
 // ////

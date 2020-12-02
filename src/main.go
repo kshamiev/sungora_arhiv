@@ -3,6 +3,7 @@ package src
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 
 	"sungora/lib/app"
@@ -19,12 +20,11 @@ func Main() {
 	flag.Parse()
 
 	// Config загрузка конфигурации & Logger
-	lg := logger.NewLogger(nil)
 	cfg := &config.Config{}
 	if err := config.Init(*flagConfigPath, cfg); err != nil {
-		lg.WithError(err).Fatal("couldn't get config")
+		log.Fatal(err)
 	}
-	lg = logger.Init(&cfg.Lg)
+	lg := logger.Init(&cfg.Lg)
 
 	// Jaeger
 	jaeger, err := logger.NewJaeger(&cfg.Jaeger)
@@ -63,7 +63,7 @@ func Main() {
 	lg.Info("start web server: ", s+"/api/v1/swag/")
 
 	// Workflow
-	worker.Init(lg)
+	worker.Init()
 	initWorkers()
 	defer worker.CloseWait()
 

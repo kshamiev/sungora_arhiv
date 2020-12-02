@@ -1,6 +1,7 @@
 package src
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -20,7 +21,7 @@ func initRoutes(cfg *config.App, mux http.Handler) *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(mid.Cors().Handler)
 	router.Use(middleware.Recoverer)
-	router.Use(logger.Middleware(logger.Get()))
+	router.Use(logger.Middleware(logger.Get(context.Background())))
 	router.Use(observability.MiddlewareChi())
 
 	// static

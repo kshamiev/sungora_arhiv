@@ -1,12 +1,48 @@
 package logger
 
 import (
+	"context"
+	"sync"
+
 	"contrib.go.opencensus.io/exporter/jaeger"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
 )
+
+var instance Logger
+var mu sync.RWMutex
+
+func Init(config *Config) Logger {
+	instance = newLogrusWrapper(config)
+	return instance
+}
+
+func Get(ctx context.Context) Logger {
+	l, ok := ctx.Value(ctxlog{}).(Logger)
+	if ok {
+		return l
+	}
+	if instance == nil {
+		mu.Lock()
+		if instance == nil {
+			Init(&Config{
+				Title:        "Default",
+				Output:       "stdout",
+				AuditOutput:  "stdout",
+				Formatter:    "json",
+				ReportCaller: false,
+				Level:        TraceLevel,
+				Hooks:        Hooks{},
+			})
+		}
+		mu.Unlock()
+	}
+	return instance
+}
+
+// ////
 
 type JaegerConfig struct {
 	Title    string  `json:"title" yaml:"title"`

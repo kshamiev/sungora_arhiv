@@ -23,15 +23,13 @@ type scheduler struct {
 	wg       sync.WaitGroup       // контроль задач без расписания
 	pullWork map[string]chan bool // включенные задачи по расписанию
 	pull     []Task               // пулл всех задач
-	lg       logger.Logger        // логер
 }
 
 var instance *scheduler
 
 // инициализация планировщика задач
-func Init(lg logger.Logger) {
+func Init() {
 	instance = &scheduler{
-		lg:       lg,
 		pullWork: make(map[string]chan bool),
 	}
 }
@@ -42,7 +40,7 @@ func get() *scheduler {
 	if instance == nil {
 		mu.Lock()
 		if instance == nil {
-			Init(logger.Get())
+			Init()
 		}
 		mu.Unlock()
 	}
@@ -143,7 +141,7 @@ func runScheduler(task Task, ch chan bool) {
 func action(task Task) {
 	requestID := uuid.New().String()
 	ctx := context.Background()
-	lg := instance.lg.WithField(logger.TraceID, requestID).WithField(logger.TraceAPI, task.Name())
+	lg := logger.Get(ctx).WithField(logger.TraceID, requestID).WithField(logger.TraceAPI, task.Name())
 
 	m := make(map[string]string)
 	m[logger.TraceID] = requestID

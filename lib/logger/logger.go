@@ -76,7 +76,7 @@ func WithLogger(ctx context.Context, logger Logger) context.Context {
 	return context.WithValue(ctx, ctxlog{}, logger)
 }
 
-var DefaultLogger Logger = &logrusWrapper{}
+var DefaultLogger Logger = newLogrusWrapper(nil)
 
 // GetLogger get logger from context, or DefaultLogger if not exists
 func GetLogger(ctx context.Context) Logger {

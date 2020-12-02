@@ -45,7 +45,7 @@ func TestCreateStdout(t *testing.T) {
 			Level:  tc.LogLevel,
 		}
 
-		testLogger := NewLogger(&c)
+		testLogger := CreateLogger(&c)
 		testLogger.Info(tc.LogLevel, "Info text")
 		testLogger.Warning(tc.LogLevel, " Warn text")
 		testLogger.Error(tc.LogLevel, "Err text")
@@ -55,7 +55,7 @@ func TestCreateStdout(t *testing.T) {
 
 func TestCreateNil(t *testing.T) {
 	for _, tc := range generateLogs(t) {
-		testLogger := NewLogger(nil)
+		testLogger := CreateLogger(nil)
 		testLogger.Info(tc.LogLevel, "Info text")
 		testLogger.Warning(tc.LogLevel, " Warn text")
 		testLogger.Error(tc.LogLevel, "Err text")
@@ -70,7 +70,7 @@ func TestCtx(t *testing.T) {
 		Level:  tc.LogLevel,
 	}
 
-	testLogger := NewLogger(&c)
+	testLogger := CreateLogger(&c)
 	ctx := WithLogger(context.Background(), testLogger.WithField("aaa", "bbb"))
 	ctxLogger := GetLogger(ctx)
 
@@ -88,7 +88,7 @@ func TestCreateStdoutJson(t *testing.T) {
 			Output:    "stdout",
 			Level:     tc.LogLevel,
 		}
-		testLogger := NewLogger(&c)
+		testLogger := CreateLogger(&c)
 		testLogger.Info(tc.LogLevel, "Info text")
 		testLogger.Warning(tc.LogLevel, " Warn text")
 		testLogger.Error(tc.LogLevel, "Err text")
@@ -116,7 +116,7 @@ func TestSentry(t *testing.T) {
 				},
 			},
 		}
-		testLogger := NewLogger(&c)
+		testLogger := CreateLogger(&c)
 		testLogger.Info(tc.LogLevel, "Info text")
 		testLogger.Warning(tc.LogLevel, " Warn text")
 		testLogger.Error(tc.LogLevel, "Err text")
