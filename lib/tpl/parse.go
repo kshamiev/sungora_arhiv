@@ -9,7 +9,7 @@ import (
 
 const nameDinamicTpl = "dinamic"
 
-// ParseFile компиляция html шаблона из указанного файла
+// компиляция html шаблона из указанного файла и сборка контента
 func ParseFile(viewPath string, functions, variables map[string]interface{}) (ret bytes.Buffer, err error) {
 	if _, err = os.Stat(viewPath); err != nil {
 		return
@@ -28,7 +28,7 @@ func ParseFile(viewPath string, functions, variables map[string]interface{}) (re
 	return
 }
 
-// ParseText компиляция html шаблона переданного в строке
+// компиляция html шаблона переданного в строке и сборка контента
 func ParseText(view string, functions, variables map[string]interface{}) (ret bytes.Buffer, err error) {
 	var tpl *template.Template
 
