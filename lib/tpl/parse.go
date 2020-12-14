@@ -2,12 +2,12 @@ package tpl
 
 import (
 	"bytes"
+	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 )
-
-const nameDinamicTpl = "dinamic"
 
 // компиляция html шаблона из указанного файла и сборка контента
 func ParseFile(viewPath string, functions, variables map[string]interface{}) (ret bytes.Buffer, err error) {
@@ -30,9 +30,10 @@ func ParseFile(viewPath string, functions, variables map[string]interface{}) (re
 
 // компиляция html шаблона переданного в строке и сборка контента
 func ParseText(view string, functions, variables map[string]interface{}) (ret bytes.Buffer, err error) {
+	const nameTpl = "default"
 	var tpl *template.Template
 
-	if tpl, err = template.New(nameDinamicTpl).Funcs(functions).Parse(view); err != nil {
+	if tpl, err = template.New(nameTpl).Funcs(functions).Parse(view); err != nil {
 		return
 	}
 
@@ -41,4 +42,21 @@ func ParseText(view string, functions, variables map[string]interface{}) (ret by
 	}
 
 	return
+}
+
+// компиляция html шаблонов
+func parseFiles(rootDir, viewPath string) error {
+	data, err := ioutil.ReadFile(viewPath)
+	if err != nil {
+		return err
+	}
+	index := strings.ReplaceAll(viewPath, rootDir+"/", "")
+
+	tpl, err := template.New(index).Funcs(Functions).Parse(string(data))
+	if err != nil {
+		return err
+	}
+
+	tplStore[index] = tpl
+	return nil
 }
