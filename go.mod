@@ -14,7 +14,7 @@ require (
 	github.com/go-chi/cors v1.1.1
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
-	github.com/golang/protobuf v1.4.2
+	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.2
 	github.com/gorilla/websocket v1.4.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
@@ -32,10 +32,10 @@ require (
 	github.com/volatiletech/null v8.0.0+incompatible
 	github.com/volatiletech/null/v8 v8.1.0
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible // indirect
-	go.opencensus.io v0.22.5
-	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
-	google.golang.org/genproto v0.0.0-20201007142714-5c0e72c5e71e
-	google.golang.org/grpc v1.33.1
+	go.opencensus.io v0.22.6
+	google.golang.org/api v0.38.0 // indirect
+	google.golang.org/genproto v0.0.0-20201214200347-8c77b98c765d
+	google.golang.org/grpc v1.34.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
