@@ -22,6 +22,9 @@
 ### profile
 
     go tool pprof http://localhost:8080/debug/pprof/profile?seconds=30
+    go tool pprof http://localhost:8080/debug/pprof/allocs
+    go tool pprof http://localhost:8080/debug/pprof/heap
+    go tool pprof http://localhost:8080/debug/pprof/goroutine
 
 ### Jaeger
 https://www.jaegertracing.io/docs/1.20/getting-started/
