@@ -19,13 +19,9 @@
 - **/www**
 клиентская часть папка может приезжать из другого репозитория, например из репозитория в котором всё сделано на ангуляре и на выходе готовое web приложение ангуляра
 
-### Подготовка проекта к разработке
+### profile
 
-  `make dep`
-
-### Полный перечень доступных сценариев
-
-  `make`
+    go tool pprof http://localhost:8080/debug/pprof/profile?seconds=30
 
 ### Jaeger
 https://www.jaegertracing.io/docs/1.20/getting-started/

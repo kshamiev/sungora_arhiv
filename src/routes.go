@@ -44,8 +44,12 @@ func initRoutes(cfg *config.App, mux http.Handler) *chi.Mux {
 	router.Get("/debug/pprof/profile", func(w http.ResponseWriter, r *http.Request) {
 		pprof.Profile(w, r)
 	})
+	router.Get("/debug/pprof/symbol", func(w http.ResponseWriter, r *http.Request) {
+		pprof.Symbol(w, r)
+	})
 	router.Get("/debug/pprof/allocs", pprof.Handler("allocs").ServeHTTP)
 	router.Get("/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
+	router.Get("/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
 
 	return router
 }
