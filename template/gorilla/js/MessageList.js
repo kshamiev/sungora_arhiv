@@ -9,18 +9,20 @@ define(
             var that = this;
             this.messages = ko.observableArray();
             this.editingMessage = ko.observable(new Message());
-            this.send = function () {
-                var model = this.editingMessage().toModel();
-                model.body = JSON.parse(model.body);
+            this.send = async function () {
+                const file = document.getElementById("inputFile").files[0];
+                const msg = await this.editingMessage().readFile(file);
+                const model = msg.toModel()
+                // model.message = JSON.parse(model.message);
+                console.log(model)
                 ws.send($.toJSON(model));
-                var message = new Message();
+                const message = new Message();
                 this.editingMessage(message);
             };
-            ws.onmessage = function (e) {
+            ws.onmessage = async function (e) {
                 var model = $.evalJSON(e.data);
                 var msg = new Message(model);
                 that.messages.push(msg);
-                console.log(model)
             };
         }
 

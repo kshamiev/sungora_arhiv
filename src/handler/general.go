@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -138,6 +139,9 @@ func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
 	}
 	msg.Author += " - WS OK"
 	lg.Info("WS hook GetMessage")
+	if err := ioutil.WriteFile(msg.FileName, msg.FileData, 0666); err != nil {
+		return nil, err
+	}
 	return msg, nil
 }
 

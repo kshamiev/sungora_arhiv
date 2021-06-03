@@ -42,6 +42,14 @@
                 </div>
             </div>
 
+            <!-- File -->
+            <div class="control-group">
+                <label class="control-label" for="inputFile">File :</label>
+                <div class="controls">
+                    <input type="file" id="inputFile">
+                </div>
+            </div>
+
             <div class="control-group">
                 <div class="controls">
                     <a href="#" class="btn pull-right" data-bind="click: $parent.send.bind($parent)">Send</a>
@@ -54,10 +62,8 @@
             <div>
                 <h3>
                     <!-- ko text: author --><!-- /ko -->
-                    says :
                 </h3>
-                <pre data-bind="text:body">
-					</pre>
+                <pre data-bind="text:body"></pre>
             </div>
         </div>
 
