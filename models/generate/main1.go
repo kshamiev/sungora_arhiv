@@ -1,0 +1,24 @@
+package main
+
+import (
+	"log"
+	"os"
+
+	"gitlab.services.mts.ru/Teleport/teleport/models/generate/protos"
+)
+
+func main() {
+	dir, md, _ := protos.Init()
+
+	for i := range protos.FileListCustom {
+		fi, err := os.Stat(dir + "/" + protos.FileListCustom[i])
+		if err == nil && fi.Mode().IsRegular() {
+			if err := os.Rename(
+				dir+"/"+protos.FileListCustom[i],
+				dir+"/"+md+"/"+protos.FileListCustom[i],
+			); err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+}

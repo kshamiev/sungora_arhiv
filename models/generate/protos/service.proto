@@ -1,0 +1,10 @@
+syntax = "proto3";
+package TPLpackage;
+option go_package = "./;TPLpackage";
+import "google/protobuf/empty.proto";
+import "types.proto";
+
+service TPLservice {
+  rpc Ping (google.protobuf.Empty) returns (Test) {
+  }
+}

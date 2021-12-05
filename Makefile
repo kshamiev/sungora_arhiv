@@ -94,6 +94,18 @@ pb:
 	@cd $(DIR) && protoc --proto_path=pb -I=thirdparty --go_out=plugins=grpc:pb --grpc-gateway_out=logtostderr=true:pb pb/*.proto
 .PHONY: pb
 
+# Инженеринг моделей по существующей структуре БД
+mdcar:
+	@go run models/generate/main0.go -md mdcar -pb pbcar
+	@sqlboiler -c models/sqlboiler_car.yaml -p mdcar -o models/mdcar --no-auto-timestamps --no-tests --wipe psql
+	@go run models/generate/main1.go -md mdcar -pb pbcar
+	@go run models/generate/main2.go -md mdcar -pb pbcar
+	@goimports -w .
+	@go run models/generate/main3.go -md mdcar -pb pbcar
+	@protoc -I ./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative models/pbcar/*.proto;
+	@go fmt ./... && goimports -w .
+.PHONY: mdcar
+
 # Help
 h:
 	@echo "Usage: make [target]"

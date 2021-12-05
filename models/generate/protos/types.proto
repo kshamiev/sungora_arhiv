@@ -1,0 +1,15 @@
+syntax = "proto3";
+package TPLpackage;
+option go_package = "./;TPLpackage";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message Test {
+  string text = 1;
+  repeated string texts = 2;
+  map<string, Test> tests = 3;
+  google.protobuf.Empty empty = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+// AFTER CODE GENERATED. DO NOT EDIT //
