@@ -13,7 +13,6 @@ func main() {
 
 	app.Dumper(path.Split(obj.Name))
 
-
 }
 
 type Test1 struct {

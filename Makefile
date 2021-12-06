@@ -1,22 +1,16 @@
-## Simple projects tooling for every day
-
-## Project name and source directory path
-export DIR  := $(strip $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST)))))
-
-## Creating .env file from template, if file not exists
-ifeq ("$(wildcard $(DIR)/.env)","")
-  RSP1      := $(shell cp -v $(DIR)/.example_env $(DIR)/.env)
+# Инициализация
+ifeq ("$(wildcard .env)","")
+  RSP1      := $(shell cp -v .example_env .env)
 endif
 
-include $(DIR)/.env
+include .env
 
-## Сценарий по умолчанию - отображение доступных команд
 default: help
 
 # Сваггер
 swag:
 	# swag i --parseVendor --parseDependency -o template/swagger;
-	swag i -o template/swagger;
+	swag i --parseVendor -o template/swagger;
 	@rm template/swagger/docs.go;
 	@rm template/swagger/swagger.yaml;
 .PHONY: swag
@@ -38,8 +32,7 @@ test:
 
 # Сборка
 com:
-	@cd $(DIR) && go mod vendor
-	@cd $(DIR) && go build -i -mod vendor -o $(DIR)/bin/app;
+	go build -o $(DIR)/bin/app $(DIR);
 .PHONY: com
 
 # Запуск в режиме разработки
@@ -95,6 +88,7 @@ pb:
 .PHONY: pb
 
 # Инженеринг моделей по существующей структуре БД
+# @protoc -I ./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative models/pbcar/*.proto;
 mdcar:
 	@go run models/generate/main0.go -md mdcar -pb pbcar
 	@sqlboiler -c models/sqlboiler_car.yaml -p mdcar -o models/mdcar --no-auto-timestamps --no-tests --wipe psql
@@ -102,7 +96,7 @@ mdcar:
 	@go run models/generate/main2.go -md mdcar -pb pbcar
 	@goimports -w .
 	@go run models/generate/main3.go -md mdcar -pb pbcar
-	@protoc -I ./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative models/pbcar/*.proto;
+	@protoc -I=thirdparty --proto_path=./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative models/pbcar/*.proto;
 	@go fmt ./... && goimports -w .
 .PHONY: mdcar
 

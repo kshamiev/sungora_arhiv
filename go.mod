@@ -1,43 +1,73 @@
 module sungora
 
-go 1.15
+go 1.17
 
 require (
 	contrib.go.opencensus.io/exporter/jaeger v0.2.1
-	contrib.go.opencensus.io/exporter/prometheus v0.2.0
-	contrib.go.opencensus.io/integrations/ocsql v0.1.6
-	github.com/certifi/gocertifi v0.0.0-20200922220541-2c3bb06c6054 // indirect
+	contrib.go.opencensus.io/exporter/prometheus v0.4.0
+	contrib.go.opencensus.io/integrations/ocsql v0.1.7
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/evalphobia/logrus_sentry v0.8.2
+	github.com/friendsofgo/errors v0.9.2
 	github.com/getsentry/raven-go v0.2.0
-	github.com/go-chi/chi v4.1.2+incompatible
-	github.com/go-chi/cors v1.1.1
-	github.com/go-sql-driver/mysql v1.5.0 // indirect
-	github.com/gofrs/uuid v3.3.0+incompatible // indirect
-	github.com/golang/protobuf v1.4.3
-	github.com/google/uuid v1.1.2
+	github.com/go-chi/chi v1.5.4
+	github.com/go-chi/cors v1.2.0
+	github.com/golang/protobuf v1.5.2
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.0
-	github.com/jackc/pgx/v4 v4.9.0
-	github.com/jmoiron/sqlx v1.2.0
-	github.com/kr/text v0.2.0 // indirect
-	github.com/lib/pq v1.8.0 // indirect
-	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
-	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
-	github.com/shopspring/decimal v0.0.0-20200227202807-02e2044944cc
-	github.com/sirupsen/logrus v1.7.0
-	github.com/stretchr/testify v1.6.1 // indirect
-	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.1
+	github.com/jackc/pgx/v4 v4.14.1
+	github.com/jmoiron/sqlx v1.3.4
+	github.com/shopspring/decimal v1.3.1
+	github.com/sirupsen/logrus v1.8.1
+	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2
 	github.com/volatiletech/null v8.0.0+incompatible
-	github.com/volatiletech/null/v8 v8.1.0
+	github.com/volatiletech/null/v8 v8.1.2
+	github.com/volatiletech/sqlboiler/v4 v4.8.3
+	github.com/volatiletech/strmangle v0.0.1
+	go.opencensus.io v0.23.0
+	google.golang.org/genproto v0.0.0-20211203200212-54befc351ae9
+	google.golang.org/grpc v1.42.0
+	google.golang.org/protobuf v1.27.1
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+)
+
+require (
+	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/certifi/gocertifi v0.0.0-20210507211836-431795d63e8d // indirect
+	github.com/cespare/xxhash/v2 v2.1.1 // indirect
+	github.com/ericlagergren/decimal v0.0.0-20181231230500-73749d4874d5 // indirect
+	github.com/go-kit/log v0.1.0 // indirect
+	github.com/go-logfmt/logfmt v0.5.0 // indirect
+	github.com/gofrs/uuid v4.0.0+incompatible // indirect
+	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
+	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
+	github.com/jackc/pgconn v1.10.1 // indirect
+	github.com/jackc/pgio v1.0.0 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgproto3/v2 v2.2.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
+	github.com/jackc/pgtype v1.9.1 // indirect
+	github.com/lib/pq v1.10.2 // indirect
+	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/prometheus/client_golang v1.11.0 // indirect
+	github.com/prometheus/client_model v0.2.0 // indirect
+	github.com/prometheus/common v0.28.0 // indirect
+	github.com/prometheus/procfs v0.6.0 // indirect
+	github.com/prometheus/statsd_exporter v0.21.0 // indirect
+	github.com/spf13/cast v1.4.1 // indirect
+	github.com/uber/jaeger-client-go v2.25.0+incompatible // indirect
+	github.com/volatiletech/inflect v0.0.1 // indirect
+	github.com/volatiletech/randomize v0.0.1 // indirect
 	github.com/volatiletech/sqlboiler v3.7.1+incompatible // indirect
-	go.opencensus.io v0.22.6
-	google.golang.org/api v0.38.0 // indirect
-	google.golang.org/genproto v0.0.0-20201214200347-8c77b98c765d
-	google.golang.org/grpc v1.34.0
-	google.golang.org/protobuf v1.25.0
-	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
-	gopkg.in/yaml.v2 v2.2.8 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
+	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
+	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
+	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
+	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	google.golang.org/api v0.56.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

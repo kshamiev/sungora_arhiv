@@ -19,9 +19,12 @@
 #export GOOSE_DRV_POSTGRES := postgres
 #export GOOSE_DSN_POSTGRES := pgsql:host=localhost;port=5432;dbname=databasename;user=default;password=default
 
-export PG_DIR := $(DIR)/migrations/postgres
-export PG_HOST := localhost
-export PG_PORT := 5432
-export PG_USER := postgres
-export PG_NAME := sungora
-export PG_DSN := "host=localhost port=5432 user=postgres password=postgres dbname=sungora sslmode=disable"
+# DIR := $(strip $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST)))))
+DIR := $(realpath -m .)
+
+PG_DIR := $(DIR)/migrations/postgres
+PG_HOST := localhost
+PG_PORT := 5432
+PG_USER := postgres
+PG_NAME := sungora
+PG_DSN := "host=localhost port=5432 user=postgres password=postgres dbname=sungora sslmode=disable"

@@ -3,9 +3,10 @@ package protos
 import (
 	"time"
 
+	"sungora/lib/uuid"
+
 	"github.com/shopspring/decimal"
 	"github.com/volatiletech/null/v8"
-	"sungora/lib/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

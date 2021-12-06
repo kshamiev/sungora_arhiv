@@ -15,10 +15,10 @@ import (
 
 var CustomHandlerFunc = map[string]func(int, string, string) (string, string, string){
 	"decimal.Decimal":   GenerateFieldDecimal,
-	"[]uuid.UUID":        GenerateFieldUUIDSlice,
-	"uuid.UUIDS":         GenerateFieldUUIDSlice,
+	"[]uuid.UUID":       GenerateFieldUUIDSlice,
+	"uuid.UUIDS":        GenerateFieldUUIDSlice,
 	"types.StringArray": GenerateFieldStringArray,
-	"uuid.UUID":          GenerateFieldUUID,
+	"uuid.UUID":         GenerateFieldUUID,
 	"time.Time":         GenerateFieldTime,
 	"null.Time":         GenerateFieldNullTime,
 	"null.String":       GenerateFieldNullString,

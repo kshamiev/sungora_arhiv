@@ -32,8 +32,6 @@ func init() {
 		&mdcar.GooseDBVersion{},
 		&mdcar.MinioST{},
 		&mdcar.Packing{},
-		&mdcar.Funtik{},
-		&mdcar.Popcorn{},
 		&mdcar.ShippedStatus{},
 		&mdcar.TariffDelivery{},
 		&mdcar.TariffMoving{},

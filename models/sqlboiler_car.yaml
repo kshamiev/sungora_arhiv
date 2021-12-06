@@ -23,7 +23,7 @@ types:
       db_type: uuid
       nullable: true
     replace:
-      type: typ.UUID
+      type: uuid.UUID
     imports:
       third_party:
         - '"sungora/lib/uuid"'
