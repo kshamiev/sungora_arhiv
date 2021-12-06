@@ -26,15 +26,15 @@ types:
       type: typ.UUID
     imports:
       third_party:
-        - '"gitlab.services.mts.ru/Teleport/teleport/typ"'
+        - '"sungora/lib/uuid"'
   - match:
       db_type: uuid
       nullable: false
     replace:
-      type: typ.UUID
+      type: uuid.UUID
     imports:
       third_party:
-        - '"gitlab.services.mts.ru/Teleport/teleport/typ"'
+        - '"sungora/lib/uuid"'
   - match:
       db_type: numeric
       nullable: true
