@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"gitlab.services.mts.ru/Teleport/teleport/models/generate/protos"
+	"sungora/models/generate/protos"
 )
 
 func main() {

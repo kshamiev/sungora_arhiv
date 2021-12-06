@@ -23,8 +23,8 @@ import (
 	"strconv"
 	"strings"
 
-	_ "gitlab.services.mts.ru/Teleport/teleport/models/generate/config"
-	"gitlab.services.mts.ru/Teleport/teleport/models/generate/protos"
+	_ "sungora/models/generate/config"
+	"sungora/models/generate/protos"
 )
 
 func main() {

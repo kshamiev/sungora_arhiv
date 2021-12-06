@@ -1,8 +1,8 @@
 package config
 
 import (
-	"gitlab.services.mts.ru/Teleport/teleport/models/generate/protos"
-	"gitlab.services.mts.ru/Teleport/teleport/models/mdcar"
+	"sungora/models/generate/protos"
+	"sungora/models/mdcar"
 )
 
 func init() {

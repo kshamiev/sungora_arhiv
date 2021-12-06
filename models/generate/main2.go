@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"gitlab.services.mts.ru/Teleport/teleport/models/generate/protos"
+	"sungora/models/generate/protos"
 )
 
 func main() {
