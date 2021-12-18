@@ -3,7 +3,7 @@ package protos
 import (
 	"time"
 
-	"sungora/lib/uuid"
+	"sungora/lib/typ"
 
 	"github.com/shopspring/decimal"
 	"github.com/volatiletech/null/v8"
@@ -52,7 +52,7 @@ func pbFromDecimal(v string) decimal.Decimal {
 	return d
 }
 
-func pbToUUIDS(list []uuid.UUID) []string {
+func pbToUUIDS(list []typ.UUID) []string {
 	uu := make([]string, len(list))
 	for i := range list {
 		uu[i] = list[i].String()
@@ -60,10 +60,10 @@ func pbToUUIDS(list []uuid.UUID) []string {
 	return uu
 }
 
-func pbFromUUIDS(list []string) []uuid.UUID {
-	uu := make([]uuid.UUID, len(list))
+func pbFromUUIDS(list []string) []typ.UUID {
+	uu := make([]typ.UUID, len(list))
 	for i := range list {
-		uu[i] = uuid.UUIDMustParse(list[i])
+		uu[i] = typ.UUIDMustParse(list[i])
 	}
 	return uu
 }

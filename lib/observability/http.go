@@ -80,16 +80,16 @@ func MiddlewareChi() func(next http.Handler) http.Handler {
 				span.AddAttributes(trace.StringAttribute(ochttp.PathAttribute, path.Join(nc.RoutePatterns...)))
 
 				if md, ok := metadata.FromOutgoingContext(ctx); ok {
-					md.Set(logger.TraceID, span.SpanContext().TraceID.String())
+					md.Set(logger.LogTraceID, span.SpanContext().TraceID.String())
 					ctx = metadata.NewOutgoingContext(ctx, md)
 				} else {
-					ctx = metadata.AppendToOutgoingContext(ctx, logger.TraceID, span.SpanContext().TraceID.String())
+					ctx = metadata.AppendToOutgoingContext(ctx, logger.LogTraceID, span.SpanContext().TraceID.String())
 				}
 
-				log := logger.GetLogger(ctx).WithField(logger.TraceID, span.SpanContext().TraceID.String())
+				log := logger.GetLogger(ctx).WithField(logger.LogTraceID, span.SpanContext().TraceID.String())
 				ctx = logger.WithLogger(ctx, log)
 
-				w.Header().Add(logger.TraceID, span.SpanContext().TraceID.String())
+				w.Header().Add(logger.LogTraceID, span.SpanContext().TraceID.String())
 
 				ochttp.SetRoute(ctx, path.Join(nc.RoutePatterns...))
 				next.ServeHTTP(w, req.WithContext(ctx))

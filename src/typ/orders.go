@@ -2,9 +2,10 @@
 package typ
 
 import (
+	"time"
+
 	"sungora/lib/null"
 	"sungora/lib/uuid"
-	"time"
 )
 
 //

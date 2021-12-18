@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/volatiletech/null/v8"
-
 	"sungora/lib/app"
 	"sungora/lib/storage"
 	"sungora/lib/uuid"
+
+	"github.com/volatiletech/null/v8"
 )
 
 type User struct {

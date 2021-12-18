@@ -1,90 +1,85 @@
 package errs
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
-
-	"sungora/lib/app"
 )
 
 var (
-	ErrNotFound            = errors.New(http.StatusText(http.StatusNotFound))
-	ErrUnauthorized        = errors.New(http.StatusText(http.StatusUnauthorized))
-	ErrForbidden           = errors.New(http.StatusText(http.StatusForbidden))
-	ErrBadRequest          = errors.New(http.StatusText(http.StatusBadRequest))
-	ErrInternalServerError = errors.New(http.StatusText(http.StatusInternalServerError))
+	ErrNotFound     = errors.New(http.StatusText(http.StatusNotFound))
+	ErrUnauthorized = errors.New(http.StatusText(http.StatusUnauthorized))
+	ErrForbidden    = errors.New(http.StatusText(http.StatusForbidden))
+	ErrBadRequest   = errors.New(http.StatusText(http.StatusBadRequest))
 )
 
 // NewUnauthorized new error type
-func NewUnauthorized(err error, msg ...string) *Errs {
+func NewUnauthorized(err error, args ...interface{}) *Errs {
 	if err == nil {
 		err = ErrUnauthorized
 	}
 	return &Errs{
 		codeHTTP: http.StatusUnauthorized,
 		err:      err,
-		kind:     app.Trace(2),
-		message:  getMessage(msg),
+		kind:     trace(2),
+		message:  getMessage(args),
 	}
 }
 
 // NewNotFound new error type
-func NewNotFound(err error, msg ...string) *Errs {
+func NewNotFound(err error, args ...interface{}) *Errs {
 	if err == nil {
 		err = ErrNotFound
 	}
 	return &Errs{
 		codeHTTP: http.StatusNotFound,
 		err:      err,
-		kind:     app.Trace(2),
-		message:  getMessage(msg),
+		kind:     trace(2),
+		message:  getMessage(args),
 	}
 }
 
 // NewForbidden new error type
-func NewForbidden(err error, msg ...string) *Errs {
+func NewForbidden(err error, args ...interface{}) *Errs {
 	if err == nil {
 		err = ErrForbidden
 	}
+
 	return &Errs{
 		codeHTTP: http.StatusForbidden,
 		err:      err,
-		kind:     app.Trace(2),
-		message:  getMessage(msg),
+		kind:     trace(2),
+		message:  getMessage(args),
 	}
 }
 
 // NewBadRequest new error type
-func NewBadRequest(err error, msg ...string) *Errs {
+func NewBadRequest(err error, args ...interface{}) *Errs {
 	if err == nil {
 		err = ErrBadRequest
 	}
+	codeHTTP := http.StatusBadRequest
+	if sql.ErrNoRows == err {
+		codeHTTP = http.StatusNotFound
+	}
+
 	return &Errs{
-		codeHTTP: http.StatusBadRequest,
+		codeHTTP: codeHTTP,
 		err:      err,
-		kind:     app.Trace(2),
-		message:  getMessage(msg),
+		kind:     trace(2),
+		message:  getMessage(args),
+		trace:    Traces(),
 	}
 }
 
-// NewInternalServerError new error type
-func NewInternalServerError(err error, msg ...string) *Errs {
-	if err == nil {
-		err = ErrInternalServerError
-	}
-	return &Errs{
-		codeHTTP: http.StatusInternalServerError,
-		err:      err,
-		kind:     app.Trace(2),
-		message:  getMessage(msg),
-	}
-}
+// ////
 
 type Errs struct {
 	codeHTTP int    // код http
 	err      error  // сама ошибка от внешнего сервиса или либы
 	kind     string // где произошла ошибка
 	message  string // сообщение для пользователя
+	trace    []string
 }
 
 // HTTPCode http status response
@@ -94,14 +89,10 @@ func (e *Errs) HTTPCode() int {
 
 // Error response advanced message to logs
 func (e *Errs) Error() string {
-	var k string
-	if e.kind != "" {
-		k = "; " + e.kind
-	}
 	if e.err != nil {
-		return e.err.Error() + k
+		return e.kind + " - " + e.err.Error()
 	}
-	return http.StatusText(e.codeHTTP) + k
+	return e.kind + " - " + http.StatusText(e.codeHTTP)
 }
 
 // Response response message to user
@@ -112,4 +103,8 @@ func (e *Errs) Response() string {
 		return e.err.Error()
 	}
 	return http.StatusText(e.codeHTTP)
+}
+
+func (e *Errs) Trace() []string {
+	return e.trace
 }

@@ -1,24 +1,35 @@
 package logger
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 	"google.golang.org/grpc/metadata"
 )
 
-const TraceID = "trace-id"
-const TraceAPI = "api"
+type ContextKey string
 
-func Middleware(log Logger) func(next http.Handler) http.Handler {
+const LogTraceID = "trace-id"
+const LogTraceAPI = "api"
+
+const CtxTraceID ContextKey = "trace-id"
+const CtxTraceAPI ContextKey = "api"
+
+func Middleware(lg Logger) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			ID := uuid.New().String()
-			ctx := WithLogger(req.Context(), log.WithFields(map[string]interface{}{
-				TraceID: ID,
-			}))
-			ctx = metadata.AppendToOutgoingContext(ctx, TraceID, ID)
-			next.ServeHTTP(w, req.WithContext(ctx))
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			requestID := uuid.New().String()
+			lg = lg.WithField(LogTraceID, requestID)
+
+			ctx := r.Context()
+			ctx = context.WithValue(ctx, CtxTraceID, requestID)
+			ctx = WithLogger(ctx, lg)
+			ctx = boil.WithDebugWriter(ctx, lg.Writer())
+
+			ctx = metadata.AppendToOutgoingContext(ctx, LogTraceID, requestID)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }

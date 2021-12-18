@@ -15,10 +15,10 @@ import (
 
 var CustomHandlerFunc = map[string]func(int, string, string) (string, string, string){
 	"decimal.Decimal":   GenerateFieldDecimal,
-	"[]uuid.UUID":       GenerateFieldUUIDSlice,
-	"uuid.UUIDS":        GenerateFieldUUIDSlice,
+	"[]typ.UUID":        GenerateFieldUUIDSlice,
+	"typ.UUIDS":         GenerateFieldUUIDSlice,
 	"types.StringArray": GenerateFieldStringArray,
-	"uuid.UUID":         GenerateFieldUUID,
+	"typ.UUID":          GenerateFieldUUID,
 	"time.Time":         GenerateFieldTime,
 	"null.Time":         GenerateFieldNullTime,
 	"null.String":       GenerateFieldNullString,
@@ -70,7 +70,7 @@ func GenerateFieldTime(i int, pType, pMessage string) (tplP, tplMFrom, tplMTo st
 func GenerateFieldUUID(i int, pType, pMessage string) (tplP, tplMFrom, tplMTo string) {
 	tplP += "\tstring " + pMessage + " = " + strconv.Itoa(i+1) + ";\n"
 	tplMTo = fmt.Sprintf("%s: tt.%s.String(),\n", ConvFP(pMessage), pType)
-	tplMFrom = fmt.Sprintf("%s: uuid.UUIDMustParse(proto.%s),\n", pType, ConvFP(pMessage))
+	tplMFrom = fmt.Sprintf("%s: typ.UUIDMustParse(proto.%s),\n", pType, ConvFP(pMessage))
 	return tplP, tplMFrom, tplMTo
 }
 
@@ -98,7 +98,7 @@ func GenerateFieldStringArray(i int, pType, pMessage string) (tplP, tplMFrom, tp
 	return tplP, tplMFrom, tplMTo
 }
 
-// ////
+// //// стандартные и системные типы
 
 // GenerateFieldNative конвертация - сопоставление туда и обратно
 func GenerateFieldNative(field, fieldJSON string) (tplMFrom, tplMTo string) {
@@ -194,7 +194,15 @@ func GenerateFieldBytes(i int, field, fieldJSON string) (tplP, tplMFrom, tplMTo 
 	return tplP, tplMFrom, tplMTo
 }
 
-// ////
+// GenerateFieldEnum конвертация - сопоставление туда и обратно
+func GenerateFieldEnum(i int, typParse, field, fieldJSON string) (tplP, tplMFrom, tplMTo string) {
+	tplP += "\tstring " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
+	tplMTo = fmt.Sprintf("%s: tt.%s.String(),\n", ConvFP(fieldJSON), field)
+	tplMFrom = fmt.Sprintf("%s: %s(proto.%s),\n", field, typParse, ConvFP(fieldJSON))
+	return tplP, tplMFrom, tplMTo
+}
+
+// //// служебные методы
 
 // ConvFP Получение названия свойства в прототипе (через тег json) для сопоставления
 func ConvFP(fieldTag string) string {

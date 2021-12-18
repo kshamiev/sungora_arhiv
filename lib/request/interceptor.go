@@ -19,19 +19,19 @@ func LoggerInterceptor(lg logger.Logger) grpc.UnaryServerInterceptor {
 			if md.Get(string(response.CtxToken)) != nil {
 				ctx = context.WithValue(ctx, response.CtxToken, md.Get(string(response.CtxToken))[0])
 			}
-			if md.Get(logger.TraceID) != nil {
+			if md.Get(logger.LogTraceID) != nil {
 				ctx = logger.WithLogger(ctx, lg.WithFields(map[string]interface{}{
-					logger.TraceID: md.Get(logger.TraceID)[0],
+					logger.LogTraceID: md.Get(logger.LogTraceID)[0],
 				}))
 			}
-			if md.Get(logger.TraceAPI) != nil {
+			if md.Get(logger.LogTraceAPI) != nil {
 				ctx = logger.WithLogger(ctx, lg.WithFields(map[string]interface{}{
-					logger.TraceAPI: md.Get(logger.TraceID)[0],
+					logger.LogTraceAPI: md.Get(logger.LogTraceID)[0],
 				}))
 			}
 		} else {
 			ctx = logger.WithLogger(ctx, lg.WithFields(map[string]interface{}{
-				logger.TraceID: uuid.New().String(),
+				logger.LogTraceID: uuid.New().String(),
 			}))
 		}
 

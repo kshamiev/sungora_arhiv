@@ -2,7 +2,6 @@ package typ
 
 import "database/sql/driver"
 
-// Role
 type Role string
 
 const (

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 	"google.golang.org/grpc/metadata"
 
 	"sungora/lib/logger"
@@ -141,13 +142,15 @@ func runScheduler(task Task, ch chan bool) {
 func action(task Task) {
 	requestID := uuid.New().String()
 	ctx := context.Background()
-	lg := logger.Get(ctx).WithField(logger.TraceID, requestID).WithField(logger.TraceAPI, task.Name())
+	lg := logger.Get(ctx).WithField(logger.LogTraceID, requestID)
+
+	ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
+	ctx = logger.WithLogger(ctx, lg)
+	ctx = boil.WithDebugWriter(ctx, lg.Writer())
 
 	m := make(map[string]string)
-	m[logger.TraceID] = requestID
-	m[logger.TraceAPI] = task.Name()
+	m[logger.LogTraceID] = requestID
 	ctx = metadata.NewOutgoingContext(ctx, metadata.New(m))
-	ctx = logger.WithLogger(ctx, lg)
 
 	defer func() {
 		if rvr := recover(); rvr != nil {
@@ -155,14 +158,14 @@ func action(task Task) {
 		}
 	}()
 
-	err := task.Action(ctx)
-	if err != nil {
+	if err := task.Action(ctx); err != nil {
 		if e, ok := err.(response.Error); ok {
-			lg.WithError(e).Error(e.Response())
+			lg.Error(e.Error())
+			for _, t := range e.Trace() {
+				lg.Trace(t)
+			}
 		} else {
-			lg.WithError(e).Error("task error")
+			lg.Error(e)
 		}
-	} else {
-		lg.Info(task.Name() + " OK")
 	}
 }

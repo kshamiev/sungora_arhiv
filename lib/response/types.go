@@ -22,11 +22,12 @@ type User struct {
 type Error interface {
 	Error() string
 	Response() string
+	Trace() []string
 	HTTPCode() int
 }
 
 type Data struct {
-	Code    int         `json:"code"`
+	Code    string      `json:"code"`
 	Message string      `json:"message"`
 	Data    interface{} `json:"data,omitempty"`
 }

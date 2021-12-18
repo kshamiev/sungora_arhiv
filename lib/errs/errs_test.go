@@ -2,24 +2,32 @@ package errs
 
 import (
 	"errors"
-	"strings"
+	"fmt"
 	"testing"
-
-	"google.golang.org/grpc/codes"
 )
 
-func TestErrsGRPC(t *testing.T) {
-	err := NewGRPC(codes.NotFound, errors.New("LIBRARY ERROR"), "user error")
-	e := ParseGRPC(err)
-
-	const LibraryError = "LIBRARY ERROR"
-
-	switch {
-	case !strings.Contains(e.Error(), LibraryError):
-		t.Error("parameter: Error")
-	case e.Response() != "user error":
-		t.Error("parameter: Response")
-	case e.codeHTTP != 404:
-		t.Error("parameter: codeHTTP")
+func TestErrs(t *testing.T) {
+	err := FunctionLevel2()
+	if e, ok := err.(*Errs); ok {
+		fmt.Println(e.Response())
+		fmt.Println(e.Error())
+		for _, l := range e.Trace() {
+			fmt.Println(l)
+		}
 	}
+}
+
+func FunctionLevel2() error {
+
+	return FunctionLevel3()
+}
+
+func FunctionLevel3() error {
+
+	return FunctionLevel4()
+}
+
+func FunctionLevel4() error {
+
+	return NewBadRequest(errors.New("focus pocus"), "decimal: %d, string: %s, float", 34, "popcorn")
 }

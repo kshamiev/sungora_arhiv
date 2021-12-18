@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -67,6 +68,8 @@ func main() {
 	if err := ioutil.WriteFile(dir+"/"+md+"/proto_func.go", d, 0600); err != nil {
 		log.Fatal(err)
 	}
+	//
+	_ = os.Remove(dir + "/generate/config/config_work.go")
 }
 
 // //// TYPE
@@ -172,8 +175,12 @@ func (gen *Generate) ParseField(objValue reflect.Value, i int, pkgType string) (
 
 	switch propKind {
 	case reflect.String:
-		tplP += "\tstring " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-		tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+		if strings.Contains(propType, "enum.") || propType == "typ.Role" {
+			tplP, tplMFrom, tplMTo = protos.GenerateFieldEnum(i, propType, fieldName, fieldJSON)
+		} else {
+			tplP += "\tstring " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
+			tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+		}
 
 	case reflect.Bool:
 		tplP += "\tbool " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"

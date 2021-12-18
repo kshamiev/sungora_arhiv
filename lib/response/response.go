@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
@@ -104,19 +103,22 @@ func JSONBodyDecode(r *http.Request, object interface{}) error {
 	return nil
 }
 
-// JsonError ответ об ошибке в формате json
+// JSONError ответ об ошибке в формате json
 func (rw *Response) JSONError(err error) {
 	if e, ok := err.(Error); ok {
-		rw.lg.WithError(e).Error(e.Response())
+		rw.lg.Error(e.Error())
+		for _, t := range e.Trace() {
+			rw.lg.Trace(t)
+		}
 		response := &Data{
-			Code:    e.HTTPCode(),
+			Code:    rw.Request.Context().Value(logger.CtxTraceID).(string),
 			Message: e.Response(),
 		}
 		rw.JSON(response, e.HTTPCode())
 	} else {
-		rw.lg.WithError(err).Error("Other (unexpected) error")
+		rw.lg.Error(err.Error())
 		response := &Data{
-			Code:    http.StatusBadRequest,
+			Code:    rw.Request.Context().Value(logger.CtxTraceID).(string),
 			Message: err.Error(),
 		}
 		rw.JSON(response, http.StatusBadRequest)
@@ -127,18 +129,22 @@ func (rw *Response) JSONError(err error) {
 func (rw *Response) JSON(object interface{}, status ...int) {
 	data, err := json.Marshal(object)
 	if err != nil {
-		rw.lg.WithError(err).Error("JSON")
+		e := errs.NewBadRequest(err)
+		rw.lg.Error(e.Error())
+		for _, t := range e.Trace() {
+			rw.lg.Trace(t)
+		}
 		// Заголовки
-		rw.generalHeaderSet("application/json; charset=utf-8", int64(len(data)), status[0])
+		rw.generalHeaderSet("application/json; charset=utf-8", int64(len(data)), http.StatusBadRequest)
 		// Тело документа
-		_, _ = rw.response.Write([]byte(http.StatusText(http.StatusBadRequest)))
+		_, _ = rw.response.Write([]byte(e.Response()))
+
 		return
 	}
 	// Статус ответа
 	if len(status) == 0 {
 		status = append(status, http.StatusOK)
 	}
-	rw.lg.Info(strconv.Itoa(status[0]) + ":" + rw.Request.Method)
 
 	// Заголовки
 	rw.generalHeaderSet("application/json; charset=utf-8", int64(len(data)), status[0])
@@ -227,14 +233,12 @@ func (rw *Response) Bytes(data []byte, fileName string) {
 
 // Redirect 301
 func (rw *Response) Redirect301(redirectURL string) {
-	rw.lg.Info("301:" + rw.Request.Method)
 	rw.response.Header().Set("Location", redirectURL)
 	rw.response.WriteHeader(http.StatusMovedPermanently)
 }
 
 // Redirect 302
 func (rw *Response) Redirect302(redirectURL string) {
-	rw.lg.Info("302:" + rw.Request.Method)
 	rw.response.Header().Set("Location", redirectURL)
 	rw.response.WriteHeader(http.StatusFound)
 }

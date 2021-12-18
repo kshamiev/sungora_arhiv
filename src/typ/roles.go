@@ -1,9 +1,7 @@
 // nolint: lll // AFTER CODE GENERATED. DO NOT EDIT //
 package typ
 
-import (
-	"sungora/lib/uuid"
-)
+import "sungora/lib/uuid"
 
 //
 type Roles struct {

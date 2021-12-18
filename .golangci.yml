@@ -1,10 +1,8 @@
 linters-settings:
   govet:
     check-shadowing: true
-  golint:
-    min-confidence: 0
   gocyclo:
-    min-complexity: 15
+    min-complexity: 20
   maligned:
     suggest-new: true
   dupl:
@@ -54,8 +52,6 @@ linters:
     - unparam
     - prealloc
     - whitespace
-    - scopelint
-
 
 run:
   tests: false

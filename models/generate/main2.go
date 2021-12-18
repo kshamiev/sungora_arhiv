@@ -35,7 +35,7 @@ func Tag(dir, pkgName string) {
 	}
 	tpl := strings.ReplaceAll(tplConf, "PKGNAME", pkgName)
 	tpl = strings.ReplaceAll(tpl, "PKGTYPES", strings.Join(data, ""))
-	if err := ioutil.WriteFile(dir+"/generate/config/config_"+pkgName+".go", []byte(tpl), 0600); err != nil {
+	if err := ioutil.WriteFile(dir+"/generate/config/config_work.go", []byte(tpl), 0600); err != nil {
 		log.Fatal(err)
 	}
 }

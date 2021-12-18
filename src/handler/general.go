@@ -139,7 +139,7 @@ func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
 	}
 	msg.Author += " - WS OK"
 	lg.Info("WS hook GetMessage")
-	if err := ioutil.WriteFile(msg.FileName, msg.FileData, 0666); err != nil {
+	if err := ioutil.WriteFile(msg.FileName, msg.FileData, 0600); err != nil {
 		return nil, err
 	}
 	return msg, nil

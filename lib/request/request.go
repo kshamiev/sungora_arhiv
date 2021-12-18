@@ -1,6 +1,7 @@
 package request
 
 import (
+	"crypto/tls"
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
@@ -27,6 +28,12 @@ func New(link string) *Request {
 	return &Request{
 		url:    link,
 		Header: http.Header{},
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: false,            // ignore expired SSL certificates
+				MinVersion:         tls.VersionTLS13, //
+			},
+		},
 	}
 }
 
@@ -50,7 +57,6 @@ func (r *Request) AuthorizationBasic(login, passw string) {
 	r.Header.Add("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(login+":"+passw)))
 }
 
-// Transport
 func (r *Request) Transports(proxy string) {
 	if proxy != "" {
 		proxyURL, _ := url.Parse(proxy)

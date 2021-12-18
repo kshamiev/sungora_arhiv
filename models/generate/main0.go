@@ -10,8 +10,6 @@ import (
 func main() {
 	dir, md, pb := protos.Init()
 
-	_ = os.RemoveAll(dir + "/generate/config")
-	_ = os.Mkdir(dir+"/generate/config", 0700)
 	_ = os.Mkdir(dir+"/"+md, 0700)
 	_ = os.Mkdir(dir+"/"+pb, 0700)
 

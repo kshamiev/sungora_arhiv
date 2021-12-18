@@ -4,10 +4,11 @@ package typ
 import (
 	"time"
 
+	"sungora/lib/uuid"
+
 	"github.com/shopspring/decimal"
 
 	"sungora/lib/null"
-	"sungora/lib/uuid"
 )
 
 //
