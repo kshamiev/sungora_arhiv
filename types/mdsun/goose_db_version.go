@@ -24,10 +24,10 @@ import (
 
 // GooseDBVersion is an object representing the database table.
 type GooseDBVersion struct {
-	ID        int       `boil:"id" json:"id" toml:"id" yaml:"id"`
-	VersionID int64     `boil:"version_id" json:"version_id" toml:"version_id" yaml:"version_id"`
-	IsApplied bool      `boil:"is_applied" json:"is_applied" toml:"is_applied" yaml:"is_applied"`
-	Tstamp    null.Time `boil:"tstamp" json:"tstamp,omitempty" toml:"tstamp" yaml:"tstamp,omitempty" example:"2006-01-02T15:04:05Z"`
+	ID        int       `boil:"id" db:"id" json:"id" toml:"id" yaml:"id"`
+	VersionID int64     `boil:"version_id" db:"version_id" json:"version_id" toml:"version_id" yaml:"version_id"`
+	IsApplied bool      `boil:"is_applied" db:"is_applied" json:"is_applied" toml:"is_applied" yaml:"is_applied"`
+	Tstamp    null.Time `boil:"tstamp" db:"tstamp" json:"tstamp,omitempty" toml:"tstamp" yaml:"tstamp,omitempty" example:"2006-01-02T15:04:05Z"`
 
 	R *gooseDBVersionR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L gooseDBVersionL  `boil:"-" json:"-" toml:"-" yaml:"-"`

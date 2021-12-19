@@ -95,7 +95,7 @@ mdsun:
 	@goimports -w .
 	@go run types/generate/main3.go -md mdsun -pb pbsun
 	@protoc -I=thirdparty --proto_path=./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative types/pbsun/*.proto;
-	@go fmt ./... && goimports -w .
+	@cd $(DIR)/types/mdsun && go fmt ./... && goimports -w .
 .PHONY: mdsun
 
 # Help

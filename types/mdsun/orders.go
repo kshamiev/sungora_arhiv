@@ -26,13 +26,13 @@ import (
 
 // Order is an object representing the database table.
 type Order struct {
-	ID        typ.UUID  `boil:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
-	UserID    typ.UUID  `boil:"user_id" json:"user_id,omitempty" toml:"user_id" yaml:"user_id,omitempty" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
-	Number    int       `boil:"number" json:"number" toml:"number" yaml:"number"`
-	Status    string    `boil:"status" json:"status" toml:"status" yaml:"status"`
-	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at" example:"2006-01-02T15:04:05Z"`
-	UpdatedAt time.Time `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at" example:"2006-01-02T15:04:05Z"`
-	DeletedAt null.Time `boil:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty" example:"2006-01-02T15:04:05Z"`
+	ID        typ.UUID  `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
+	UserID    typ.UUID  `boil:"user_id" db:"user_id" json:"user_id,omitempty" toml:"user_id" yaml:"user_id,omitempty" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
+	Number    int       `boil:"number" db:"number" json:"number" toml:"number" yaml:"number"`
+	Status    string    `boil:"status" db:"status" json:"status" toml:"status" yaml:"status"`
+	CreatedAt time.Time `boil:"created_at" db:"created_at" json:"created_at" toml:"created_at" yaml:"created_at" example:"2006-01-02T15:04:05Z"`
+	UpdatedAt time.Time `boil:"updated_at" db:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at" example:"2006-01-02T15:04:05Z"`
+	DeletedAt null.Time `boil:"deleted_at" db:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty" example:"2006-01-02T15:04:05Z"`
 
 	R *orderR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L orderL  `boil:"-" json:"-" toml:"-" yaml:"-"`

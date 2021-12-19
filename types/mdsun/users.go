@@ -27,21 +27,21 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	ID        typ.UUID        `boil:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
-	Login     string          `boil:"login" json:"login" toml:"login" yaml:"login"`
-	Email     string          `boil:"email" json:"email" toml:"email" yaml:"email"`
-	Price     decimal.Decimal `boil:"price" json:"price" toml:"price" yaml:"price" swaggertype:"number" example:"0.01"`
-	SummaOne  float32         `boil:"summa_one" json:"summa_one" toml:"summa_one" yaml:"summa_one" swaggertype:"number" example:"0.01"`
-	SummaTwo  float64         `boil:"summa_two" json:"summa_two" toml:"summa_two" yaml:"summa_two" swaggertype:"number" example:"0.01"`
-	CNT2      int16           `boil:"cnt2" json:"cnt2" toml:"cnt2" yaml:"cnt2"`
-	CNT4      int             `boil:"cnt4" json:"cnt4" toml:"cnt4" yaml:"cnt4"`
-	CNT8      int64           `boil:"cnt8" json:"cnt8" toml:"cnt8" yaml:"cnt8"`
-	IsOnline  bool            `boil:"is_online" json:"is_online" toml:"is_online" yaml:"is_online"`
-	Metrika   null.JSON       `boil:"metrika" json:"metrika,omitempty" toml:"metrika" yaml:"metrika,omitempty" swaggertype:"string" example:"JSON"`
-	Duration  int64           `boil:"duration" json:"duration" toml:"duration" yaml:"duration"`
-	CreatedAt time.Time       `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at" example:"2006-01-02T15:04:05Z"`
-	UpdatedAt time.Time       `boil:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at" example:"2006-01-02T15:04:05Z"`
-	DeletedAt null.Time       `boil:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty" example:"2006-01-02T15:04:05Z"`
+	ID        typ.UUID        `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
+	Login     string          `boil:"login" db:"login" json:"login" toml:"login" yaml:"login"`
+	Email     string          `boil:"email" db:"email" json:"email" toml:"email" yaml:"email"`
+	Price     decimal.Decimal `boil:"price" db:"price" json:"price" toml:"price" yaml:"price" swaggertype:"number" example:"0.01"`
+	SummaOne  float32         `boil:"summa_one" db:"summa_one" json:"summa_one" toml:"summa_one" yaml:"summa_one" swaggertype:"number" example:"0.01"`
+	SummaTwo  float64         `boil:"summa_two" db:"summa_two" json:"summa_two" toml:"summa_two" yaml:"summa_two" swaggertype:"number" example:"0.01"`
+	CNT2      int16           `boil:"cnt2" db:"cnt2" json:"cnt2" toml:"cnt2" yaml:"cnt2"`
+	CNT4      int             `boil:"cnt4" db:"cnt4" json:"cnt4" toml:"cnt4" yaml:"cnt4"`
+	CNT8      int64           `boil:"cnt8" db:"cnt8" json:"cnt8" toml:"cnt8" yaml:"cnt8"`
+	IsOnline  bool            `boil:"is_online" db:"is_online" json:"is_online" toml:"is_online" yaml:"is_online"`
+	Metrika   null.JSON       `boil:"metrika" db:"metrika" json:"metrika,omitempty" toml:"metrika" yaml:"metrika,omitempty" swaggertype:"string" example:"JSON"`
+	Duration  int64           `boil:"duration" db:"duration" json:"duration" toml:"duration" yaml:"duration"`
+	CreatedAt time.Time       `boil:"created_at" db:"created_at" json:"created_at" toml:"created_at" yaml:"created_at" example:"2006-01-02T15:04:05Z"`
+	UpdatedAt time.Time       `boil:"updated_at" db:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at" example:"2006-01-02T15:04:05Z"`
+	DeletedAt null.Time       `boil:"deleted_at" db:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty" example:"2006-01-02T15:04:05Z"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`

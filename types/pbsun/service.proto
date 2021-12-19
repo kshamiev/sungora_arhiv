@@ -8,3 +8,5 @@ service Pbsun {
   rpc Ping (google.protobuf.Empty) returns (Test) {
   }
 }
+// AFTER CODE GENERATED. DO NOT EDIT //
+

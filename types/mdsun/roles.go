@@ -25,9 +25,9 @@ import (
 
 // Role is an object representing the database table.
 type Role struct {
-	ID          typ.UUID `boil:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
-	Code        string   `boil:"code" json:"code" toml:"code" yaml:"code"`
-	Description string   `boil:"description" json:"description" toml:"description" yaml:"description"`
+	ID          typ.UUID `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
+	Code        string   `boil:"code" db:"code" json:"code" toml:"code" yaml:"code"`
+	Description string   `boil:"description" db:"description" json:"description" toml:"description" yaml:"description"`
 
 	R *roleR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L roleL  `boil:"-" json:"-" toml:"-" yaml:"-"`

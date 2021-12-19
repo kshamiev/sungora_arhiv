@@ -40,7 +40,7 @@ func Tag(dir, pkgName string) {
 	}
 }
 
-var pattern = regexp.MustCompile("type (.+?) struct {")
+var patternType = regexp.MustCompile("type (.+?) struct {")
 
 func tagFile(filePath string) {
 	d, err := ioutil.ReadFile(filePath)
@@ -51,7 +51,7 @@ func tagFile(filePath string) {
 	data := strings.Split(string(d), "\n")
 	for i := range data {
 		data[i] = strings.TrimSpace(data[i])
-		tFind := pattern.FindStringSubmatch(data[i])
+		tFind := patternType.FindStringSubmatch(data[i])
 		if len(tFind) == 2 && tFind[1] == strings.Title(tFind[1]) {
 			typList = append(typList, tFind[1])
 			flagType = true
@@ -69,6 +69,8 @@ func tagFile(filePath string) {
 		log.Fatal(err)
 	}
 }
+
+var patternJson = regexp.MustCompile(` json:"(.+?)" `)
 
 const (
 	tagInt     = ` swaggertype:"number" example:"0"`
@@ -131,6 +133,16 @@ func tagType(s string) string {
 			s = strings.Join(l, "`")
 		}
 	}
+
+	// from sqlx
+	pFind := patternJson.FindStringSubmatch(s)
+	if len(pFind) == 2 {
+		db := ` db:"` + strings.Split(pFind[1], ",")[0] + `"`
+		if !strings.Contains(s, db) {
+			s = strings.ReplaceAll(s, pFind[0], db+pFind[0])
+		}
+	}
+
 	return s
 }
 
