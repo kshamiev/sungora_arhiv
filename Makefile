@@ -9,10 +9,7 @@ default: help
 
 # Сваггер
 swag:
-	# swag i --parseVendor --parseDependency -o template/swagger;
 	swag i --parseVendor -o template/swagger;
-	@rm template/swagger/docs.go;
-	@rm template/swagger/swagger.yaml;
 .PHONY: swag
 
 # FMT & GOIMPORT

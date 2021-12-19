@@ -19,103 +19,7 @@
     },
     "basePath": "/",
     "paths": {
-        "/api/v1/gate": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "tags": [
-                    "GRPC"
-                ],
-                "summary": "создание объекта",
-                "parameters": [
-                    {
-                        "description": "какой-то объект",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/typ.ReqSample"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "успех",
-                        "schema": {
-                            "$ref": "#/definitions/typ.ResSample"
-                        }
-                    },
-                    "400": {
-                        "description": "провал",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/gate/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "tags": [
-                    "GRPC"
-                ],
-                "summary": "получение объекта",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ИД объекта",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "name",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "flag",
-                        "name": "flag",
-                        "in": "query"
-                    },
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "multi",
-                        "description": "hobbit",
-                        "name": "hobbit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "объект",
-                        "schema": {
-                            "$ref": "#/definitions/typ.ResSample"
-                        }
-                    },
-                    "400": {
-                        "description": "провал",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/general/ping": {
+        "/api/sun/general/ping": {
             "get": {
                 "tags": [
                     "General"
@@ -131,7 +35,7 @@
                 }
             }
         },
-        "/api/v1/general/test/{id}": {
+        "/api/sun/general/test/{id}": {
             "get": {
                 "tags": [
                     "General"
@@ -150,13 +54,13 @@
                     "200": {
                         "description": "user",
                         "schema": {
-                            "$ref": "#/definitions/typ.Users"
+                            "$ref": "#/definitions/mdsun.User"
                         }
                     }
                 }
             }
         },
-        "/api/v1/general/version": {
+        "/api/sun/general/version": {
             "get": {
                 "tags": [
                     "General"
@@ -172,7 +76,7 @@
                 }
             }
         },
-        "/api/v1/websocket/gorilla/{id}": {
+        "/api/sun/websocket/gorilla/{id}": {
             "get": {
                 "security": [
                     {
@@ -182,7 +86,7 @@
                 "tags": [
                     "General"
                 ],
-                "summary": "пример работы с вебсокетом (http://localhost:8080/template/gorilla/index.html)",
+                "summary": "пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)",
                 "responses": {
                     "101": {
                         "description": "Switching Protocols to websocket",
@@ -195,91 +99,7 @@
         }
     },
     "definitions": {
-        "typ.ReqSample": {
-            "type": "object",
-            "properties": {
-                "any": {
-                    "type": "string"
-                },
-                "date": {
-                    "type": "string",
-                    "example": "2006-01-02T15:04:05Z"
-                },
-                "flag": {
-                    "type": "boolean"
-                },
-                "hobbit": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "id": {
-                    "type": "string",
-                    "example": "ca6f30f9-7207-4741-8dba-7f288edf1161"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "number": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "weight1": {
-                    "type": "number",
-                    "example": 0.1
-                },
-                "weight2": {
-                    "type": "number",
-                    "example": 0.1
-                }
-            }
-        },
-        "typ.ResSample": {
-            "type": "object",
-            "properties": {
-                "any": {
-                    "type": "string"
-                },
-                "date": {
-                    "type": "string",
-                    "example": "2006-01-02T15:04:05Z"
-                },
-                "flag": {
-                    "type": "boolean"
-                },
-                "hobbit": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "id": {
-                    "type": "string",
-                    "example": "ca6f30f9-7207-4741-8dba-7f288edf1161"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "number": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "weight1": {
-                    "type": "number",
-                    "example": 0.1
-                },
-                "weight2": {
-                    "type": "number",
-                    "example": 0.1
-                }
-            }
-        },
-        "typ.Users": {
+        "mdsun.User": {
             "type": "object",
             "properties": {
                 "cnt2": {
@@ -300,15 +120,14 @@
                     "example": "2006-01-02T15:04:05Z"
                 },
                 "duration": {
-                    "type": "string",
-                    "example": "5m"
+                    "type": "integer"
                 },
                 "email": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string",
-                    "example": "ca6f30f9-7207-4741-8dba-7f288edf1161"
+                    "example": "8ca3c9c3-cf1a-47fe-8723-3f957538ce42"
                 },
                 "is_online": {
                     "type": "boolean"
@@ -317,19 +136,20 @@
                     "type": "string"
                 },
                 "metrika": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "JSON"
                 },
                 "price": {
                     "type": "number",
-                    "example": 0.1
+                    "example": 0.01
                 },
                 "summa_one": {
                     "type": "number",
-                    "example": 0.1
+                    "example": 0.01
                 },
                 "summa_two": {
                     "type": "number",
-                    "example": 0.1
+                    "example": 0.01
                 },
                 "updated_at": {
                     "type": "string",

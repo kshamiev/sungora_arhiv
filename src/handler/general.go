@@ -51,12 +51,12 @@ func (c *General) Version(w http.ResponseWriter, r *http.Request) {
 	rw.JSON(config.Get().App.Version)
 }
 
-// Test test
+// Test
 // @Summary test
 // @Tags General
 // @Router /api/sun/general/test/{id} [get]
 // @Param id path string true "ID"
-// @Success 200 {object} typ.Users "user"
+// @Success 200 {object} mdsun.User "user"
 func (c *General) Test(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
@@ -120,7 +120,7 @@ func (c *General) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 	c.WsBus.StartClient(chi.URLParam(r, "id"), client)
 }
 
-// пример обработчика клиента
+// chatWS пример обработчика клиента
 type chatWS struct {
 	Ws  *websocket.Conn
 	Ctx context.Context

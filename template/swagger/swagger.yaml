@@ -1,0 +1,111 @@
+basePath: /
+definitions:
+  mdsun.User:
+    properties:
+      cnt2:
+        type: integer
+      cnt4:
+        type: integer
+      cnt8:
+        type: integer
+      created_at:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      deleted_at:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+      duration:
+        type: integer
+      email:
+        type: string
+      id:
+        example: 8ca3c9c3-cf1a-47fe-8723-3f957538ce42
+        type: string
+      is_online:
+        type: boolean
+      login:
+        type: string
+      metrika:
+        example: JSON
+        type: string
+      price:
+        example: 0.01
+        type: number
+      summa_one:
+        example: 0.01
+        type: number
+      summa_two:
+        example: 0.01
+        type: number
+      updated_at:
+        example: "2006-01-02T15:04:05Z"
+        type: string
+    type: object
+info:
+  contact:
+    email: konstantin@shamiev.ru
+    name: API Support
+  description: Sungora
+  license:
+    name: Sample License
+  termsOfService: http://swagger.io/terms/
+  title: Sungora API
+  version: 1.0.0
+paths:
+  /api/sun/general/ping:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: ping
+      tags:
+      - General
+  /api/sun/general/test/{id}:
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: user
+          schema:
+            $ref: '#/definitions/mdsun.User'
+      summary: test
+      tags:
+      - General
+  /api/sun/general/version:
+    get:
+      responses:
+        "200":
+          description: version
+          schema:
+            type: string
+      summary: получение версии приложения
+      tags:
+      - General
+  /api/sun/websocket/gorilla/{id}:
+    get:
+      responses:
+        "101":
+          description: Switching Protocols to websocket
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
+      tags:
+      - General
+schemes:
+- http
+- https
+swagger: "2.0"
+tags:
+- description: Общие запросы
+  name: General
+- description: grpc gateway sample
+  name: GRPC

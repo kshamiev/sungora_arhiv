@@ -7,12 +7,14 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
 
 	"sungora/lib/logger"
 	"sungora/lib/observability"
 	"sungora/lib/request"
 	"sungora/src/config"
 	"sungora/src/handler"
+	_ "sungora/template/swagger"
 )
 
 // инициализация маршрутов
@@ -29,7 +31,7 @@ func initRoutes(cfg *config.App) *chi.Mux {
 	router.Handle("/template/*", http.FileServer(http.Dir(cfg.DirWork)))
 
 	// swagger
-	router.Get("/api/sun/swag/*", mid.Swagger("swagger.json"))
+	router.Get("/api/sun/swag/*", httpSwagger.Handler())
 
 	// rest
 	general(router)
