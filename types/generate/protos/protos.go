@@ -221,7 +221,7 @@ func CreateProtoMessageFile(d, pkgProto string) (proto string) {
 	if data, err := ioutil.ReadFile(d + "/" + pkgProto + "/types.proto"); err == nil {
 		proto = string(data)
 		list := strings.Split(proto, Separator)
-		proto = list[0] + Separator + "\n\n"
+		proto = list[0] + Separator + "\n"
 	} else {
 		if data, err = ioutil.ReadFile(d + "/generate/protos/types.proto"); err != nil {
 			log.Fatal(err)
@@ -236,8 +236,6 @@ func CreateProtoMessageFile(d, pkgProto string) (proto string) {
 func CreateProtoServiceFile(d, pkgProto string) (proto string) {
 	if data, err := ioutil.ReadFile(d + "/" + pkgProto + "/service.proto"); err == nil {
 		proto = string(data)
-		list := strings.Split(proto, Separator)
-		proto = list[0] + Separator + "\n\n"
 	} else {
 		if data, err = ioutil.ReadFile(d + "/generate/protos/service.proto"); err != nil {
 			log.Fatal(err)

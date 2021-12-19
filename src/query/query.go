@@ -2,7 +2,7 @@ package query
 
 // language=sql
 const (
-	SQLSample     = "SELECT * FROM Users"
+	SQLSample     = "SELECT * FROM users"
 	SQLAppVersion = `SELECT MAX(version_id) as version_id FROM goose_db_version WHERE is_applied = TRUE`
 )
 

@@ -142,7 +142,7 @@ func runScheduler(task Task, ch chan bool) {
 func action(task Task) {
 	requestID := uuid.New().String()
 	ctx := context.Background()
-	lg := logger.Get(ctx).WithField(logger.LogTraceID, requestID)
+	lg := logger.Gist(ctx).WithField(logger.LogTraceID, requestID)
 
 	ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
 	ctx = logger.WithLogger(ctx, lg)

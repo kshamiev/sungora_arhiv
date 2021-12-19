@@ -7,7 +7,7 @@ import (
 )
 
 type Face interface {
-	Gist() *sqlx.DB
+	DB() *sqlx.DB
 	Query(ctx context.Context) QueryEr
 	QueryTx(ctx context.Context, f func(qu QueryTxEr) error) (err error)
 }

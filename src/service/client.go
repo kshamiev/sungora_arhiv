@@ -1,26 +1,22 @@
 package service
 
 import (
-	"google.golang.org/grpc"
-
+	"sungora/lib/errs"
 	"sungora/lib/web"
-	"sungora/pb"
+	"sungora/types/pbsun"
 )
 
-var sampleClient pb.SampleClient
+var sunClient pbsun.SunClient
 
-func InitSampleClient(cfg *web.GRPCConfig) (*web.GRPCClient, error) {
+func InitSunClient(cfg *web.GRPCConfig) (*web.GRPCClient, error) {
 	grpcClient, err := web.NewGRPCClient(cfg)
 	if err != nil {
-		return nil, err
+		return nil, errs.NewBadRequest(err)
 	}
-	sampleClient = pb.NewSampleClient(grpcClient.Conn)
+	sunClient = pbsun.NewSunClient(grpcClient.Conn)
 	return grpcClient, nil
 }
 
-func GetSampleClient() pb.SampleClient {
-	if sampleClient == nil {
-		sampleClient = pb.NewSampleClient(&grpc.ClientConn{})
-	}
-	return sampleClient
+func Gist() pbsun.SunClient {
+	return sunClient
 }

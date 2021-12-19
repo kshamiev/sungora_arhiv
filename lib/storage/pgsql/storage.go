@@ -85,7 +85,7 @@ func InitConnect(cfg *Config) error {
 
 var mu sync.RWMutex
 
-func gist() *Storage {
+func Gist() *Storage {
 	if instance == nil {
 		mu.Lock()
 		if instance == nil {
@@ -98,17 +98,22 @@ func gist() *Storage {
 	return instance
 }
 
-func GistX() *sqlx.DB {
-	return gist().db
-}
-
-func GistDB() *sql.DB {
-	return gist().db.DB
-}
-
-func Query(ctx context.Context) storage.QueryEr {
+func (st *Storage) DB() *sqlx.DB {
 	if instance == nil {
 		mu.Lock()
+		if instance == nil {
+			if err := InitConnect(nil); err != nil {
+				return &sqlx.DB{}
+			}
+		}
+		mu.Unlock()
+	}
+	return instance.db
+}
+
+func (st *Storage) Query(ctx context.Context) storage.QueryEr {
+	if instance == nil {
+		st.mu.Lock()
 		if instance == nil {
 			if err := InitConnect(nil); err != nil {
 				return &query{
@@ -116,7 +121,7 @@ func Query(ctx context.Context) storage.QueryEr {
 				}
 			}
 		}
-		mu.Unlock()
+		st.mu.Unlock()
 	}
 	return &query{
 		ctx: ctx,
@@ -124,15 +129,15 @@ func Query(ctx context.Context) storage.QueryEr {
 	}
 }
 
-func QueryTx(ctx context.Context, f func(qu storage.QueryTxEr) error) (err error) {
+func (st *Storage) QueryTx(ctx context.Context, f func(qu storage.QueryTxEr) error) (err error) {
 	if instance == nil {
-		mu.Lock()
+		st.mu.Lock()
 		if instance == nil {
 			if err := InitConnect(nil); err != nil {
 				return err
 			}
 		}
-		mu.Unlock()
+		st.mu.Unlock()
 	}
 
 	tx, err := instance.db.BeginTxx(ctx, nil)
@@ -169,6 +174,8 @@ func QueryTx(ctx context.Context, f func(qu storage.QueryTxEr) error) (err error
 	commit = true
 	return nil
 }
+
+// ////
 
 func (st *Storage) querySlice(ctx context.Context, stmt *sqlx.Stmt, args ...interface{}) ([]map[string]interface{}, error) {
 	rows, err := stmt.Unsafe().QueryxContext(ctx, args...)

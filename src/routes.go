@@ -55,9 +55,9 @@ func general(router *chi.Mux) {
 	contra := handler.NewGeneral()
 	router.Route("/api/sun/general", func(router chi.Router) {
 		router.Get("/ping", contra.Ping)
-		router.Get("/version", contra.GetVersion)
+		router.Get("/version", contra.Version)
 		router.Get("/test/{id}", contra.Test)
 	})
 	// websocket
-	router.HandleFunc("/api/sun/websocket/gorilla/{id}", contra.GetWebSocketSample)
+	router.HandleFunc("/api/sun/websocket/gorilla/{id}", contra.WebSocketSample)
 }

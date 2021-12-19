@@ -45,9 +45,10 @@ func TestQuery(t *testing.T) {
 	if err := InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)
 	}
+	st := Gist()
 
 	for i := range pgQueries {
-		if _, _, err := Query(context.Background()).PrepareQuery(pgQueries[i], nil); err != nil {
+		if _, _, err := st.Query(context.Background()).PrepareQuery(pgQueries[i], nil); err != nil {
 			t.Log(pgQueries[i])
 			t.Fatal(err)
 		}

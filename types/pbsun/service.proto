@@ -4,9 +4,7 @@ option go_package = "./;pbsun";
 import "google/protobuf/empty.proto";
 import "types/pbsun/types.proto";
 
-service Pbsun {
+service Sun {
   rpc Ping (google.protobuf.Empty) returns (Test) {
   }
 }
-// AFTER CODE GENERATED. DO NOT EDIT //
-

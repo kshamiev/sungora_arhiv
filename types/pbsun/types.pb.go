@@ -7,12 +7,13 @@
 package pbsun
 
 import (
-	empty "github.com/golang/protobuf/ptypes/empty"
-	timestamp "github.com/golang/protobuf/ptypes/timestamp"
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
+
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const (
@@ -27,11 +28,11 @@ type Test struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Text      string               `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	Texts     []string             `protobuf:"bytes,2,rep,name=texts,proto3" json:"texts,omitempty"`
-	Tests     map[string]*Test     `protobuf:"bytes,3,rep,name=tests,proto3" json:"tests,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Empty     *empty.Empty         `protobuf:"bytes,4,opt,name=empty,proto3" json:"empty,omitempty"`
-	CreatedAt *timestamp.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Text      string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	Texts     []string               `protobuf:"bytes,2,rep,name=texts,proto3" json:"texts,omitempty"`
+	Tests     map[string]*Test       `protobuf:"bytes,3,rep,name=tests,proto3" json:"tests,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Empty     *emptypb.Empty         `protobuf:"bytes,4,opt,name=empty,proto3" json:"empty,omitempty"`
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 }
 
 func (x *Test) Reset() {
@@ -87,14 +88,14 @@ func (x *Test) GetTests() map[string]*Test {
 	return nil
 }
 
-func (x *Test) GetEmpty() *empty.Empty {
+func (x *Test) GetEmpty() *emptypb.Empty {
 	if x != nil {
 		return x.Empty
 	}
 	return nil
 }
 
-func (x *Test) GetCreatedAt() *timestamp.Timestamp {
+func (x *Test) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
 	}
@@ -106,10 +107,10 @@ type GooseDBVersion struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        int64                `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	VersionId int64                `protobuf:"varint,2,opt,name=version_id,json=versionId,proto3" json:"version_id,omitempty"`
-	IsApplied bool                 `protobuf:"varint,3,opt,name=is_applied,json=isApplied,proto3" json:"is_applied,omitempty"`
-	Tstamp    *timestamp.Timestamp `protobuf:"bytes,4,opt,name=tstamp,proto3" json:"tstamp,omitempty"`
+	Id        int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	VersionId int64                  `protobuf:"varint,2,opt,name=version_id,json=versionId,proto3" json:"version_id,omitempty"`
+	IsApplied bool                   `protobuf:"varint,3,opt,name=is_applied,json=isApplied,proto3" json:"is_applied,omitempty"`
+	Tstamp    *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=tstamp,proto3" json:"tstamp,omitempty"`
 }
 
 func (x *GooseDBVersion) Reset() {
@@ -165,7 +166,7 @@ func (x *GooseDBVersion) GetIsApplied() bool {
 	return false
 }
 
-func (x *GooseDBVersion) GetTstamp() *timestamp.Timestamp {
+func (x *GooseDBVersion) GetTstamp() *timestamppb.Timestamp {
 	if x != nil {
 		return x.Tstamp
 	}
@@ -224,13 +225,13 @@ type Order struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        string               `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserId    string               `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Number    int64                `protobuf:"varint,3,opt,name=number,proto3" json:"number,omitempty"`
-	Status    string               `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
-	CreatedAt *timestamp.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt *timestamp.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	DeletedAt *timestamp.Timestamp `protobuf:"bytes,7,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
+	Id        string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId    string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Number    int64                  `protobuf:"varint,3,opt,name=number,proto3" json:"number,omitempty"`
+	Status    string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	DeletedAt *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
 }
 
 func (x *Order) Reset() {
@@ -293,21 +294,21 @@ func (x *Order) GetStatus() string {
 	return ""
 }
 
-func (x *Order) GetCreatedAt() *timestamp.Timestamp {
+func (x *Order) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return nil
 }
 
-func (x *Order) GetUpdatedAt() *timestamp.Timestamp {
+func (x *Order) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdatedAt
 	}
 	return nil
 }
 
-func (x *Order) GetDeletedAt() *timestamp.Timestamp {
+func (x *Order) GetDeletedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.DeletedAt
 	}
@@ -476,21 +477,21 @@ type User struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id        string               `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Login     string               `protobuf:"bytes,2,opt,name=login,proto3" json:"login,omitempty"`
-	Email     string               `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	Price     string               `protobuf:"bytes,4,opt,name=price,proto3" json:"price,omitempty"`
-	SummaOne  float32              `protobuf:"fixed32,5,opt,name=summa_one,json=summaOne,proto3" json:"summa_one,omitempty"`
-	SummaTwo  float64              `protobuf:"fixed64,6,opt,name=summa_two,json=summaTwo,proto3" json:"summa_two,omitempty"`
-	Cnt2      int32                `protobuf:"varint,7,opt,name=cnt2,proto3" json:"cnt2,omitempty"`
-	Cnt4      int64                `protobuf:"varint,8,opt,name=cnt4,proto3" json:"cnt4,omitempty"`
-	Cnt8      int64                `protobuf:"varint,9,opt,name=cnt8,proto3" json:"cnt8,omitempty"`
-	IsOnline  bool                 `protobuf:"varint,10,opt,name=is_online,json=isOnline,proto3" json:"is_online,omitempty"`
-	Metrika   []byte               `protobuf:"bytes,11,opt,name=metrika,proto3" json:"metrika,omitempty"`
-	Duration  int64                `protobuf:"varint,12,opt,name=duration,proto3" json:"duration,omitempty"`
-	CreatedAt *timestamp.Timestamp `protobuf:"bytes,13,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt *timestamp.Timestamp `protobuf:"bytes,14,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	DeletedAt *timestamp.Timestamp `protobuf:"bytes,15,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
+	Id        string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Login     string                 `protobuf:"bytes,2,opt,name=login,proto3" json:"login,omitempty"`
+	Email     string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
+	Price     string                 `protobuf:"bytes,4,opt,name=price,proto3" json:"price,omitempty"`
+	SummaOne  float32                `protobuf:"fixed32,5,opt,name=summa_one,json=summaOne,proto3" json:"summa_one,omitempty"`
+	SummaTwo  float64                `protobuf:"fixed64,6,opt,name=summa_two,json=summaTwo,proto3" json:"summa_two,omitempty"`
+	Cnt2      int32                  `protobuf:"varint,7,opt,name=cnt2,proto3" json:"cnt2,omitempty"`
+	Cnt4      int64                  `protobuf:"varint,8,opt,name=cnt4,proto3" json:"cnt4,omitempty"`
+	Cnt8      int64                  `protobuf:"varint,9,opt,name=cnt8,proto3" json:"cnt8,omitempty"`
+	IsOnline  bool                   `protobuf:"varint,10,opt,name=is_online,json=isOnline,proto3" json:"is_online,omitempty"`
+	Metrika   []byte                 `protobuf:"bytes,11,opt,name=metrika,proto3" json:"metrika,omitempty"`
+	Duration  int64                  `protobuf:"varint,12,opt,name=duration,proto3" json:"duration,omitempty"`
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt *timestamppb.Timestamp `protobuf:"bytes,14,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	DeletedAt *timestamppb.Timestamp `protobuf:"bytes,15,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
 }
 
 func (x *User) Reset() {
@@ -609,21 +610,21 @@ func (x *User) GetDuration() int64 {
 	return 0
 }
 
-func (x *User) GetCreatedAt() *timestamp.Timestamp {
+func (x *User) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
 	}
 	return nil
 }
 
-func (x *User) GetUpdatedAt() *timestamp.Timestamp {
+func (x *User) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.UpdatedAt
 	}
 	return nil
 }
 
-func (x *User) GetDeletedAt() *timestamp.Timestamp {
+func (x *User) GetDeletedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.DeletedAt
 	}
@@ -795,18 +796,18 @@ func file_types_pbsun_types_proto_rawDescGZIP() []byte {
 
 var file_types_pbsun_types_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_types_pbsun_types_proto_goTypes = []interface{}{
-	(*Test)(nil),                // 0: pbsun.Test
-	(*GooseDBVersion)(nil),      // 1: pbsun.GooseDBVersion
-	(*GooseDBVersionSlice)(nil), // 2: pbsun.GooseDBVersionSlice
-	(*Order)(nil),               // 3: pbsun.Order
-	(*OrderSlice)(nil),          // 4: pbsun.OrderSlice
-	(*Role)(nil),                // 5: pbsun.Role
-	(*RoleSlice)(nil),           // 6: pbsun.RoleSlice
-	(*User)(nil),                // 7: pbsun.User
-	(*UserSlice)(nil),           // 8: pbsun.UserSlice
-	nil,                         // 9: pbsun.Test.TestsEntry
-	(*empty.Empty)(nil),         // 10: google.protobuf.Empty
-	(*timestamp.Timestamp)(nil), // 11: google.protobuf.Timestamp
+	(*Test)(nil),                  // 0: pbsun.Test
+	(*GooseDBVersion)(nil),        // 1: pbsun.GooseDBVersion
+	(*GooseDBVersionSlice)(nil),   // 2: pbsun.GooseDBVersionSlice
+	(*Order)(nil),                 // 3: pbsun.Order
+	(*OrderSlice)(nil),            // 4: pbsun.OrderSlice
+	(*Role)(nil),                  // 5: pbsun.Role
+	(*RoleSlice)(nil),             // 6: pbsun.RoleSlice
+	(*User)(nil),                  // 7: pbsun.User
+	(*UserSlice)(nil),             // 8: pbsun.UserSlice
+	nil,                           // 9: pbsun.Test.TestsEntry
+	(*emptypb.Empty)(nil),         // 10: google.protobuf.Empty
+	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
 }
 var file_types_pbsun_types_proto_depIdxs = []int32{
 	9,  // 0: pbsun.Test.tests:type_name -> pbsun.Test.TestsEntry

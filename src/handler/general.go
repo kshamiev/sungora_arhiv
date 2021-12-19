@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"sungora/lib/storage/pgsql"
+
 	"github.com/go-chi/chi"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/gorilla/websocket"
@@ -23,7 +25,6 @@ type General struct {
 	WsBus web.SocketBus
 }
 
-// общие запросы
 func NewGeneral() *General {
 	return &General{
 		WsBus: web.NewSocketBus(),
@@ -33,19 +34,19 @@ func NewGeneral() *General {
 // Ping ping
 // @Summary ping
 // @Tags General
-// @Router /api/v1/general/ping [get]
+// @Router /api/sun/general/ping [get]
 // @Success 200 {string} string "OK"
 func (c *General) Ping(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 	rw.JSON("OK")
 }
 
-// GetVersion получение версии приложения
+// Version получение версии приложения
 // @Summary получение версии приложения
 // @Tags General
-// @Router /api/v1/general/version [get]
+// @Router /api/sun/general/version [get]
 // @Success 200 {string} string "version"
-func (c *General) GetVersion(w http.ResponseWriter, r *http.Request) {
+func (c *General) Version(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 	rw.JSON(config.Get().App.Version)
 }
@@ -53,21 +54,21 @@ func (c *General) GetVersion(w http.ResponseWriter, r *http.Request) {
 // Test test
 // @Summary test
 // @Tags General
-// @Router /api/v1/general/test/{id} [get]
+// @Router /api/sun/general/test/{id} [get]
 // @Param id path string true "ID"
 // @Success 200 {object} typ.Users "user"
 func (c *General) Test(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	usM := model.NewUser()
+	usM := model.NewUser(pgsql.Gist())
 	us, err := usM.Load(r.Context(), typ.UUIDMustParse(chi.URLParam(r, "id")))
 	if err != nil {
 		rw.JSONError(err)
 		return
 	}
 
-	cli := service.GetSampleClient()
-	if _, err := cli.GetVersion(r.Context(), &empty.Empty{}); err != nil {
+	cli := service.Gist()
+	if _, err := cli.Ping(r.Context(), &empty.Empty{}); err != nil {
 		rw.JSONError(err)
 		return
 	}
@@ -75,12 +76,13 @@ func (c *General) Test(w http.ResponseWriter, r *http.Request) {
 	rw.JSON(us)
 }
 
-// @Summary пример работы с вебсокетом (http://localhost:8080/template/gorilla/index.html)
+// WebSocketSample пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
+// @Summary пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
 // @Tags General
-// @Router /api/v1/websocket/gorilla/{id} [get]
+// @Router /api/sun/websocket/gorilla/{id} [get]
 // @Success 101 {string} string "Switching Protocols to websocket"
 // @Security ApiKeyAuth
-func (c *General) GetWebSocketSample(w http.ResponseWriter, r *http.Request) {
+func (c *General) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 	var (
 		ws         *websocket.Conn
 		wsResponse http.Header

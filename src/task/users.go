@@ -5,18 +5,19 @@ import (
 	"time"
 
 	"sungora/lib/logger"
-	"sungora/lib/storage"
 	"sungora/lib/storage/pgsql"
 )
 
 const UserOnlineOffName = "UserOnlineOff"
 
-// Обновление онлайн статуса ушедших пользователей
+// UserOnlineOff Обновление онлайн статуса ушедших пользователей
 type UserOnlineOff struct {
-	storage.Face
+	st *pgsql.Storage
 }
 
-func NewUserOnlineOff() *UserOnlineOff { return &UserOnlineOff{&pgsql.Storage{}} }
+func NewUserOnlineOff() *UserOnlineOff {
+	return &UserOnlineOff{pgsql.Gist()}
+}
 
 func (task *UserOnlineOff) Action(ctx context.Context) error {
 	lg := logger.GetLogger(ctx)
