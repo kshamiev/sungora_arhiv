@@ -52,7 +52,6 @@ func (r *Request) ContentTypeXML(link string) *Request {
 	return r
 }
 
-// AuthorizationBasic
 func (r *Request) AuthorizationBasic(login, passw string) {
 	r.Header.Add("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(login+":"+passw)))
 }

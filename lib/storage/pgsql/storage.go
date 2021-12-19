@@ -44,7 +44,7 @@ func InitConnect(cfg *Config) error {
 					AllowRoot:    true,
 					Ping:         true,
 					RowsNext:     false,
-					RowsClose:    true,
+					RowsClose:    false,
 					RowsAffected: false,
 					LastInsertID: false,
 					Query:        true,
