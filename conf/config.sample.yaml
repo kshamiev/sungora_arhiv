@@ -40,20 +40,3 @@ grpcServer:
 grpcClient:
   host: "localhost"
   port: 9090
-
-generate:
-  name_mapping:
-    duration:
-      null_yes: time.Duration
-      null_not: time.Duration
-      tag: " swaggertype:\"string\" example:\"5m\""
-  type_mapping:
-    uuid:
-      null_yes: uuid.UUID
-      null_not: uuid.UUID
-      tag: " example:\"ca6f30f9-7207-4741-8dba-7f288edf1161\""
-  table_ignore:
-    - goose_db_version
-  table_crud:
-    - users
-    - roles

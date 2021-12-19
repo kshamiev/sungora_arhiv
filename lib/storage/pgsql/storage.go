@@ -1,4 +1,4 @@
-package stpg
+package pgsql
 
 import (
 	"context"
@@ -9,12 +9,12 @@ import (
 	"sync"
 
 	"contrib.go.opencensus.io/integrations/ocsql"
+	"sungora/lib/logger"
+	"sungora/lib/storage"
+
 	// драйвер работы с БД
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
-
-	"sungora/lib/logger"
-	"sungora/lib/storage"
 )
 
 var instance *Storage
@@ -75,6 +75,29 @@ func InitConnect(cfg *Config) error {
 		pqs: make(map[string]*sqlx.Stmt),
 	}
 	return nil
+}
+
+var mu sync.RWMutex
+
+func Gist() *Storage {
+	if instance == nil {
+		mu.Lock()
+		if instance == nil {
+			if err := InitConnect(nil); err != nil {
+				return &Storage{}
+			}
+		}
+		mu.Unlock()
+	}
+	return instance
+}
+
+func GistX() *sqlx.DB {
+	return Gist().db
+}
+
+func GistDB() *sql.DB {
+	return Gist().db.DB
 }
 
 type Storage struct {

@@ -1,13 +1,13 @@
 // nolint: lll // AFTER CODE GENERATED. DO NOT EDIT //
 package typ
 
-import "sungora/lib/uuid"
+import "sungora/lib/typ"
 
 //
 type Roles struct {
-	Id          uuid.UUID `json:"id" db:"id" example:"ca6f30f9-7207-4741-8dba-7f288edf1161"` //
-	Code        string    `json:"code" db:"code"`                                            //
-	Description string    `json:"description" db:"description"`                              //
+	Id          typ.UUID `json:"id" db:"id" example:"ca6f30f9-7207-4741-8dba-7f288edf1161"` //
+	Code        string   `json:"code" db:"code"`                                            //
+	Description string   `json:"description" db:"description"`                              //
 }
 
 func (o *Roles) Select() (query string, args []interface{}) {

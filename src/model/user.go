@@ -5,21 +5,17 @@ import (
 
 	"sungora/lib/app"
 	"sungora/lib/storage"
-	"sungora/lib/storage/stpg"
-	"sungora/lib/uuid"
-	"sungora/src/typ"
+	"sungora/lib/storage/pgsql"
+	"sungora/lib/typ"
 )
 
-// бизнес модель
 type User struct {
 	storage.Face
 }
 
-// NewUser
-func NewUser() *User { return &User{&stpg.Storage{}} }
+func NewUser() *User { return &User{&pgsql.Storage{}} }
 
-// Load
-func (u *User) Load(ctx context.Context, id uuid.UUID) (*typ.Users, error) {
+func (u *User) Load(ctx context.Context, id typ.UUID) (*typ.Users, error) {
 	s := app.NewSpan(ctx)
 	s.StringAttribute("param1", "fantik")
 	s.Int64Attribute("param2", 34)

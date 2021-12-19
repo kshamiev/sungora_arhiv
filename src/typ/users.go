@@ -4,7 +4,7 @@ package typ
 import (
 	"time"
 
-	"sungora/lib/uuid"
+	"sungora/lib/typ"
 
 	"github.com/shopspring/decimal"
 
@@ -13,7 +13,7 @@ import (
 
 //
 type Users struct {
-	Id        uuid.UUID       `json:"id" db:"id" example:"ca6f30f9-7207-4741-8dba-7f288edf1161"` //
+	Id        typ.UUID        `json:"id" db:"id" example:"ca6f30f9-7207-4741-8dba-7f288edf1161"` //
 	Login     string          `json:"login" db:"login"`                                          //
 	Email     string          `json:"email" db:"email"`                                          //
 	Price     decimal.Decimal `json:"price" db:"price" example:"0.1"`                            //

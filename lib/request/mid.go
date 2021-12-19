@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"sungora/lib/enum"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/cors"
 	swaggerFiles "github.com/swaggo/files"
@@ -17,8 +19,7 @@ import (
 
 	"sungora/lib/errs"
 	"sungora/lib/response"
-	"sungora/lib/uuid"
-	"sungora/src/typ"
+	"sungora/lib/typ"
 )
 
 type Mid struct {
@@ -122,7 +123,7 @@ func (mid *Mid) VerifyToken(token string) (*response.User, error) {
 			return nil, errors.New("error get tiken exp")
 		}
 
-		uid := uuid.UUIDNew()
+		uid := typ.UUIDNew()
 		if err := uid.Scan(claims["userID"].(string)); err != nil {
 			return nil, err
 		}
@@ -136,9 +137,9 @@ func (mid *Mid) VerifyToken(token string) (*response.User, error) {
 		if _, ok := claims["roles"].([]interface{}); !ok {
 			return nil, errors.New("error get roles")
 		}
-		us.Roles = make([]typ.Role, len(claims["roles"].([]interface{})))
+		us.Roles = make([]enum.Role, len(claims["roles"].([]interface{})))
 		for i, role := range claims["roles"].([]interface{}) {
-			us.Roles[i] = typ.Role(role.(string))
+			us.Roles[i] = enum.Role(role.(string))
 		}
 		return us, nil
 	}

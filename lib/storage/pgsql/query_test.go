@@ -1,4 +1,4 @@
-package stpg
+package pgsql
 
 import (
 	"context"

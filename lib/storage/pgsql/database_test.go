@@ -1,4 +1,4 @@
-package stpg
+package pgsql
 
 import (
 	"context"
@@ -9,14 +9,14 @@ import (
 
 	"sungora/lib/app"
 	"sungora/lib/storage"
-	"sungora/lib/uuid"
+	"sungora/lib/typ"
 
 	"github.com/volatiletech/null/v8"
 )
 
 type User struct {
-	ID        uuid.UUID   `json:"id"`
-	ParentID  uuid.UUID   `json:"parent_id"`
+	ID        typ.UUID    `json:"id"`
+	ParentID  typ.UUID    `json:"parent_id"`
 	CreatedAt time.Time   `db:"created_at" json:"created_at"`
 	FullName  null.String `db:"full_name" json:"full_name"`
 	UserName  string      `db:"user_name" json:"user_name"`
@@ -60,7 +60,7 @@ func testInsertUpdate(t *testing.T, pgStorage storage.Face) chan bool {
 				for j := 0; j < cntIteration; j++ {
 					if err := pgStorage.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
 						// INSERT
-						id := uuid.UUIDNew()
+						id := typ.UUIDNew()
 						arg := []interface{}{
 							id,
 							app.GenString(8),
@@ -81,7 +81,7 @@ func testInsertUpdate(t *testing.T, pgStorage storage.Face) chan bool {
 							return err
 						}
 						// UPSERT
-						id = uuid.UUIDNew()
+						id = typ.UUIDNew()
 						arg = []interface{}{
 							id,
 							app.GenString(16),
@@ -151,7 +151,7 @@ func TestPGQuery(t *testing.T) {
 	if err := obj.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
 
 		// INSERT
-		id := uuid.UUIDNew()
+		id := typ.UUIDNew()
 		arg := []interface{}{
 			id,
 			"Vasya Pupkin",
@@ -174,7 +174,7 @@ func TestPGQuery(t *testing.T) {
 		}
 
 		// UPSERT
-		id = uuid.UUIDNew()
+		id = typ.UUIDNew()
 		arg = []interface{}{
 			id,
 			"1111111111",

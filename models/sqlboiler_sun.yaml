@@ -1,5 +1,5 @@
 psql:
-  dbname: "carriers"
+  dbname: "sun"
   user: "postgres"
   pass: "postgres"
   host: "localhost"
@@ -23,18 +23,18 @@ types:
       db_type: uuid
       nullable: true
     replace:
-      type: uuid.UUID
+      type: typ.UUID
     imports:
       third_party:
-        - '"sungora/lib/uuid"'
+        - '"sungora/lib/typ"'
   - match:
       db_type: uuid
       nullable: false
     replace:
-      type: uuid.UUID
+      type: typ.UUID
     imports:
       third_party:
-        - '"sungora/lib/uuid"'
+        - '"sungora/lib/typ"'
   - match:
       db_type: numeric
       nullable: true

@@ -5,13 +5,13 @@ import (
 	"time"
 
 	"sungora/lib/null"
-	"sungora/lib/uuid"
+	"sungora/lib/typ"
 )
 
 //
 type Orders struct {
-	Id        uuid.UUID `json:"id" db:"id" example:"ca6f30f9-7207-4741-8dba-7f288edf1161"`           //
-	UserId    uuid.UUID `json:"user_id" db:"user_id" example:"ca6f30f9-7207-4741-8dba-7f288edf1161"` //
+	Id        typ.UUID  `json:"id" db:"id" example:"ca6f30f9-7207-4741-8dba-7f288edf1161"`           //
+	UserId    typ.UUID  `json:"user_id" db:"user_id" example:"ca6f30f9-7207-4741-8dba-7f288edf1161"` //
 	Number    int       `json:"number" db:"number"`                                                  //
 	Status    string    `json:"status" db:"status"`                                                  //
 	CreatedAt time.Time `json:"created_at" db:"created_at" example:"2006-01-02T15:04:05Z"`           //

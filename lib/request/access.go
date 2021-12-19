@@ -3,13 +3,13 @@ package request
 import (
 	"net/http"
 
+	"sungora/lib/enum"
 	"sungora/lib/errs"
 	"sungora/lib/response"
-	"sungora/src/typ"
 )
 
 // AccessMethod проверка вертикальных прав на хендлеры по ролям
-func AccessMethod(roles map[typ.Role][]string) func(next http.Handler) http.Handler {
+func AccessMethod(roles map[enum.Role][]string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			rw := response.New(r, w)
@@ -34,7 +34,7 @@ func AccessMethod(roles map[typ.Role][]string) func(next http.Handler) http.Hand
 }
 
 // Access проверка вертикальных прав на конкретный хендлер по ролям
-func Access(roles ...typ.Role) func(next http.Handler) http.Handler {
+func Access(roles ...enum.Role) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			rw := response.New(r, w)

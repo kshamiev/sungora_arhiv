@@ -12,7 +12,7 @@ import (
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/response"
-	"sungora/lib/uuid"
+	"sungora/lib/typ"
 	"sungora/lib/web"
 	"sungora/src/config"
 	"sungora/src/model"
@@ -60,7 +60,7 @@ func (c *General) Test(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
 	usM := model.NewUser()
-	us, err := usM.Load(r.Context(), uuid.UUIDMustParse(chi.URLParam(r, "id")))
+	us, err := usM.Load(r.Context(), typ.UUIDMustParse(chi.URLParam(r, "id")))
 	if err != nil {
 		rw.JSONError(err)
 		return

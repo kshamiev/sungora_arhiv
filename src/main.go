@@ -8,7 +8,7 @@ import (
 
 	"sungora/lib/app"
 	"sungora/lib/logger"
-	"sungora/lib/storage/stpg"
+	"sungora/lib/storage/pgsql"
 	"sungora/lib/web"
 	"sungora/lib/worker"
 	"sungora/src/config"
@@ -34,7 +34,7 @@ func Main() {
 	defer jaeger.Close()
 
 	// ConnectDB postgres
-	if err = stpg.InitConnect(&cfg.Postgresql); err != nil {
+	if err = pgsql.InitConnect(&cfg.Postgresql); err != nil {
 		lg.WithError(err).Error("couldn't connect to postgres")
 	}
 

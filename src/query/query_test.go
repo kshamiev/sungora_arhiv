@@ -6,7 +6,7 @@ import (
 
 	"sungora/lib/app"
 	"sungora/lib/storage"
-	"sungora/lib/storage/stpg"
+	"sungora/lib/storage/pgsql"
 )
 
 type PGTest struct {
@@ -15,15 +15,15 @@ type PGTest struct {
 
 func TestQuery(t *testing.T) {
 	var cfg = struct {
-		Postgresql stpg.Config `json:"postgresql"`
+		Postgresql pgsql.Config `json:"postgresql"`
 	}{}
 	if err := app.LoadConfig("conf/config.yaml", &cfg); err != nil {
 		t.Fatal(err)
 	}
-	if err := stpg.InitConnect(&cfg.Postgresql); err != nil {
+	if err := pgsql.InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)
 	}
-	obj := &PGTest{&stpg.Storage{}}
+	obj := &PGTest{&pgsql.Storage{}}
 
 	for _, q := range GetQueries() {
 		if _, _, err := obj.Query(context.Background()).PrepareQuery(q, nil); err != nil {

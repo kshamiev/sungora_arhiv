@@ -6,7 +6,7 @@ import (
 
 	"sungora/lib/logger"
 	"sungora/lib/storage"
-	"sungora/lib/storage/stpg"
+	"sungora/lib/storage/pgsql"
 )
 
 const UserOnlineOffName = "UserOnlineOff"
@@ -16,7 +16,7 @@ type UserOnlineOff struct {
 	storage.Face
 }
 
-func NewUserOnlineOff() *UserOnlineOff { return &UserOnlineOff{&stpg.Storage{}} }
+func NewUserOnlineOff() *UserOnlineOff { return &UserOnlineOff{&pgsql.Storage{}} }
 
 func (task *UserOnlineOff) Action(ctx context.Context) error {
 	lg := logger.GetLogger(ctx)

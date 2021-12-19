@@ -13,12 +13,13 @@ import (
 	"strings"
 	"time"
 
+	"sungora/lib/enum"
+
 	"github.com/go-chi/chi"
 
 	"sungora/lib/errs"
 	"sungora/lib/logger"
-	"sungora/lib/uuid"
-	"sungora/src/typ"
+	"sungora/lib/typ"
 )
 
 // Структура для работы с входящим запросом
@@ -350,19 +351,19 @@ func (rw *Response) GetToken() (string, error) {
 	return token, nil
 }
 
-func (rw *Response) GetUserAndID(r *http.Request) (*User, uuid.UUID, error) {
+func (rw *Response) GetUserAndID(r *http.Request) (*User, typ.UUID, error) {
 	us, err := rw.GetUser()
 	if err != nil {
-		return nil, uuid.UUID{}, err
+		return nil, typ.UUID{}, err
 	}
-	ID, err := uuid.UUIDParse(chi.URLParam(r, "id"))
+	ID, err := typ.UUIDParse(chi.URLParam(r, "id"))
 	if err != nil {
-		return nil, uuid.UUID{}, err
+		return nil, typ.UUID{}, err
 	}
 	return us, ID, nil
 }
 
-func (rw *Response) Access(roles ...typ.Role) bool {
+func (rw *Response) Access(roles ...enum.Role) bool {
 	us, ok := rw.Request.Context().Value(CtxUser).(*User)
 	if !ok {
 		return false

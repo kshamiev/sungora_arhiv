@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// основная общая конфигурация
+// App основная общая конфигурация
 type App struct {
 	Token          string        `json:"token"`          //
 	SessionTimeout time.Duration `yaml:"sessionTimeout"` //
@@ -18,7 +18,7 @@ type App struct {
 	SigningKey     string        `yaml:"signingKey"`     //
 }
 
-// инициализация значениями по умолчанию
+// SetDefault инициализация значениями по умолчанию
 func (cfg *App) SetDefault() {
 	if cfg == nil {
 		cfg = &App{}

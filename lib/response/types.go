@@ -1,8 +1,8 @@
 package response
 
 import (
-	"sungora/lib/uuid"
-	"sungora/src/typ"
+	"sungora/lib/enum"
+	"sungora/lib/typ"
 )
 
 type CtxKey string
@@ -13,9 +13,9 @@ const (
 )
 
 type User struct {
-	ID    uuid.UUID
+	ID    typ.UUID
 	Login string
-	Roles []typ.Role
+	Roles []enum.Role
 }
 
 // interface for responses with an error
