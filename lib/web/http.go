@@ -10,7 +10,6 @@ import (
 	"github.com/go-chi/chi"
 )
 
-// конфигурация HTTP
 type HttpServerConfig struct {
 	Proto          string        `yaml:"proto"`          // Server Proto
 	Host           string        `yaml:"host"`           // Server Host
@@ -22,14 +21,12 @@ type HttpServerConfig struct {
 	MaxHeaderBytes int           `yaml:"maxHeaderBytes"` // Максимальный размер заголовка получаемого от браузера клиента в байтах
 }
 
-// сервер http(s)
 type HttpServer struct {
 	server    *http.Server  // сервер HTTP
 	chControl chan struct{} // управление ожиданием завершения работы сервера
 	lis       net.Listener
 }
 
-// создание и старт вебсервера (HTTP(S))
 func NewServer(cfg *HttpServerConfig, mux http.Handler) (comp *HttpServer, err error) {
 	comp = &HttpServer{
 		server: &http.Server{
@@ -55,7 +52,6 @@ func NewServer(cfg *HttpServerConfig, mux http.Handler) (comp *HttpServer, err e
 	return comp, nil
 }
 
-// завершение работы сервера (HTTP(S))
 func (comp *HttpServer) CloseWait() {
 	if comp.lis == nil {
 		return
@@ -75,7 +71,6 @@ func (comp *HttpServer) CloseWait() {
 	<-comp.chControl
 }
 
-// получение обработчика запросов
 func (comp *HttpServer) GetRoute() *chi.Mux {
 	if _, ok := comp.server.Handler.(*chi.Mux); ok {
 		return comp.server.Handler.(*chi.Mux)

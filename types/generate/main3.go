@@ -24,8 +24,8 @@ import (
 	"strconv"
 	"strings"
 
-	_ "sungora/models/generate/config"
-	"sungora/models/generate/protos"
+	_ "sungora/types/generate/config"
+	"sungora/types/generate/protos"
 )
 
 func main() {

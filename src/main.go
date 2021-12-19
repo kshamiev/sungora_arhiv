@@ -12,7 +12,6 @@ import (
 	"sungora/lib/web"
 	"sungora/lib/worker"
 	"sungora/src/config"
-	"sungora/src/service"
 )
 
 func Main() {
@@ -39,22 +38,11 @@ func Main() {
 	}
 
 	// Server GRPC
-	grpcServer, mux, err := service.NewSampleServer(lg, &cfg.GRPCServer)
-	if err != nil {
-		lg.WithError(err).Fatal("grpc server error")
-	}
-	defer grpcServer.Close()
-	lg.Info("start grpc server: ", grpcServer.Addr)
 
 	// Client GRPC
-	grpcClient, err := service.InitSampleClient(&cfg.GRPCClient)
-	if err != nil {
-		lg.WithError(err).Fatal("new grpc client error")
-	}
-	defer grpcClient.Close()
 
 	// Server Web & Handlers
-	server, err := web.NewServer(&cfg.ServeHTTP, initRoutes(&cfg.App, mux))
+	server, err := web.NewServer(&cfg.ServeHTTP, initRoutes(&cfg.App))
 	if err != nil {
 		lg.WithError(err).Fatal("new web server error")
 	}

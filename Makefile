@@ -67,38 +67,36 @@ mig-up:
 
 # database restore
 dbinit:
-	psql -h "$(PG_HOST)" -p "$(PG_PORT)" -U $(PG_USER) -w -f bin/dump.sql -d $(PG_NAME)
+	psql -h "$(PG_HOST)" -p "$(PG_PORT)" -U $(PG_USER) -w -d $(PG_NAME) -f bin/dump.sql
 .PHONY: dbinit
 
-# database dump
+# database full dump
 dbdump:
-	pg_dump -F p -h $(PG_HOST) -p $(PG_PORT) -U $(PG_USER) -w -f bin/dump.sql -d $(PG_NAME)
+	pg_dump -F p -h $(PG_HOST) -p $(PG_PORT) -U $(PG_USER) -w -d $(PG_NAME) -f bin/dump.sql
 .PHONY: dbdump
 
-# генерация типов по БД
-db:
-	cd $(DIR) && go run cmd/gendb/main.go;
-	cd $(DIR)/src && go fmt ./typ && goimports -w typ;
-.PHONY: db
+# database schema dump
+dbdump-s:
+	@pg_dump -F p -h $(PG_HOST) -p $(PG_PORT) -U $(PG_USER) -s -w -d $(PG_NAME) -f bin/dump.sql
+.PHONY: dbdump-s
 
-# Инженеринг типов proto
-# @cd $(DIR) && protoc --proto_path=pb -I=thirdparty --go_out=plugins=grpc:pb --grpc-gateway_out=logtostderr=true:pb --swagger_out=logtostderr=true,allow_merge=true:pb pb/*.proto
-pb:
-	@cd $(DIR) && protoc --proto_path=pb -I=thirdparty --go_out=plugins=grpc:pb --grpc-gateway_out=logtostderr=true:pb pb/*.proto
-.PHONY: pb
+# database data dump
+dbdump-a:
+	@pg_dump -F p -h $(PG_HOST) -p $(PG_PORT) -U $(PG_USER) -a -w -d $(PG_NAME) -f bin/dump.sql
+.PHONY: dbdump-a
 
 # Инженеринг моделей по существующей структуре БД
 # @protoc -I ./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative models/pbcar/*.proto;
-mdcar:
-	@go run models/generate/main0.go -md mdcar -pb pbcar
-	@sqlboiler -c models/sqlboiler_car.yaml -p mdcar -o models/mdcar --no-auto-timestamps --no-tests --wipe psql
-	@go run models/generate/main1.go -md mdcar -pb pbcar
-	@go run models/generate/main2.go -md mdcar -pb pbcar
+mdsun:
+	@go run types/generate/main0.go -md mdsun -pb pbsun
+	@sqlboiler -c conf/sqlboiler_sun.yaml -p mdsun -o types/mdsun --no-auto-timestamps --no-tests --wipe psql
+	@go run types/generate/main1.go -md mdsun -pb pbsun
+	@go run types/generate/main2.go -md mdsun -pb pbsun
 	@goimports -w .
-	@go run models/generate/main3.go -md mdcar -pb pbcar
-	@protoc -I=thirdparty --proto_path=./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative models/pbcar/*.proto;
+	@go run types/generate/main3.go -md mdsun -pb pbsun
+	@protoc -I=thirdparty --proto_path=./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative types/pbsun/*.proto;
 	@go fmt ./... && goimports -w .
-.PHONY: mdcar
+.PHONY: mdsun
 
 # Help
 h:

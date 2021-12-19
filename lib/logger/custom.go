@@ -19,7 +19,7 @@ func Init(config *Config) Logger {
 	return instance
 }
 
-func Get(ctx context.Context) Logger {
+func Gist(ctx context.Context) Logger {
 	l, ok := ctx.Value(ctxlog{}).(Logger)
 	if ok {
 		return l

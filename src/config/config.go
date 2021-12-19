@@ -1,13 +1,7 @@
 package config
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-	"strings"
-
-	"gopkg.in/yaml.v3"
+	"sungora/lib/app"
 
 	"sungora/lib/logger"
 	"sungora/lib/storage/pgsql"
@@ -36,23 +30,10 @@ func Get() *Config {
 }
 
 func Init(fileConf string, cfg *Config) error {
-	dir, err := os.Getwd()
-	if err != nil {
+	if err := app.LoadConfig(fileConf, cfg); err != nil {
 		return err
 	}
-	for {
-		data, err := ioutil.ReadFile(dir + "/" + fileConf)
-		if err == nil {
-			if err = yaml.Unmarshal(data, cfg); err != nil {
-				return err
-			}
-			cfg.App.SetDefault()
-			config = cfg
-			return nil
-		}
-		if !strings.Contains(dir, "/") {
-			return fmt.Errorf("config '" + fileConf + "' not found")
-		}
-		dir = filepath.Dir(dir)
-	}
+	cfg.App.SetDefault()
+	config = cfg
+	return nil
 }

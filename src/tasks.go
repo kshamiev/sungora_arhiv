@@ -5,7 +5,7 @@ import (
 	"sungora/src/task"
 )
 
-// инициализация фоновых задач
+// initWorkers инициализация фоновых задач
 func initWorkers() {
 	worker.AddStart(task.NewUserOnlineOff())
 }

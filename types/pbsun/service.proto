@@ -1,0 +1,10 @@
+syntax = "proto3";
+package pbsun;
+option go_package = "./;pbsun";
+import "google/protobuf/empty.proto";
+import "types/pbsun/types.proto";
+
+service Pbsun {
+  rpc Ping (google.protobuf.Empty) returns (Test) {
+  }
+}

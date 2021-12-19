@@ -8,14 +8,20 @@ import (
 	"runtime/debug"
 	"sync"
 
-	"contrib.go.opencensus.io/integrations/ocsql"
 	"sungora/lib/logger"
 	"sungora/lib/storage"
 
+	"contrib.go.opencensus.io/integrations/ocsql"
 	// драйвер работы с БД
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
 )
+
+type Storage struct {
+	db  *sqlx.DB
+	pqs map[string]*sqlx.Stmt
+	mu  sync.RWMutex
+}
 
 var instance *Storage
 
@@ -79,7 +85,7 @@ func InitConnect(cfg *Config) error {
 
 var mu sync.RWMutex
 
-func Gist() *Storage {
+func gist() *Storage {
 	if instance == nil {
 		mu.Lock()
 		if instance == nil {
@@ -93,66 +99,47 @@ func Gist() *Storage {
 }
 
 func GistX() *sqlx.DB {
-	return Gist().db
+	return gist().db
 }
 
 func GistDB() *sql.DB {
-	return Gist().db.DB
+	return gist().db.DB
 }
 
-type Storage struct {
-	db  *sqlx.DB
-	pqs map[string]*sqlx.Stmt
-	mu  sync.RWMutex
-}
-
-func (st *Storage) Gist() *sqlx.DB {
+func Query(ctx context.Context) storage.QueryEr {
 	if instance == nil {
-		st.mu.Lock()
+		mu.Lock()
 		if instance == nil {
 			if err := InitConnect(nil); err != nil {
-				return &sqlx.DB{}
-			}
-		}
-		st.mu.Unlock()
-	}
-	return instance.db
-}
-
-func (st *Storage) Query(ctx context.Context) storage.QueryEr {
-	if instance == nil {
-		st.mu.Lock()
-		if instance == nil {
-			if err := InitConnect(nil); err != nil {
-				return &Query{
+				return &query{
 					ctx: ctx,
 				}
 			}
 		}
-		st.mu.Unlock()
+		mu.Unlock()
 	}
-	return &Query{
+	return &query{
 		ctx: ctx,
 		st:  instance,
 	}
 }
 
-func (st *Storage) QueryTx(ctx context.Context, f func(qu storage.QueryTxEr) error) (err error) {
+func QueryTx(ctx context.Context, f func(qu storage.QueryTxEr) error) (err error) {
 	if instance == nil {
-		st.mu.Lock()
+		mu.Lock()
 		if instance == nil {
 			if err := InitConnect(nil); err != nil {
 				return err
 			}
 		}
-		st.mu.Unlock()
+		mu.Unlock()
 	}
 
 	tx, err := instance.db.BeginTxx(ctx, nil)
 	if err != nil {
 		return err
 	}
-	pgQuery := &QueryTx{
+	pgQuery := &queryTx{
 		ctx: ctx,
 		tx:  tx,
 		st:  instance,

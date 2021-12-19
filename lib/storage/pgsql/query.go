@@ -6,16 +6,16 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type Query struct {
+type query struct {
 	ctx context.Context
 	st  *Storage
 }
 
-func (qu *Query) Execute(query string, arg []interface{}) error {
+func (qu *query) Execute(query string, arg []interface{}) error {
 	return qu.Exec(query, arg...)
 }
 
-func (qu *Query) Exec(query string, arg ...interface{}) error {
+func (qu *query) Exec(query string, arg ...interface{}) error {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
 		return err
@@ -24,7 +24,7 @@ func (qu *Query) Exec(query string, arg ...interface{}) error {
 	return err
 }
 
-func (qu *Query) Select(dest interface{}, query string, arg ...interface{}) error {
+func (qu *query) Select(dest interface{}, query string, arg ...interface{}) error {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
 		return err
@@ -32,7 +32,7 @@ func (qu *Query) Select(dest interface{}, query string, arg ...interface{}) erro
 	return stmt.Unsafe().SelectContext(qu.ctx, dest, args...)
 }
 
-func (qu *Query) Get(dest interface{}, query string, arg ...interface{}) error {
+func (qu *query) Get(dest interface{}, query string, arg ...interface{}) error {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
 		return err
@@ -41,7 +41,7 @@ func (qu *Query) Get(dest interface{}, query string, arg ...interface{}) error {
 }
 
 // TODO реализовать паттерн walker
-func (qu *Query) QuerySlice(query string, arg ...interface{}) ([]map[string]interface{}, error) {
+func (qu *query) QuerySlice(query string, arg ...interface{}) ([]map[string]interface{}, error) {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
 		return nil, err
@@ -51,7 +51,7 @@ func (qu *Query) QuerySlice(query string, arg ...interface{}) ([]map[string]inte
 }
 
 // TODO реализовать паттерн walker
-func (qu *Query) QueryMap(query string, arg ...interface{}) (map[string]map[string]interface{}, error) {
+func (qu *query) QueryMap(query string, arg ...interface{}) (map[string]map[string]interface{}, error) {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (qu *Query) QueryMap(query string, arg ...interface{}) (map[string]map[stri
 	return qu.st.queryMap(qu.ctx, stmt, args...)
 }
 
-func (qu *Query) PrepareQuery(query string, arg ...interface{}) (stmt *sqlx.Stmt, args []interface{}, err error) {
+func (qu *query) PrepareQuery(query string, arg ...interface{}) (stmt *sqlx.Stmt, args []interface{}, err error) {
 	if len(arg) > 1 || arg[0] != nil {
 		if query, args, err = sqlIn(query, arg...); err != nil {
 			return
@@ -71,7 +71,7 @@ func (qu *Query) PrepareQuery(query string, arg ...interface{}) (stmt *sqlx.Stmt
 	return stmt, args, nil
 }
 
-func (qu *Query) prepare(query string) (*sqlx.Stmt, error) {
+func (qu *query) prepare(query string) (*sqlx.Stmt, error) {
 	qu.st.mu.RLock()
 	if r, ok := qu.st.pqs[query]; ok {
 		qu.st.mu.RUnlock()

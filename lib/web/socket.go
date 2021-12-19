@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-// интерфейс клиента для взаимодействия с вебсокетом
+// SocketClient интерфейс клиента для взаимодействия с вебсокетом
 type SocketClient interface {
 	// Вызывается единожды в момент подключения нового клиента (заходит на страницу с вебсокетом)
 	HookStartClient(cntClient int) error
@@ -22,13 +22,12 @@ type SocketClient interface {
 
 var mu sync.Mutex
 
-// шина обработчиков вебсокетов по идентификаторам
+// SocketBus шина обработчиков вебсокетов по идентификаторам
 type SocketBus map[string]*SocketHandler
 
-// создание шины для обработчиков
 func NewSocketBus() SocketBus { return make(SocketBus) }
 
-// обработчик клиентов
+// SocketHandler обработчик клиентов
 type SocketHandler struct {
 	broadcast chan interface{}      // канал передачи данных всем клиентам обработчика
 	clients   map[SocketClient]bool // массив всех клиентов обработчика
@@ -120,7 +119,7 @@ func (room *SocketHandler) control() {
 	}
 }
 
-// SendMessage отправка сообщений всем покдлюченным клиентам
+// SendMessage отправка сообщений всем подключенным клиентам
 func (room *SocketHandler) SendMessage(msg interface{}) {
 	if msg != nil {
 		room.broadcast <- msg

@@ -9,7 +9,6 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-// конфигурация GRPC
 type GRPCConfig struct {
 	Host         string `yaml:"host"`          // Host
 	Port         int    `yaml:"port"`          // Port
@@ -20,7 +19,6 @@ type GRPCConfig struct {
 	KeyFile      string `yaml:"keyFile"`       // The TLS key file
 }
 
-// клиент GRPC
 type GRPCClient struct {
 	Conn *grpc.ClientConn
 }
@@ -50,7 +48,6 @@ func (comp *GRPCClient) Close() {
 	_ = comp.Conn.Close()
 }
 
-// сервер GRPC
 type GRPCServer struct {
 	Ser       *grpc.Server  //
 	Addr      string        // адрес сервера grpc

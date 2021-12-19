@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"sungora/lib/app"
+	"sungora/lib/errs"
 	"sungora/lib/storage"
 	"sungora/lib/typ"
 
@@ -15,8 +16,8 @@ import (
 )
 
 type User struct {
-	ID        typ.UUID    `json:"id"`
-	ParentID  typ.UUID    `json:"parent_id"`
+	ID        typ.UUID    `db:"id" json:"id"`
+	ParentID  typ.UUID    `db:"parent_id" json:"parent_id"`
 	CreatedAt time.Time   `db:"created_at" json:"created_at"`
 	FullName  null.String `db:"full_name" json:"full_name"`
 	UserName  string      `db:"user_name" json:"user_name"`
@@ -36,9 +37,8 @@ func TestPG(t *testing.T) {
 	if err := InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)
 	}
-	obj := &PGTest{}
 
-	channelInsertUpdate := testInsertUpdate(t, obj)
+	channelInsertUpdate := testInsertUpdate(t)
 
 	var flag = 1
 	for 0 < flag {
@@ -49,7 +49,7 @@ func TestPG(t *testing.T) {
 	}
 }
 
-func testInsertUpdate(t *testing.T, pgStorage storage.Face) chan bool {
+func testInsertUpdate(t *testing.T) chan bool {
 	var channelExit = make(chan bool)
 
 	go func() {
@@ -58,7 +58,7 @@ func testInsertUpdate(t *testing.T, pgStorage storage.Face) chan bool {
 			wg.Add(1)
 			go func() {
 				for j := 0; j < cntIteration; j++ {
-					if err := pgStorage.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
+					if err := QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
 						// INSERT
 						id := typ.UUIDNew()
 						arg := []interface{}{
@@ -68,7 +68,7 @@ func testInsertUpdate(t *testing.T, pgStorage storage.Face) chan bool {
 						}
 						err := qu.Exec(SQL_USER_INSERT, arg...)
 						if err != nil {
-							return err
+							return errs.NewBadRequest(err)
 						}
 						// UPDATE
 						arg = []interface{}{
@@ -78,7 +78,7 @@ func testInsertUpdate(t *testing.T, pgStorage storage.Face) chan bool {
 						}
 						err = qu.Exec(SQL_USER_UPDATE, arg...)
 						if err != nil {
-							return err
+							return errs.NewBadRequest(err)
 						}
 						// UPSERT
 						id = typ.UUIDNew()
@@ -88,7 +88,7 @@ func testInsertUpdate(t *testing.T, pgStorage storage.Face) chan bool {
 							app.GenString(16),
 						}
 						if err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
-							return err
+							return errs.NewBadRequest(err)
 						}
 						arg = []interface{}{
 							id,
@@ -96,7 +96,7 @@ func testInsertUpdate(t *testing.T, pgStorage storage.Face) chan bool {
 							app.GenString(16),
 						}
 						if err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
-							return err
+							return errs.NewBadRequest(err)
 						}
 						return nil
 					}); err != nil {
@@ -116,31 +116,39 @@ func testInsertUpdate(t *testing.T, pgStorage storage.Face) chan bool {
 }
 
 func TestPGQuery(t *testing.T) {
-	obj := &PGTest{}
+	var cfg = struct {
+		Postgresql Config `json:"postgresql"`
+	}{}
+	if err := app.LoadConfig("conf/config.yaml", &cfg); err != nil {
+		t.Fatal(err)
+	}
+	if err := InitConnect(&cfg.Postgresql); err != nil {
+		t.Fatal(err)
+	}
 
 	// GET Object SLICE
 	var resList []User
-	if err := obj.Query(context.TODO()).Select(&resList, SQL_USER, "testLogin"); err != nil {
+	if err := Query(context.TODO()).Select(&resList, SQL_USER, "testLogin"); err != nil {
 		t.Fatal(err)
 	}
 	t.Log(len(resList))
 
 	// GET Object ONE
 	var res User
-	if err := obj.Query(context.TODO()).Get(&res, SQL_USER, "testLogin"); err != nil && err != sql.ErrNoRows {
+	if err := Query(context.TODO()).Get(&res, SQL_USER, "testLogin"); err != nil && err != sql.ErrNoRows {
 		t.Fatal(err)
 	}
 	t.Log(res.ID.String())
 
 	// GET SLICE
-	resSlice, err := obj.Query(context.TODO()).QuerySlice(SQL_USER, "testLogin")
+	resSlice, err := Query(context.TODO()).QuerySlice(SQL_USER, "testLogin")
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Log(len(resSlice))
 
 	// GET MAP
-	resMap, err := obj.Query(context.TODO()).QueryMap(SQL_USER, "testLogin")
+	resMap, err := Query(context.TODO()).QueryMap(SQL_USER, "testLogin")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -148,7 +156,7 @@ func TestPGQuery(t *testing.T) {
 
 	// //// Exec
 
-	if err := obj.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
+	if err := QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
 
 		// INSERT
 		id := typ.UUIDNew()

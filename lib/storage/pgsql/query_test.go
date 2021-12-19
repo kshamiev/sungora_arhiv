@@ -35,10 +35,6 @@ var pgQueries = []string{
 	SQL_USER_UPSERT,
 }
 
-type PGTest struct {
-	Storage
-}
-
 func TestQuery(t *testing.T) {
 	var cfg = struct {
 		Postgresql Config `json:"postgresql"`
@@ -49,10 +45,9 @@ func TestQuery(t *testing.T) {
 	if err := InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)
 	}
-	obj := &PGTest{}
 
 	for i := range pgQueries {
-		if _, _, err := obj.Query(context.Background()).PrepareQuery(pgQueries[i], nil); err != nil {
+		if _, _, err := Query(context.Background()).PrepareQuery(pgQueries[i], nil); err != nil {
 			t.Log(pgQueries[i])
 			t.Fatal(err)
 		}

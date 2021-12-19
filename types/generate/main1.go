@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"sungora/models/generate/protos"
+	"sungora/types/generate/protos"
 )
 
 func main() {

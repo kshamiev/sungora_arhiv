@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"sungora/models/generate/protos"
+	"sungora/types/generate/protos"
 )
 
 func main() {
