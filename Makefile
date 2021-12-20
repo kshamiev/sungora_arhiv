@@ -14,17 +14,17 @@ swag:
 
 # FMT & GOIMPORT
 fmt:
-	@cd $(DIR)/src && go fmt ./... && goimports -w .
+	go fmt ./... && goimports -w .
 .PHONY: fmt
 
 # Linters
 lint:
-	@cd $(DIR)/src && golangci-lint run
+	golangci-lint run -c .golangci.yml
 .PHONY: lint
 
 # Test
 test:
-	export CONF="$(DIR)/conf/config.yaml" && go test ./...
+	go test ./...
 .PHONY: test
 
 # Сборка
@@ -38,7 +38,7 @@ run: com
 .PHONY: run
 
 # Запуск в режиме отладки
-dev: fmt lint test com
+dev: swag fmt lint test com
 	$(DIR)/bin/app -c conf/config.yaml;
 .PHONY: dev
 
@@ -49,27 +49,27 @@ mig:
 
 # Статус миграции
 mig-st:
-	gsmigrate --dir=${PG_DIR} --drv="postgres" --dsn=${PG_DSN} status;
+	@gsmigrate --dir=${PG_DIR} --drv="postgres" --dsn=${PG_DSN} status;
 .PHONY: mig-st
 
 # Миграция на одну позицию вниз
 mig-down:
-	gsmigrate --dir=${PG_DIR} --drv="postgres" --dsn=${PG_DSN} down;
+	@gsmigrate --dir=${PG_DIR} --drv="postgres" --dsn=${PG_DSN} down;
 .PHONY: mig-down
 
 # Миграция вверх до конца
 mig-up:
-	gsmigrate --dir=${PG_DIR} --drv="postgres" --dsn=${PG_DSN} up;
+	@gsmigrate --dir=${PG_DIR} --drv="postgres" --dsn=${PG_DSN} up;
 .PHONY: mig-up
 
 # database restore
 dbinit:
-	psql -h "$(PG_HOST)" -p "$(PG_PORT)" -U $(PG_USER) -w -d $(PG_NAME) -f bin/dump.sql
+	@psql -h "$(PG_HOST)" -p "$(PG_PORT)" -U $(PG_USER) -w -d $(PG_NAME) -f bin/dump.sql
 .PHONY: dbinit
 
 # database full dump
 dbdump:
-	pg_dump -F p -h $(PG_HOST) -p $(PG_PORT) -U $(PG_USER) -w -d $(PG_NAME) -f bin/dump.sql
+	@pg_dump -F p -h $(PG_HOST) -p $(PG_PORT) -U $(PG_USER) -w -d $(PG_NAME) -f bin/dump.sql
 .PHONY: dbdump
 
 # database schema dump
@@ -83,7 +83,6 @@ dbdump-a:
 .PHONY: dbdump-a
 
 # Инженеринг моделей по существующей структуре БД
-# @protoc -I ./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative models/pbcar/*.proto;
 mdsun:
 	@go run types/generate/main0.go -md mdsun -pb pbsun
 	@sqlboiler -c conf/sqlboiler_sun.yaml -p mdsun -o types/mdsun --no-auto-timestamps --no-tests --wipe psql
@@ -107,12 +106,11 @@ h:
 	@echo "    dev			- Запуск в режиме отладки"
 	@echo "    mig			- Создание шаблона миграции"
 	@echo "    mig-st		- Статус миграции"
-	@echo "    mig-down		- Миграция на одну позицию вниз"
+	@echo "    mig-dn		- Миграция на одну позицию вниз"
 	@echo "    mig-up		- Миграция вверх до конца"
 	@echo "    dbinit		- Восстановление БД из дампа bin/dump.sql (БД должна существовать)"
 	@echo "    dbdump		- Создание дампа БД bin/dump.sql"
-	@echo "    db:			- Инженеринг типов по БД"
-	@echo "    pb			- Инженеринг GRPC"
+	@echo "    mdsun:		- Инженеринг типов по БД и работа с GRPC"
 
 .PHONY: h
 help: h

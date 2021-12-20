@@ -133,8 +133,8 @@ func (st *Storage) QueryTx(ctx context.Context, f func(qu storage.QueryTxEr) err
 	if instance == nil {
 		st.mu.Lock()
 		if instance == nil {
-			if err := InitConnect(nil); err != nil {
-				return err
+			if err = InitConnect(nil); err != nil {
+				return
 			}
 		}
 		st.mu.Unlock()
@@ -167,8 +167,8 @@ func (st *Storage) QueryTx(ctx context.Context, f func(qu storage.QueryTxEr) err
 		}
 	}()
 
-	if e := f(pgQuery); e != nil {
-		return e
+	if err := f(pgQuery); err != nil {
+		return err
 	}
 
 	commit = true

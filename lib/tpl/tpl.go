@@ -18,7 +18,7 @@ func Init(dir string) {
 		if info.IsDir() || filepath.Ext(path) != ".html" {
 			return nil
 		}
-		if err = parseFiles(dir, path); err != nil {
+		if err := parseFiles(dir, path); err != nil {
 			return err
 		}
 		return nil

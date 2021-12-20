@@ -27,38 +27,29 @@ type scheduler struct {
 }
 
 var instance *scheduler
-
-// инициализация планировщика задач
-func Init() {
-	instance = &scheduler{
-		pullWork: make(map[string]chan bool),
-	}
-}
-
 var mu sync.RWMutex
 
-func get() *scheduler {
+func Init() {
 	if instance == nil {
 		mu.Lock()
 		if instance == nil {
-			Init()
+			instance = &scheduler{
+				pullWork: make(map[string]chan bool),
+			}
 		}
 		mu.Unlock()
 	}
-	return instance
 }
 
 // //// control method
 
-// добавить в scheduler задачу по расписанию
+// Add добавить в scheduler задачу по расписанию
 func Add(w Task) {
-	get()
 	instance.pull = append(instance.pull, w)
 }
 
-// включить конкретную задачу по расписанию
+// Start включить конкретную задачу по расписанию
 func Start(name string) {
-	get()
 	if _, ok := instance.pullWork[name]; ok {
 		return
 	}
@@ -71,16 +62,13 @@ func Start(name string) {
 	}
 }
 
-// see Add & Start
 func AddStart(w Task) {
-	get()
 	Add(w)
 	Start(w.Name())
 }
 
-// запустить задачу на выполенине
+// Run запустить задачу на выполенине
 func Run(w Task) {
-	get()
 	instance.wg.Add(1)
 	go func() {
 		action(w)
@@ -88,9 +76,7 @@ func Run(w Task) {
 	}()
 }
 
-// остановить конкретную задачу по расписанию
 func Stop(name string) {
-	get()
 	if _, ok := instance.pullWork[name]; !ok {
 		return
 	}
@@ -99,9 +85,7 @@ func Stop(name string) {
 	delete(instance.pullWork, name)
 }
 
-// остановить все выполняющиеся задачи
 func CloseWait() {
-	get()
 	for k := range instance.pullWork {
 		instance.pullWork[k] <- true
 	}
@@ -114,9 +98,7 @@ func CloseWait() {
 
 // //// support method
 
-// Получение всех задач
 func GetTasks() map[string]Task {
-	get()
 	res := make(map[string]Task)
 	for i := range instance.pull {
 		res[instance.pull[i].Name()] = instance.pull[i]
@@ -124,7 +106,6 @@ func GetTasks() map[string]Task {
 	return res
 }
 
-// планировщик выполенния задачи
 func runScheduler(task Task, ch chan bool) {
 	for {
 		waitFor := task.WaitFor()

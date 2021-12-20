@@ -61,5 +61,7 @@ run:
     - doc
     - migration
     - template
+    - thirdparty
+    - types
     - www
   timeout: 5m

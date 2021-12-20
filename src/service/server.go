@@ -14,7 +14,6 @@ type SunServer struct {
 }
 
 func (s SunServer) Ping(ctx context.Context, empty *emptypb.Empty) (*pbsun.Test, error) {
-
 	fmt.Println("SunServer.Ping")
 
 	return &pbsun.Test{

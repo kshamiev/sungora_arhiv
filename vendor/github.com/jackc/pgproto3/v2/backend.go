@@ -30,11 +30,10 @@ type Backend struct {
 	sync           Sync
 	terminate      Terminate
 
-	bodyLen      int
-	msgType      byte
-	partialMsg   bool
-	authType     uint32
-	
+	bodyLen    int
+	msgType    byte
+	partialMsg bool
+	authType   uint32
 }
 
 const (
