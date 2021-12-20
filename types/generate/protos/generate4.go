@@ -56,16 +56,16 @@ func Generate4(dir string, md string, pb string) {
 		log.Fatal(err)
 	}
 	// вспомогательные функции реализующие уникальную обработку свойств для определяемых рабочих типов
-	d, err := ioutil.ReadFile(dir + "/generate/protof.go")
+	d, err := ioutil.ReadFile(dir + "/generate/data/protof.go")
 	if err != nil {
 		log.Fatal(err)
 	}
-	d = []byte(strings.ReplaceAll(string(d), "package protos", "package "+md))
+	d = []byte(strings.ReplaceAll(string(d), "package data", "package "+md))
 	if err := ioutil.WriteFile(dir+"/"+md+"/protof.go", d, 0600); err != nil {
 		log.Fatal(err)
 	}
 	//
-	_ = os.Remove(dir + "/generate/config/config_work.go")
+	_ = os.Remove(dir + "/generate/protos/config_work.go")
 }
 
 // //// TYPE
