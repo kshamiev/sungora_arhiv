@@ -5,20 +5,19 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"sungora/lib/errs"
+	"sungora/lib/logger"
+	"sungora/lib/response"
 	"sungora/lib/storage/pgsql"
+	"sungora/lib/typ"
+	"sungora/lib/web"
+	"sungora/src/client"
+	"sungora/src/config"
+	"sungora/src/model"
 
 	"github.com/go-chi/chi"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/gorilla/websocket"
-
-	"sungora/lib/errs"
-	"sungora/lib/logger"
-	"sungora/lib/response"
-	"sungora/lib/typ"
-	"sungora/lib/web"
-	"sungora/src/config"
-	"sungora/src/model"
-	"sungora/src/service"
 )
 
 type General struct {
@@ -67,7 +66,7 @@ func (c *General) Test(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cli := service.Gist()
+	cli := client.GistSunGRPC()
 	if _, err := cli.Ping(r.Context(), &empty.Empty{}); err != nil {
 		rw.JSONError(err)
 		return
@@ -113,11 +112,11 @@ func (c *General) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	// создаем  и запускаем клиента
-	client := &chatWS{
+	cli := &chatWS{
 		Ws:  ws,
 		Ctx: r.Context(),
 	}
-	c.WsBus.StartClient(chi.URLParam(r, "id"), client)
+	c.WsBus.StartClient(chi.URLParam(r, "id"), cli)
 }
 
 // chatWS пример обработчика клиента

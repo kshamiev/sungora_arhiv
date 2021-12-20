@@ -12,6 +12,7 @@ import (
 	"sungora/lib/storage/pgsql"
 	"sungora/lib/web"
 	"sungora/lib/worker"
+	"sungora/src/client"
 	"sungora/src/config"
 	"sungora/src/service"
 	"sungora/types/pbsun"
@@ -51,7 +52,7 @@ func Main() {
 
 	// Client GRPC
 	var grpcClient *web.GRPCClient
-	if grpcClient, err = service.InitSunClient(&cfg.GRPCClient); err != nil {
+	if grpcClient, err = client.InitSunClient(&cfg.GRPCClient); err != nil {
 		lg.Fatal(err)
 	}
 	defer grpcClient.Close()

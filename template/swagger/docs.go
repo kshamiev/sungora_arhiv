@@ -173,10 +173,6 @@ var doc = `{
         {
             "description": "Общие запросы",
             "name": "General"
-        },
-        {
-            "description": "grpc gateway sample",
-            "name": "GRPC"
         }
     ]
 }`

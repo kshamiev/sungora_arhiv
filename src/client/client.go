@@ -1,4 +1,4 @@
-package service
+package client
 
 import (
 	"sungora/lib/errs"
@@ -17,6 +17,6 @@ func InitSunClient(cfg *web.GRPCConfig) (*web.GRPCClient, error) {
 	return grpcClient, nil
 }
 
-func Gist() pbsun.SunClient {
+func GistSunGRPC() pbsun.SunClient {
 	return sunClient
 }
