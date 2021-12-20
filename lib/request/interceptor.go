@@ -20,18 +20,18 @@ func LoggerInterceptor() grpc.UnaryServerInterceptor {
 			if md.Get(string(response.CtxToken)) != nil {
 				ctx = context.WithValue(ctx, response.CtxToken, md.Get(string(response.CtxToken))[0])
 			}
-			if md.Get(logger.LogTraceID) != nil {
-				lg := logger.Gist(ctx).WithField(logger.LogTraceID, md.Get(logger.LogTraceID)[0])
+			if md.Get(response.LogTraceID) != nil {
+				lg := logger.Gist(ctx).WithField(response.LogTraceID, md.Get(response.LogTraceID)[0])
 				ctx = logger.WithLogger(ctx, lg)
 				ctx = boil.WithDebugWriter(ctx, lg.Writer())
-				ctx = context.WithValue(ctx, logger.CtxTraceID, md.Get(logger.LogTraceID)[0])
+				ctx = context.WithValue(ctx, response.CtxTraceID, md.Get(response.LogTraceID)[0])
 			}
 		} else {
 			requestID := uuid.New().String()
-			lg := logger.Gist(ctx).WithField(logger.LogTraceID, requestID)
+			lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
 			ctx = logger.WithLogger(ctx, lg)
 			ctx = boil.WithDebugWriter(ctx, lg.Writer())
-			ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
+			ctx = context.WithValue(ctx, response.CtxTraceID, requestID)
 		}
 		return handler(ctx, req)
 	}

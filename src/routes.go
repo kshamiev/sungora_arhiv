@@ -8,8 +8,6 @@ import (
 	"github.com/go-chi/chi/middleware"
 	httpSwagger "github.com/swaggo/http-swagger"
 
-	"sungora/lib/logger"
-	"sungora/lib/observability"
 	"sungora/lib/request"
 	"sungora/src/config"
 	"sungora/src/handler"
@@ -23,8 +21,8 @@ func initRoutes(cfg *config.App) *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(mid.Cors().Handler)
 	router.Use(middleware.Recoverer)
-	router.Use(logger.Middleware())
-	router.Use(observability.MiddlewareChi())
+	router.Use(mid.Logger())
+	router.Use(mid.Observation())
 
 	// static
 	router.Handle("/template/*", http.FileServer(http.Dir(cfg.DirWork)))

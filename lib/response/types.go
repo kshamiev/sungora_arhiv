@@ -8,8 +8,11 @@ import (
 type CtxKey string
 
 const (
-	CtxUser  CtxKey = "user"
-	CtxToken CtxKey = "token"
+	LogTraceID = "trace-id"
+
+	CtxUser    CtxKey = "user"
+	CtxToken   CtxKey = "token"
+	CtxTraceID CtxKey = "trace-id"
 )
 
 type User struct {

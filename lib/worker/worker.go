@@ -123,14 +123,14 @@ func runScheduler(task Task, ch chan bool) {
 func action(task Task) {
 	requestID := uuid.New().String()
 	ctx := context.Background()
-	lg := logger.Gist(ctx).WithField(logger.LogTraceID, requestID)
+	lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
 
-	ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
+	ctx = context.WithValue(ctx, response.CtxTraceID, requestID)
 	ctx = logger.WithLogger(ctx, lg)
 	ctx = boil.WithDebugWriter(ctx, lg.Writer())
 
 	m := make(map[string]string)
-	m[logger.LogTraceID] = requestID
+	m[response.LogTraceID] = requestID
 	ctx = metadata.NewOutgoingContext(ctx, metadata.New(m))
 
 	defer func() {

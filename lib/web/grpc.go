@@ -66,8 +66,10 @@ func NewGRPCServer(cfg *GRPCConfig, opts ...grpc.ServerOption) (*GRPCServer, err
 		}
 		opts = append(opts, grpc.Creds(creds))
 	}
-	opts = append(opts, grpc.StatsHandler(new(ocgrpc.ServerHandler)))
-	opts = append(opts, grpc.ChainUnaryInterceptor(request.LoggerInterceptor()))
+	opts = append(opts,
+		grpc.StatsHandler(new(ocgrpc.ServerHandler)),
+		grpc.ChainUnaryInterceptor(request.LoggerInterceptor()),
+	)
 
 	comp := &GRPCServer{
 		Ser:       grpc.NewServer(opts...),

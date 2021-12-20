@@ -1,17 +1,10 @@
 package observability
 
 import (
-	"net/http"
-	"path"
-
-	"sungora/lib/logger"
-
-	"github.com/go-chi/chi"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/tag"
-	"go.opencensus.io/trace"
 	"google.golang.org/grpc"
 )
 
@@ -63,40 +56,6 @@ var AllHTTPViews = []*view.View{
 	ClientCompletedCount,
 	ServerRequestCountView,
 	ServerLatencyView,
-}
-
-func MiddlewareChi() func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return &ochttp.Handler{
-			Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-				ctx := req.Context()
-				// trick to calculate real route pattern for subrouters
-				rctx := chi.RouteContext(ctx)
-				nc := chi.Context{}
-				rctx.Routes.Match(&nc, req.Method, req.RequestURI)
-
-				span := trace.FromContext(ctx)
-				span.AddAttributes(trace.StringAttribute(ochttp.PathAttribute, path.Join(nc.RoutePatterns...)))
-
-				w.Header().Add(logger.LogTraceID, span.SpanContext().TraceID.String())
-
-				ochttp.SetRoute(ctx, path.Join(nc.RoutePatterns...))
-				next.ServeHTTP(w, req.WithContext(ctx))
-			}),
-			FormatSpanName: func(req *http.Request) string {
-				rctx := chi.RouteContext(req.Context())
-				nc := chi.Context{}
-				if rctx.Routes != nil {
-					rctx.Routes.Match(&nc, req.Method, req.RequestURI)
-				}
-				if rctx == nil {
-					return ""
-				}
-				return path.Join(nc.RoutePatterns...)
-			},
-			Propagation: NewHTTPFormat(),
-		}
-	}
 }
 
 func TelemetryInterceptor() grpc.ServerOption {

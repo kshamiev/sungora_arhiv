@@ -112,14 +112,14 @@ func (rw *Response) JSONError(err error) {
 			rw.lg.Trace(t)
 		}
 		response := &Data{
-			Code:    rw.Request.Context().Value(logger.CtxTraceID).(string),
+			Code:    rw.Request.Context().Value(CtxTraceID).(string),
 			Message: e.Response(),
 		}
 		rw.JSON(response, e.HTTPCode())
 	} else {
 		rw.lg.Error(err.Error())
 		response := &Data{
-			Code:    rw.Request.Context().Value(logger.CtxTraceID).(string),
+			Code:    rw.Request.Context().Value(CtxTraceID).(string),
 			Message: err.Error(),
 		}
 		rw.JSON(response, http.StatusBadRequest)
