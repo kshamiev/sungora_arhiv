@@ -1,7 +1,6 @@
 package src
 
 import (
-	"context"
 	"net/http"
 	"net/http/pprof"
 
@@ -24,7 +23,7 @@ func initRoutes(cfg *config.App) *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(mid.Cors().Handler)
 	router.Use(middleware.Recoverer)
-	router.Use(logger.Middleware(logger.Gist(context.Background())))
+	router.Use(logger.Middleware())
 	router.Use(observability.MiddlewareChi())
 
 	// static

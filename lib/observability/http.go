@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"path"
 
+	"sungora/lib/logger"
+
 	"github.com/go-chi/chi"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/plugin/ochttp"
@@ -11,9 +13,6 @@ import (
 	"go.opencensus.io/tag"
 	"go.opencensus.io/trace"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
-
-	"sungora/lib/logger"
 )
 
 var (
@@ -78,16 +77,6 @@ func MiddlewareChi() func(next http.Handler) http.Handler {
 
 				span := trace.FromContext(ctx)
 				span.AddAttributes(trace.StringAttribute(ochttp.PathAttribute, path.Join(nc.RoutePatterns...)))
-
-				if md, ok := metadata.FromOutgoingContext(ctx); ok {
-					md.Set(logger.LogTraceID, span.SpanContext().TraceID.String())
-					ctx = metadata.NewOutgoingContext(ctx, md)
-				} else {
-					ctx = metadata.AppendToOutgoingContext(ctx, logger.LogTraceID, span.SpanContext().TraceID.String())
-				}
-
-				log := logger.GetLogger(ctx).WithField(logger.LogTraceID, span.SpanContext().TraceID.String())
-				ctx = logger.WithLogger(ctx, log)
 
 				w.Header().Add(logger.LogTraceID, span.SpanContext().TraceID.String())
 

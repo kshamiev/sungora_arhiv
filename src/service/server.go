@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"sungora/lib/app"
+	"sungora/lib/logger"
 	"sungora/types/pbsun"
 
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -18,7 +18,10 @@ func (ser SunServer) Ping(ctx context.Context, empty *emptypb.Empty) (*pbsun.Tes
 	s := app.NewSpan(ctx)
 	s.StringAttribute("description", "qwerty qwerty qwerty")
 	defer s.End()
-	fmt.Println("SunServer.Ping")
+	lg := logger.Gist(ctx)
+	trid := ctx.Value(logger.CtxTraceID).(string)
+	lg.Info("SunServer.Ping: " + trid)
+	lg.Info(s.Span.SpanContext().TraceID.String())
 	return &pbsun.Test{
 		Text: "Funtik",
 	}, nil

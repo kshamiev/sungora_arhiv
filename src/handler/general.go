@@ -66,6 +66,9 @@ func (c *General) Test(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	lg := logger.GetLogger(r.Context())
+	lg.Info("General.Test")
+
 	cli := client.GistSunGRPC()
 	if _, err := cli.Ping(r.Context(), &empty.Empty{}); err != nil {
 		rw.JSONError(err)

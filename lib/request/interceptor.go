@@ -2,9 +2,9 @@ package request
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
@@ -12,7 +12,7 @@ import (
 	"sungora/lib/response"
 )
 
-func LoggerInterceptor(lg logger.Logger) grpc.UnaryServerInterceptor {
+func LoggerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (
 		resp interface{}, err error) {
 		//
@@ -21,21 +21,18 @@ func LoggerInterceptor(lg logger.Logger) grpc.UnaryServerInterceptor {
 				ctx = context.WithValue(ctx, response.CtxToken, md.Get(string(response.CtxToken))[0])
 			}
 			if md.Get(logger.LogTraceID) != nil {
+				lg := logger.Gist(ctx).WithField(logger.LogTraceID, md.Get(logger.LogTraceID)[0])
+				ctx = logger.WithLogger(ctx, lg)
+				ctx = boil.WithDebugWriter(ctx, lg.Writer())
 				ctx = context.WithValue(ctx, logger.CtxTraceID, md.Get(logger.LogTraceID)[0])
-				ctx = logger.WithLogger(ctx, lg.WithFields(map[string]interface{}{
-					logger.LogTraceID: md.Get(logger.LogTraceID)[0],
-				}))
 			}
 		} else {
 			requestID := uuid.New().String()
+			lg := logger.Gist(ctx).WithField(logger.LogTraceID, requestID)
+			ctx = logger.WithLogger(ctx, lg)
+			ctx = boil.WithDebugWriter(ctx, lg.Writer())
 			ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
-			ctx = logger.WithLogger(ctx, lg.WithFields(map[string]interface{}{
-				logger.LogTraceID: requestID,
-			}))
 		}
-
-		fmt.Println("LoggerInterceptor")
-
 		return handler(ctx, req)
 	}
 }

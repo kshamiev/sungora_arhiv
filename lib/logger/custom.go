@@ -2,7 +2,6 @@ package logger
 
 import (
 	"context"
-	"sync"
 
 	"contrib.go.opencensus.io/exporter/jaeger"
 	"go.opencensus.io/plugin/ocgrpc"
@@ -11,35 +10,13 @@ import (
 	"go.opencensus.io/trace"
 )
 
-var instance Logger
-var mu sync.RWMutex
-
 func Init(config *Config) Logger {
-	instance = newLogrusWrapper(config)
-	return instance
+	DefaultLogger = newLogrusWrapper(config)
+	return DefaultLogger
 }
 
 func Gist(ctx context.Context) Logger {
-	l, ok := ctx.Value(ctxlog{}).(Logger)
-	if ok {
-		return l
-	}
-	if instance == nil {
-		mu.Lock()
-		if instance == nil {
-			Init(&Config{
-				Title:        "Default",
-				Output:       "stdout",
-				AuditOutput:  "stdout",
-				Formatter:    "json",
-				ReportCaller: false,
-				Level:        TraceLevel,
-				Hooks:        Hooks{},
-			})
-		}
-		mu.Unlock()
-	}
-	return instance
+	return GetLogger(ctx)
 }
 
 // ////
