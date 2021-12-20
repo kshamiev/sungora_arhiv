@@ -13,7 +13,8 @@
 // + срезы ссылок на другие типы в этом же пакете (typs)
 // + имеет спецификацию работы с типами используемыми в библиотеке boiler
 // (null.JSON, null.Bytes, null.String, null.Time, types.StringArray)
-package main
+
+package protos
 
 import (
 	"fmt"
@@ -23,24 +24,19 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-
-	_ "sungora/types/generate/config"
-	"sungora/types/generate/protos"
 )
 
-func main() {
-	dir, md, pb := protos.Init()
-
+func Generate4(dir string, md string, pb string) {
 	var err error
 	var tplSFull, tplPFull, tplMFull, tplP, tplM string
 	gen := Generate{
 		controlType: map[string]bool{},
 	}
 
-	tplSFull = protos.CreateProtoServiceFile(dir, pb)
-	tplPFull = protos.CreateProtoMessageFile(dir, pb)
-	tplMFull = protos.CreateMethodTypeFile(md)
-	for _, t := range protos.GenerateConfig[md] {
+	tplSFull = CreateProtoServiceFile(dir, pb)
+	tplPFull = CreateProtoMessageFile(dir, pb)
+	tplMFull = CreateMethodTypeFile(md)
+	for _, t := range GenerateConfig[md] {
 		if tplP, tplM, err = gen.ParseType(t, md, pb); err != nil {
 			log.Fatal(err)
 		}
@@ -56,16 +52,16 @@ func main() {
 		log.Fatal(err)
 	}
 	// golang методы конвертации
-	if err = ioutil.WriteFile(dir+"/"+md+"/proto_method.go", []byte(tplMFull), 0600); err != nil {
+	if err = ioutil.WriteFile(dir+"/"+md+"/protom.go", []byte(tplMFull), 0600); err != nil {
 		log.Fatal(err)
 	}
 	// вспомогательные функции реализующие уникальную обработку свойств для определяемых рабочих типов
-	d, err := ioutil.ReadFile(dir + "/generate/protos/proto_func.go")
+	d, err := ioutil.ReadFile(dir + "/generate/protof.go")
 	if err != nil {
 		log.Fatal(err)
 	}
 	d = []byte(strings.ReplaceAll(string(d), "package protos", "package "+md))
-	if err := ioutil.WriteFile(dir+"/"+md+"/proto_func.go", d, 0600); err != nil {
+	if err := ioutil.WriteFile(dir+"/"+md+"/protof.go", d, 0600); err != nil {
 		log.Fatal(err)
 	}
 	//
@@ -96,12 +92,12 @@ func (gen *Generate) ParseType(object interface{}, pkgType, pkgProto string) (tp
 	tplP = "\nmessage " + list[1] + " {\n"
 
 	// one object proto to type
-	tplMFrom := "\nfunc New" + list[1] + protos.SuffixFromProto + "(proto *" + pkgProto + "." + list[1] + ") *" + list[1] + " {\n"
+	tplMFrom := "\nfunc New" + list[1] + FromProto + "(proto *" + pkgProto + "." + list[1] + ") *" + list[1] + " {\n"
 	tplMFrom += "\tif proto == nil { return nil }\n"
 	tplMFrom += "\treturn &" + list[1] + "{\n"
 
 	// one object type to proto
-	tplMTo := "\nfunc New" + list[1] + protos.SuffixToProto + "(tt *" + list[1] + ") *" + pkgProto + "." + list[1] + " {\n"
+	tplMTo := "\nfunc New" + list[1] + ToProto + "(tt *" + list[1] + ") *" + pkgProto + "." + list[1] + " {\n"
 	tplMTo += "\tif tt == nil { return nil }\n"
 	tplMTo += "\treturn &" + pkgProto + "." + list[1] + "{\n"
 
@@ -118,7 +114,7 @@ func (gen *Generate) ParseType(object interface{}, pkgType, pkgProto string) (tp
 		tplMTo += tplMTo_
 	}
 	tplP += "}\n"
-	tplP += "\nmessage " + list[1] + protos.SuffixSlice + " {\n\trepeated " + list[1] + " slice = 1;\n}\n"
+	tplP += "\nmessage " + list[1] + SuffixSlice + " {\n\trepeated " + list[1] + " slice = 1;\n}\n"
 
 	// slice proto to type
 	tplMFrom += "\t}\n}\n\n" + gen.GenerateFuncSliceProtoType(list[1], pkgProto)
@@ -131,19 +127,19 @@ func (gen *Generate) ParseType(object interface{}, pkgType, pkgProto string) (tp
 
 // GenerateFuncSliceTypeProto генерация метода конвертации среза типа в срез его прототипа
 func (gen *Generate) GenerateFuncSliceTypeProto(typ string, pkgProto string) (s string) {
-	s += fmt.Sprintf("func New%s%s"+protos.SuffixToProto+" (tt []*%s) []*%s.%s {", typ, protos.SuffixSlice, typ, pkgProto, typ)
+	s += fmt.Sprintf("func New%s%s"+ToProto+" (tt []*%s) []*%s.%s {", typ, SuffixSlice, typ, pkgProto, typ)
 	s += fmt.Sprintf("\n\tres := make([]*%s.%s, len(tt))", pkgProto, typ)
 	s += "\n\tfor i := range tt {"
-	s += fmt.Sprintf("\n\t\tres[i] = New%s"+protos.SuffixToProto+"(tt[i])", typ)
+	s += fmt.Sprintf("\n\t\tres[i] = New%s"+ToProto+"(tt[i])", typ)
 	return s + "\n\t}\n\treturn res\n}\n"
 }
 
 // GenerateFuncSliceProtoType генерация метода конвертации среза прототипа в соответсвующий ему срез типа
 func (gen *Generate) GenerateFuncSliceProtoType(typ string, pkgProto string) (s string) {
-	s += fmt.Sprintf("func New%s%s"+protos.SuffixFromProto+"(list []*%s.%s) []*%s {", typ, protos.SuffixSlice, pkgProto, typ, typ)
+	s += fmt.Sprintf("func New%s%s"+FromProto+"(list []*%s.%s) []*%s {", typ, SuffixSlice, pkgProto, typ, typ)
 	s += fmt.Sprintf("\n\tres := make([]*%s, len(list))", typ)
 	s += "\n\tfor i := range list {"
-	s += fmt.Sprintf("\n\t\tres[i] = New%s"+protos.SuffixFromProto+"(list[i])", typ)
+	s += fmt.Sprintf("\n\t\tres[i] = New%s"+FromProto+"(list[i])", typ)
 	return s + "\n\t}\n\treturn res\n}\n"
 }
 
@@ -169,72 +165,72 @@ func (gen *Generate) ParseField(objValue reflect.Value, i int, pkgType string) (
 	subjErr := "not implemented undefined property: %s.%s [%s] %s"
 	subjErr = fmt.Sprintf(subjErr, objValue.Type().String(), fieldName, propKind, propType)
 
-	if f, ok := protos.CustomHandlerFunc[propType]; ok {
+	if f, ok := CustomHandlerFunc[propType]; ok {
 		return f(i, fieldName, fieldJSON)
 	}
 
 	switch propKind {
 	case reflect.String:
 		if strings.Contains(propType, "enum.") || propType == "typ.Role" {
-			tplP, tplMFrom, tplMTo = protos.GenerateFieldEnum(i, propType, fieldName, fieldJSON)
+			tplP, tplMFrom, tplMTo = GenerateFieldEnum(i, propType, fieldName, fieldJSON)
 		} else {
 			tplP += "\tstring " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-			tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+			tplMFrom, tplMTo = GenerateFieldNative(fieldName, fieldJSON)
 		}
 
 	case reflect.Bool:
 		tplP += "\tbool " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-		tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+		tplMFrom, tplMTo = GenerateFieldNative(fieldName, fieldJSON)
 
 	case reflect.Float32:
 		tplP += "\tfloat " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-		tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+		tplMFrom, tplMTo = GenerateFieldNative(fieldName, fieldJSON)
 	case reflect.Float64:
 		tplP += "\tdouble " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-		tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+		tplMFrom, tplMTo = GenerateFieldNative(fieldName, fieldJSON)
 
 	case reflect.Int:
-		tplP, tplMFrom, tplMTo = protos.GenerateFieldInt(i, fieldName, fieldJSON)
+		tplP, tplMFrom, tplMTo = GenerateFieldInt(i, fieldName, fieldJSON)
 	case reflect.Int8:
-		tplP, tplMFrom, tplMTo = protos.GenerateFieldInt8(i, fieldName, fieldJSON)
+		tplP, tplMFrom, tplMTo = GenerateFieldInt8(i, fieldName, fieldJSON)
 	case reflect.Int16:
-		tplP, tplMFrom, tplMTo = protos.GenerateFieldInt16(i, fieldName, fieldJSON)
+		tplP, tplMFrom, tplMTo = GenerateFieldInt16(i, fieldName, fieldJSON)
 	case reflect.Int32:
 		tplP += "\tint32 " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-		tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+		tplMFrom, tplMTo = GenerateFieldNative(fieldName, fieldJSON)
 	case reflect.Int64:
 		if propType == "time.Duration" {
 			tplP += "\tint64 " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-			tplMFrom, tplMTo = protos.GenerateTimeDuration(fieldName, fieldJSON)
+			tplMFrom, tplMTo = GenerateTimeDuration(fieldName, fieldJSON)
 		} else {
 			tplP += "\tint64 " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-			tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+			tplMFrom, tplMTo = GenerateFieldNative(fieldName, fieldJSON)
 		}
 	case reflect.Uint:
-		tplP, tplMFrom, tplMTo = protos.GenerateFieldUint(i, fieldName, fieldJSON)
+		tplP, tplMFrom, tplMTo = GenerateFieldUint(i, fieldName, fieldJSON)
 	case reflect.Uint8:
-		tplP, tplMFrom, tplMTo = protos.GenerateFieldUint8(i, fieldName, fieldJSON)
+		tplP, tplMFrom, tplMTo = GenerateFieldUint8(i, fieldName, fieldJSON)
 	case reflect.Uint16:
-		tplP, tplMFrom, tplMTo = protos.GenerateFieldUint16(i, fieldName, fieldJSON)
+		tplP, tplMFrom, tplMTo = GenerateFieldUint16(i, fieldName, fieldJSON)
 	case reflect.Uint32:
 		tplP += "\tuint32 " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-		tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+		tplMFrom, tplMTo = GenerateFieldNative(fieldName, fieldJSON)
 	case reflect.Uint64:
 		tplP += "\tuint64 " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-		tplMFrom, tplMTo = protos.GenerateFieldNative(fieldName, fieldJSON)
+		tplMFrom, tplMTo = GenerateFieldNative(fieldName, fieldJSON)
 
 	case reflect.Slice:
 		typParse := strings.Split(propType, pkgType+".")
 		if propType == "[]string" {
-			tplP, tplMFrom, tplMTo = protos.GenerateFieldStringArray(i, fieldName, fieldJSON)
+			tplP, tplMFrom, tplMTo = GenerateFieldStringArray(i, fieldName, fieldJSON)
 		} else if propType == "[]uint8" {
-			tplP, tplMFrom, tplMTo = protos.GenerateFieldBytes(i, fieldName, fieldJSON)
+			tplP, tplMFrom, tplMTo = GenerateFieldBytes(i, fieldName, fieldJSON)
 		} else if len(typParse) == 2 {
-			typParseAdv := strings.Split(typParse[1], protos.SuffixSlice)
+			typParseAdv := strings.Split(typParse[1], SuffixSlice)
 			if len(typParseAdv) == 2 {
-				tplP, tplMFrom, tplMTo = protos.GenerateFieldSlicePtrType(i, typParseAdv[0], fieldName, fieldJSON)
+				tplP, tplMFrom, tplMTo = GenerateFieldSlicePtrType(i, typParseAdv[0], fieldName, fieldJSON)
 			} else if typParse[0] == "[]*" {
-				tplP, tplMFrom, tplMTo = protos.GenerateFieldSlicePtrType(i, typParse[1], fieldName, fieldJSON)
+				tplP, tplMFrom, tplMTo = GenerateFieldSlicePtrType(i, typParse[1], fieldName, fieldJSON)
 			} else {
 				fmt.Println(subjErr)
 			}
@@ -245,7 +241,7 @@ func (gen *Generate) ParseField(objValue reflect.Value, i int, pkgType string) (
 	case reflect.Struct:
 		typParse := strings.Split(propType, pkgType+".")
 		if len(typParse) == 2 {
-			tplP, tplMFrom, tplMTo = protos.GenerateFieldStructType(i, typParse[1], fieldName, fieldJSON)
+			tplP, tplMFrom, tplMTo = GenerateFieldStructType(i, typParse[1], fieldName, fieldJSON)
 		} else {
 			fmt.Println(subjErr)
 		}
@@ -253,7 +249,7 @@ func (gen *Generate) ParseField(objValue reflect.Value, i int, pkgType string) (
 	case reflect.Ptr:
 		typParse := strings.Split(propType, "*"+pkgType+".")
 		if len(typParse) == 2 {
-			tplP, tplMFrom, tplMTo = protos.GenerateFieldPtrType(i, typParse[1], fieldName, fieldJSON)
+			tplP, tplMFrom, tplMTo = GenerateFieldPtrType(i, typParse[1], fieldName, fieldJSON)
 		} else {
 			fmt.Println(subjErr)
 		}

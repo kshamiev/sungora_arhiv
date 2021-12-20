@@ -110,24 +110,24 @@ func GenerateFieldNative(field, fieldJSON string) (tplMFrom, tplMTo string) {
 // GenerateFieldPtrType конвертация - сопоставление туда и обратно
 func GenerateFieldPtrType(i int, typParse, field, fieldJSON string) (tplP, tplMFrom, tplMTo string) {
 	tplP += "\t" + typParse + " " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-	tplMTo = fmt.Sprintf("%s: New%s"+SuffixToProto+"(tt.%s),\n", ConvFP(fieldJSON), typParse, field)
-	tplMFrom = fmt.Sprintf("%s: New%s"+SuffixFromProto+"(proto.%s),\n", field, typParse, ConvFP(fieldJSON))
+	tplMTo = fmt.Sprintf("%s: New%s"+ToProto+"(tt.%s),\n", ConvFP(fieldJSON), typParse, field)
+	tplMFrom = fmt.Sprintf("%s: New%s"+FromProto+"(proto.%s),\n", field, typParse, ConvFP(fieldJSON))
 	return tplP, tplMFrom, tplMTo
 }
 
 // GenerateFieldStructType конвертация - сопоставление туда и обратно
 func GenerateFieldStructType(i int, typParse, field, fieldJSON string) (tplP, tplMFrom, tplMTo string) {
 	tplP += "\t" + typParse + " " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-	tplMTo = fmt.Sprintf("%s: New%s"+SuffixToProto+"(&tt.%s),\n", ConvFP(fieldJSON), typParse, field)
-	tplMFrom = fmt.Sprintf("%s: *New%s"+SuffixFromProto+"(proto.%s),\n", field, typParse, ConvFP(fieldJSON))
+	tplMTo = fmt.Sprintf("%s: New%s"+ToProto+"(&tt.%s),\n", ConvFP(fieldJSON), typParse, field)
+	tplMFrom = fmt.Sprintf("%s: *New%s"+FromProto+"(proto.%s),\n", field, typParse, ConvFP(fieldJSON))
 	return tplP, tplMFrom, tplMTo
 }
 
 // GenerateFieldSlicePtrType конвертация - сопоставление туда и обратно
 func GenerateFieldSlicePtrType(i int, typParse, field, fieldJSON string) (tplP, tplMFrom, tplMTo string) {
 	tplP += "\trepeated " + typParse + " " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
-	tplMTo = fmt.Sprintf("%s: New%s%s"+SuffixToProto+"(tt.%s),\n", ConvFP(fieldJSON), typParse, SuffixSlice, field)
-	tplMFrom = fmt.Sprintf("%s: New%s%s"+SuffixFromProto+"(proto.%s),\n", field, typParse, SuffixSlice, ConvFP(fieldJSON))
+	tplMTo = fmt.Sprintf("%s: New%s%s"+ToProto+"(tt.%s),\n", ConvFP(fieldJSON), typParse, SuffixSlice, field)
+	tplMFrom = fmt.Sprintf("%s: New%s%s"+FromProto+"(proto.%s),\n", field, typParse, SuffixSlice, ConvFP(fieldJSON))
 	return tplP, tplMFrom, tplMTo
 }
 

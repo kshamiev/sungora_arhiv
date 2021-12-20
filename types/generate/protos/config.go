@@ -24,24 +24,25 @@ var FileException = map[string]bool{
 }
 
 const (
-	SuffixSlice     = "Slice"                                   // config prefix slice types
-	SuffixFromProto = "FromProto"                               // config suffix name func
-	SuffixToProto   = "ToProto"                                 // config suffix name func
-	Separator       = "// AFTER CODE GENERATED. DO NOT EDIT //" // separator code generation
+	SuffixSlice = "Slice"                                   // config prefix slice types
+	FromProto   = "FromProto"                               // config suffix name func
+	ToProto     = "ToProto"                                 // config suffix name func
+	Separator   = "// AFTER CODE GENERATED. DO NOT EDIT //" // separator code generation
 )
 
 // GenerateConfig Список типов для которых нужно реализовать работу по GRPC. Наполняется программно.
 // При первой работе удаляются все файлы кроме этого.
 var GenerateConfig = map[string][]interface{}{}
 
-func Init() (string, string, string) {
+func Init() (int, string, string, string) {
 	md := flag.String("md", "", "package type name (folder)")
 	pb := flag.String("pb", "", "package proto name (folder)")
+	step := flag.Int("step", 1, "generate step")
 	flag.Parse()
 	if *md == "" || *pb == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 	_, currentFile, _, _ := runtime.Caller(0)
-	return filepath.Dir(filepath.Dir(filepath.Dir(currentFile))), *md, *pb
+	return *step, filepath.Dir(filepath.Dir(filepath.Dir(currentFile))), *md, *pb
 }

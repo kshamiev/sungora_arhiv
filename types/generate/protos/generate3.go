@@ -1,16 +1,13 @@
-package main
+package protos
 
 import (
 	"io/ioutil"
 	"log"
 	"regexp"
 	"strings"
-
-	"sungora/types/generate/protos"
 )
 
-func main() {
-	dir, md, _ := protos.Init()
+func Generate3(dir string, md string) {
 	Tag(dir, md)
 }
 
@@ -23,7 +20,7 @@ func Tag(dir, pkgName string) {
 	}
 	// теги
 	for i := range fileList {
-		if _, ok := protos.FileException[fileList[i].Name()]; ok {
+		if _, ok := FileException[fileList[i].Name()]; ok {
 			continue
 		}
 		tagFile(dir + "/" + pkgName + "/" + fileList[i].Name())
@@ -150,7 +147,7 @@ const tplConf = `
 package config
 
 func init() {
-	protos.GenerateConfig["PKGNAME"] = []interface{}{
+	GenerateConfig["PKGNAME"] = []interface{}{
 		PKGTYPES
 	}
 }
