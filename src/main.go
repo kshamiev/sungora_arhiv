@@ -9,15 +9,12 @@ import (
 	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
-	"sungora/lib/request"
 	"sungora/lib/storage/pgsql"
 	"sungora/lib/web"
 	"sungora/lib/worker"
 	"sungora/src/config"
 	"sungora/src/service"
 	"sungora/types/pbsun"
-
-	"google.golang.org/grpc"
 )
 
 func Main() {
@@ -44,11 +41,8 @@ func Main() {
 	}
 
 	// Server GRPC
-	opts := grpc.ChainUnaryInterceptor(
-		request.LoggerInterceptor(lg),
-	)
 	var grpcServer *web.GRPCServer
-	if grpcServer, err = web.NewGRPCServer(&cfg.GRPCServer, opts); err != nil {
+	if grpcServer, err = web.NewGRPCServer(&cfg.GRPCServer); err != nil {
 		lg.Fatal(errs.NewBadRequest(err))
 	}
 	pbsun.RegisterSunServer(grpcServer.Ser, service.NewSunServer())

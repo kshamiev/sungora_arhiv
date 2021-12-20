@@ -16,8 +16,6 @@ import "sungora/src"
 //
 // @tag.name General
 // @tag.description Общие запросы
-// @tag.name GRPC
-// @tag.description grpc gateway sample
 func main() {
 	src.Main()
 }
