@@ -3,7 +3,6 @@ app:
   sessionTimeout: 604800s
   domain: "localhost"
   mode: "dev"
-  dirWork: "/home/konstantin/work/sungora"
   dirStatic: "/template"
   signingKey: "xxx-xxx-xxx"
 
@@ -23,7 +22,7 @@ http:
   maxHeaderBytes: 1048576 # Максимальный размер заголовка получаемого от браузера клиента в байтах
 
 postgresql:
-  postgres: "postgres://postgres:postgres@localhost:5432/sungora"
+  postgres: "postgres://postgres:postgres@localhost:5432/sun"
   max_idle_conns: 0
   max_open_conns: 0
   ocsql_trace: true
@@ -33,10 +32,10 @@ jaeger:
   oc_url: "http://localhost:14268/api/traces"
   fraction: 1
 
-grpcServer:
+grpcClient:
   host: "localhost"
   port: 9090
 
-grpcClient:
+grpcServer:
   host: "localhost"
   port: 9090
