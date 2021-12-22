@@ -10,15 +10,9 @@ psql:
 # UUID
 types:
   - match:
-      db_type: jsonb
-      nullable: true
+      name: duration
     replace:
-      type: null.JSON
-  - match:
-      db_type: jsonb
-      nullable: false
-    replace:
-      type: null.JSON
+      type: time.Duration
   - match:
       db_type: uuid
       nullable: true
@@ -37,15 +31,6 @@ types:
         - '"sungora/lib/typ"'
   - match:
       db_type: numeric
-      nullable: true
-    replace:
-      type: decimal.NullDecimal
-    imports:
-      third_party:
-        - '"github.com/shopspring/decimal"'
-  - match:
-      db_type: numeric
-      nullable: false
     replace:
       type: decimal.Decimal
     imports:

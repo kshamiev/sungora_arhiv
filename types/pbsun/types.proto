@@ -52,19 +52,20 @@ message RoleSlice {
 message User {
 	string id = 1;
 	string login = 2;
-	string email = 3;
+	string description = 3;
 	string price = 4;
 	float summa_one = 5;
 	double summa_two = 6;
-	int32 cnt2 = 7;
-	int64 cnt4 = 8;
-	int64 cnt8 = 9;
-	bool is_online = 10;
-	bytes metrika = 11;
-	int64 duration = 12;
-	google.protobuf.Timestamp created_at = 13;
-	google.protobuf.Timestamp updated_at = 14;
-	google.protobuf.Timestamp deleted_at = 15;
+	int64 cnt = 7;
+	int32 cnt2 = 8;
+	int64 cnt4 = 9;
+	int64 cnt8 = 10;
+	bool is_online = 11;
+	bytes metrika = 12;
+	int64 duration = 13;
+	google.protobuf.Timestamp created_at = 14;
+	google.protobuf.Timestamp updated_at = 15;
+	google.protobuf.Timestamp deleted_at = 16;
 }
 
 message UserSlice {

@@ -129,6 +129,13 @@ func tagType(s string) string {
 			l[1] += tagUuid
 			s = strings.Join(l, "`")
 		}
+	case strings.Contains(s, " time.Duration "):
+		l := strings.Split(s, "`")
+		f, _ := regexp.MatchString(tagInt, s)
+		if len(l) == 3 && !f {
+			l[1] += tagInt
+			s = strings.Join(l, "`")
+		}
 	}
 
 	// from sqlx

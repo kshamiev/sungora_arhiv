@@ -3,6 +3,7 @@ package mdsun
 import (
 	"sungora/lib/typ"
 	"sungora/types/pbsun"
+	"time"
 )
 
 func NewGooseDBVersionToProto(tt *GooseDBVersion) *pbsun.GooseDBVersion {
@@ -134,21 +135,22 @@ func NewUserToProto(tt *User) *pbsun.User {
 		return nil
 	}
 	return &pbsun.User{
-		Id:        tt.ID.String(),
-		Login:     tt.Login,
-		Email:     tt.Email,
-		Price:     tt.Price.String(),
-		SummaOne:  tt.SummaOne,
-		SummaTwo:  tt.SummaTwo,
-		Cnt2:      int32(tt.CNT2),
-		Cnt4:      int64(tt.CNT4),
-		Cnt8:      tt.CNT8,
-		IsOnline:  tt.IsOnline,
-		Metrika:   tt.Metrika.JSON,
-		Duration:  tt.Duration,
-		CreatedAt: pbToTime(tt.CreatedAt),
-		UpdatedAt: pbToTime(tt.UpdatedAt),
-		DeletedAt: pbToTime(tt.DeletedAt.Time),
+		Id:          tt.ID.String(),
+		Login:       tt.Login,
+		Description: tt.Description.String,
+		Price:       tt.Price.String(),
+		SummaOne:    tt.SummaOne,
+		SummaTwo:    tt.SummaTwo,
+		Cnt:         int64(tt.CNT),
+		Cnt2:        int32(tt.CNT2),
+		Cnt4:        int64(tt.CNT4),
+		Cnt8:        tt.CNT8,
+		IsOnline:    tt.IsOnline,
+		Metrika:     tt.Metrika.JSON,
+		Duration:    tt.Duration.Nanoseconds(),
+		CreatedAt:   pbToTime(tt.CreatedAt),
+		UpdatedAt:   pbToTime(tt.UpdatedAt),
+		DeletedAt:   pbToTime(tt.DeletedAt.Time),
 	}
 }
 
@@ -165,21 +167,22 @@ func NewUserFromProto(proto *pbsun.User) *User {
 		return nil
 	}
 	return &User{
-		ID:        typ.UUIDMustParse(proto.Id),
-		Login:     proto.Login,
-		Email:     proto.Email,
-		Price:     pbFromDecimal(proto.Price),
-		SummaOne:  proto.SummaOne,
-		SummaTwo:  proto.SummaTwo,
-		CNT2:      int16(proto.Cnt2),
-		CNT4:      int(proto.Cnt4),
-		CNT8:      proto.Cnt8,
-		IsOnline:  proto.IsOnline,
-		Metrika:   pbFromNullJSON(proto.Metrika),
-		Duration:  proto.Duration,
-		CreatedAt: pbFromTime(proto.CreatedAt),
-		UpdatedAt: pbFromTime(proto.UpdatedAt),
-		DeletedAt: pbFromNullTime(proto.DeletedAt),
+		ID:          typ.UUIDMustParse(proto.Id),
+		Login:       proto.Login,
+		Description: pbFromNullString(proto.Description),
+		Price:       pbFromDecimal(proto.Price),
+		SummaOne:    proto.SummaOne,
+		SummaTwo:    proto.SummaTwo,
+		CNT:         int(proto.Cnt),
+		CNT2:        int16(proto.Cnt2),
+		CNT4:        int(proto.Cnt4),
+		CNT8:        proto.Cnt8,
+		IsOnline:    proto.IsOnline,
+		Metrika:     pbFromNullJSON(proto.Metrika),
+		Duration:    time.Duration(proto.Duration),
+		CreatedAt:   pbFromTime(proto.CreatedAt),
+		UpdatedAt:   pbFromTime(proto.UpdatedAt),
+		DeletedAt:   pbFromNullTime(proto.DeletedAt),
 	}
 }
 

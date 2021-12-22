@@ -2,6 +2,8 @@ basePath: /
 definitions:
   mdsun.User:
     properties:
+      cnt:
+        type: integer
       cnt2:
         type: integer
       cnt4:
@@ -14,10 +16,11 @@ definitions:
       deleted_at:
         example: "2006-01-02T15:04:05Z"
         type: string
-      duration:
-        type: integer
-      email:
+      description:
         type: string
+      duration:
+        example: 0
+        type: number
       id:
         example: 8ca3c9c3-cf1a-47fe-8723-3f957538ce42
         type: string

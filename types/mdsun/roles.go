@@ -429,7 +429,7 @@ func (roleL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular boo
 	}
 
 	query := NewQuery(
-		qm.Select("\"users\".id, \"users\".login, \"users\".email, \"users\".price, \"users\".summa_one, \"users\".summa_two, \"users\".cnt2, \"users\".cnt4, \"users\".cnt8, \"users\".is_online, \"users\".metrika, \"users\".duration, \"users\".created_at, \"users\".updated_at, \"users\".deleted_at, \"a\".\"role_id\""),
+		qm.Select("\"users\".id, \"users\".login, \"users\".description, \"users\".price, \"users\".summa_one, \"users\".summa_two, \"users\".cnt, \"users\".cnt2, \"users\".cnt4, \"users\".cnt8, \"users\".is_online, \"users\".metrika, \"users\".duration, \"users\".created_at, \"users\".updated_at, \"users\".deleted_at, \"a\".\"role_id\""),
 		qm.From("\"users\""),
 		qm.InnerJoin("\"users_roles\" as \"a\" on \"users\".\"id\" = \"a\".\"user_id\""),
 		qm.WhereIn("\"a\".\"role_id\" in ?", args...),
@@ -450,7 +450,7 @@ func (roleL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular boo
 		one := new(User)
 		var localJoinCol typ.UUID
 
-		err = results.Scan(&one.ID, &one.Login, &one.Email, &one.Price, &one.SummaOne, &one.SummaTwo, &one.CNT2, &one.CNT4, &one.CNT8, &one.IsOnline, &one.Metrika, &one.Duration, &one.CreatedAt, &one.UpdatedAt, &one.DeletedAt, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Login, &one.Description, &one.Price, &one.SummaOne, &one.SummaTwo, &one.CNT, &one.CNT2, &one.CNT4, &one.CNT8, &one.IsOnline, &one.Metrika, &one.Duration, &one.CreatedAt, &one.UpdatedAt, &one.DeletedAt, &localJoinCol)
 		if err != nil {
 			return errors.Wrap(err, "failed to scan eager loaded results for users")
 		}

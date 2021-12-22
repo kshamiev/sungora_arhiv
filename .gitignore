@@ -45,12 +45,7 @@ _testmain.go
 /.prj
 /cache
 /conf/*.yml
-!/conf/*.yml.example
-!/conf/*.yml.example.yml
-!/conf/*.example.yml
-!/conf/*.example.log.yml
-/conf/keys/*
-!/conf/keys/*.md
+/conf/*.yaml
 /conf/keys/jwt.private
 /conf/keys/jwt.public
 /conf/keys/server.private
@@ -61,8 +56,4 @@ _testmain.go
 /run/*.bolt.db
 /doc/*.mwb.bak
 /doc/.~lock.*
-/src/application/modules/lockfile/test_lockfile.pid
 nohup.out
-/src/git.webdesk.ru
-/src/vendor/application
-conf/config.yaml

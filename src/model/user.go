@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"time"
 
 	"sungora/lib/app"
 	"sungora/lib/errs"
@@ -9,6 +10,8 @@ import (
 	"sungora/lib/storage/pgsql"
 	"sungora/lib/typ"
 	"sungora/types/mdsun"
+
+	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 type User struct {
@@ -51,6 +54,11 @@ func (u *User) Load(ctx context.Context, id typ.UUID) (*mdsun.User, error) {
 		return nil
 	}); err != nil {
 		return nil, err
+	}
+
+	us.Duration = time.Hour + time.Minute*10 + time.Second*10
+	if _, err := us.Update(ctx, u.st.DB(), boil.Infer()); err != nil {
+		return nil, errs.NewBadRequest(err)
 	}
 
 	return us, nil
