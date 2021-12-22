@@ -2,6 +2,10 @@ basePath: /
 definitions:
   mdsun.User:
     properties:
+      alias:
+        items:
+          type: string
+        type: array
       cnt:
         type: integer
       cnt2:
@@ -12,6 +16,9 @@ definitions:
         type: integer
       created_at:
         example: "2006-01-02T15:04:05Z"
+        type: string
+      data:
+        example: BYTES
         type: string
       deleted_at:
         example: "2006-01-02T15:04:05Z"

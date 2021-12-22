@@ -74,6 +74,7 @@ const (
 	tagDecimal = ` swaggertype:"number" example:"0.01"`
 	tagString  = ` swaggertype:"string"`
 	tagJson    = ` swaggertype:"string" example:"JSON"`
+	tagBytes   = ` swaggertype:"string" example:"BYTES"`
 	tagTime    = ` example:"2006-01-02T15:04:05Z"`
 	tagUuid    = ` example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
 )
@@ -106,6 +107,13 @@ func tagType(s string) string {
 		f, _ := regexp.MatchString(tagString, s)
 		if len(l) == 3 && !f {
 			l[1] += tagString
+			s = strings.Join(l, "`")
+		}
+	case strings.Contains(s, " null.Bytes "):
+		l := strings.Split(s, "`")
+		f, _ := regexp.MatchString(tagBytes, s)
+		if len(l) == 3 && !f {
+			l[1] += tagBytes
 			s = strings.Join(l, "`")
 		}
 	case strings.Contains(s, " null.JSON "):

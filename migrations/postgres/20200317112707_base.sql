@@ -16,6 +16,8 @@ CREATE TABLE public.users
     is_online   bool      NOT NULL DEFAULT false,
     metrika     jsonb     NULL,
     duration    int8      NOT NULL DEFAULT 0,
+    "data"      bytea     NULL,
+    alias       _text     NULL,
     created_at  timestamp NOT NULL DEFAULT now(),
     updated_at  timestamp NOT NULL DEFAULT now(),
     deleted_at  timestamp NULL,

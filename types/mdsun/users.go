@@ -22,27 +22,30 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"github.com/volatiletech/sqlboiler/v4/queries/qmhelper"
+	"github.com/volatiletech/sqlboiler/v4/types"
 	"github.com/volatiletech/strmangle"
 )
 
 // User is an object representing the database table.
 type User struct {
-	ID          typ.UUID        `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
-	Login       string          `boil:"login" db:"login" json:"login" toml:"login" yaml:"login"`
-	Description null.String     `boil:"description" db:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty" swaggertype:"string"`
-	Price       decimal.Decimal `boil:"price" db:"price" json:"price" toml:"price" yaml:"price" swaggertype:"number" example:"0.01"`
-	SummaOne    float32         `boil:"summa_one" db:"summa_one" json:"summa_one" toml:"summa_one" yaml:"summa_one" swaggertype:"number" example:"0.01"`
-	SummaTwo    float64         `boil:"summa_two" db:"summa_two" json:"summa_two" toml:"summa_two" yaml:"summa_two" swaggertype:"number" example:"0.01"`
-	CNT         int             `boil:"cnt" db:"cnt" json:"cnt" toml:"cnt" yaml:"cnt"`
-	CNT2        int16           `boil:"cnt2" db:"cnt2" json:"cnt2" toml:"cnt2" yaml:"cnt2"`
-	CNT4        int             `boil:"cnt4" db:"cnt4" json:"cnt4" toml:"cnt4" yaml:"cnt4"`
-	CNT8        int64           `boil:"cnt8" db:"cnt8" json:"cnt8" toml:"cnt8" yaml:"cnt8"`
-	IsOnline    bool            `boil:"is_online" db:"is_online" json:"is_online" toml:"is_online" yaml:"is_online"`
-	Metrika     null.JSON       `boil:"metrika" db:"metrika" json:"metrika,omitempty" toml:"metrika" yaml:"metrika,omitempty" swaggertype:"string" example:"JSON"`
-	Duration    time.Duration   `boil:"duration" db:"duration" json:"duration" toml:"duration" yaml:"duration" swaggertype:"number" example:"0"`
-	CreatedAt   time.Time       `boil:"created_at" db:"created_at" json:"created_at" toml:"created_at" yaml:"created_at" example:"2006-01-02T15:04:05Z"`
-	UpdatedAt   time.Time       `boil:"updated_at" db:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at" example:"2006-01-02T15:04:05Z"`
-	DeletedAt   null.Time       `boil:"deleted_at" db:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty" example:"2006-01-02T15:04:05Z"`
+	ID          typ.UUID          `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
+	Login       string            `boil:"login" db:"login" json:"login" toml:"login" yaml:"login"`
+	Description null.String       `boil:"description" db:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty" swaggertype:"string"`
+	Price       decimal.Decimal   `boil:"price" db:"price" json:"price" toml:"price" yaml:"price" swaggertype:"number" example:"0.01"`
+	SummaOne    float32           `boil:"summa_one" db:"summa_one" json:"summa_one" toml:"summa_one" yaml:"summa_one" swaggertype:"number" example:"0.01"`
+	SummaTwo    float64           `boil:"summa_two" db:"summa_two" json:"summa_two" toml:"summa_two" yaml:"summa_two" swaggertype:"number" example:"0.01"`
+	CNT         int               `boil:"cnt" db:"cnt" json:"cnt" toml:"cnt" yaml:"cnt"`
+	CNT2        int16             `boil:"cnt2" db:"cnt2" json:"cnt2" toml:"cnt2" yaml:"cnt2"`
+	CNT4        int               `boil:"cnt4" db:"cnt4" json:"cnt4" toml:"cnt4" yaml:"cnt4"`
+	CNT8        int64             `boil:"cnt8" db:"cnt8" json:"cnt8" toml:"cnt8" yaml:"cnt8"`
+	IsOnline    bool              `boil:"is_online" db:"is_online" json:"is_online" toml:"is_online" yaml:"is_online"`
+	Metrika     null.JSON         `boil:"metrika" db:"metrika" json:"metrika,omitempty" toml:"metrika" yaml:"metrika,omitempty" swaggertype:"string" example:"JSON"`
+	Duration    time.Duration     `boil:"duration" db:"duration" json:"duration" toml:"duration" yaml:"duration" swaggertype:"number" example:"0"`
+	Data        null.Bytes        `boil:"data" db:"data" json:"data,omitempty" toml:"data" yaml:"data,omitempty" swaggertype:"string" example:"BYTES"`
+	Alias       types.StringArray `boil:"alias" db:"alias" json:"alias,omitempty" toml:"alias" yaml:"alias,omitempty"`
+	CreatedAt   time.Time         `boil:"created_at" db:"created_at" json:"created_at" toml:"created_at" yaml:"created_at" example:"2006-01-02T15:04:05Z"`
+	UpdatedAt   time.Time         `boil:"updated_at" db:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at" example:"2006-01-02T15:04:05Z"`
+	DeletedAt   null.Time         `boil:"deleted_at" db:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty" example:"2006-01-02T15:04:05Z"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -62,6 +65,8 @@ var UserColumns = struct {
 	IsOnline    string
 	Metrika     string
 	Duration    string
+	Data        string
+	Alias       string
 	CreatedAt   string
 	UpdatedAt   string
 	DeletedAt   string
@@ -79,6 +84,8 @@ var UserColumns = struct {
 	IsOnline:    "is_online",
 	Metrika:     "metrika",
 	Duration:    "duration",
+	Data:        "data",
+	Alias:       "alias",
 	CreatedAt:   "created_at",
 	UpdatedAt:   "updated_at",
 	DeletedAt:   "deleted_at",
@@ -98,6 +105,8 @@ var UserTableColumns = struct {
 	IsOnline    string
 	Metrika     string
 	Duration    string
+	Data        string
+	Alias       string
 	CreatedAt   string
 	UpdatedAt   string
 	DeletedAt   string
@@ -115,6 +124,8 @@ var UserTableColumns = struct {
 	IsOnline:    "users.is_online",
 	Metrika:     "users.metrika",
 	Duration:    "users.duration",
+	Data:        "users.data",
+	Alias:       "users.alias",
 	CreatedAt:   "users.created_at",
 	UpdatedAt:   "users.updated_at",
 	DeletedAt:   "users.deleted_at",
@@ -293,6 +304,56 @@ func (w whereHelpertime_Duration) GTE(x time.Duration) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
 
+type whereHelpernull_Bytes struct{ field string }
+
+func (w whereHelpernull_Bytes) EQ(x null.Bytes) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Bytes) NEQ(x null.Bytes) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Bytes) LT(x null.Bytes) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Bytes) LTE(x null.Bytes) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Bytes) GT(x null.Bytes) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Bytes) GTE(x null.Bytes) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
+func (w whereHelpernull_Bytes) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Bytes) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
+type whereHelpertypes_StringArray struct{ field string }
+
+func (w whereHelpertypes_StringArray) EQ(x types.StringArray) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpertypes_StringArray) NEQ(x types.StringArray) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpertypes_StringArray) LT(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpertypes_StringArray) LTE(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpertypes_StringArray) GT(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpertypes_StringArray) GTE(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
+func (w whereHelpertypes_StringArray) IsNull() qm.QueryMod { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpertypes_StringArray) IsNotNull() qm.QueryMod {
+	return qmhelper.WhereIsNotNull(w.field)
+}
+
 var UserWhere = struct {
 	ID          whereHelpertyp_UUID
 	Login       whereHelperstring
@@ -307,6 +368,8 @@ var UserWhere = struct {
 	IsOnline    whereHelperbool
 	Metrika     whereHelpernull_JSON
 	Duration    whereHelpertime_Duration
+	Data        whereHelpernull_Bytes
+	Alias       whereHelpertypes_StringArray
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpertime_Time
 	DeletedAt   whereHelpernull_Time
@@ -324,6 +387,8 @@ var UserWhere = struct {
 	IsOnline:    whereHelperbool{field: "\"users\".\"is_online\""},
 	Metrika:     whereHelpernull_JSON{field: "\"users\".\"metrika\""},
 	Duration:    whereHelpertime_Duration{field: "\"users\".\"duration\""},
+	Data:        whereHelpernull_Bytes{field: "\"users\".\"data\""},
+	Alias:       whereHelpertypes_StringArray{field: "\"users\".\"alias\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"users\".\"created_at\""},
 	UpdatedAt:   whereHelpertime_Time{field: "\"users\".\"updated_at\""},
 	DeletedAt:   whereHelpernull_Time{field: "\"users\".\"deleted_at\""},
@@ -353,8 +418,8 @@ func (*userR) NewStruct() *userR {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "login", "description", "price", "summa_one", "summa_two", "cnt", "cnt2", "cnt4", "cnt8", "is_online", "metrika", "duration", "created_at", "updated_at", "deleted_at"}
-	userColumnsWithoutDefault = []string{"login", "description", "metrika", "deleted_at"}
+	userAllColumns            = []string{"id", "login", "description", "price", "summa_one", "summa_two", "cnt", "cnt2", "cnt4", "cnt8", "is_online", "metrika", "duration", "data", "alias", "created_at", "updated_at", "deleted_at"}
+	userColumnsWithoutDefault = []string{"login", "description", "metrika", "data", "alias", "deleted_at"}
 	userColumnsWithDefault    = []string{"id", "price", "summa_one", "summa_two", "cnt", "cnt2", "cnt4", "cnt8", "is_online", "duration", "created_at", "updated_at"}
 	userPrimaryKeyColumns     = []string{"id"}
 )

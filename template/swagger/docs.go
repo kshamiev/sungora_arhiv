@@ -113,6 +113,12 @@ var doc = `{
         "mdsun.User": {
             "type": "object",
             "properties": {
+                "alias": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "cnt": {
                     "type": "integer"
                 },
@@ -128,6 +134,10 @@ var doc = `{
                 "created_at": {
                     "type": "string",
                     "example": "2006-01-02T15:04:05Z"
+                },
+                "data": {
+                    "type": "string",
+                    "example": "BYTES"
                 },
                 "deleted_at": {
                     "type": "string",

@@ -63,9 +63,11 @@ message User {
 	bool is_online = 11;
 	bytes metrika = 12;
 	int64 duration = 13;
-	google.protobuf.Timestamp created_at = 14;
-	google.protobuf.Timestamp updated_at = 15;
-	google.protobuf.Timestamp deleted_at = 16;
+	bytes data = 14;
+	repeated string alias = 15;
+	google.protobuf.Timestamp created_at = 16;
+	google.protobuf.Timestamp updated_at = 17;
+	google.protobuf.Timestamp deleted_at = 18;
 }
 
 message UserSlice {
