@@ -11,8 +11,8 @@ import (
 const Version = "v1.10.100"
 
 type Config struct {
-	App        App                  `yaml:"app"`
-	Lg         logger.Config        `yaml:"lg"`
+	App App           `yaml:"app"`
+	Lg  logger.Config `yaml:"lg"`
 	ServeHTTP  web.HttpServerConfig `yaml:"http"`
 	Postgresql pgsql.Config         `yaml:"postgresql"`
 	Jaeger     logger.JaegerConfig  `yaml:"jaeger"`

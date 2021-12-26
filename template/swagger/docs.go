@@ -46,12 +46,28 @@ var doc = `{
                 }
             }
         },
-        "/api/sun/general/test/{id}": {
+        "/api/sun/general/version": {
             "get": {
                 "tags": [
                     "General"
                 ],
-                "summary": "test",
+                "summary": "получение версии приложения",
+                "responses": {
+                    "200": {
+                        "description": "version",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sun/user-test/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "test user",
                 "parameters": [
                     {
                         "type": "string",
@@ -71,22 +87,6 @@ var doc = `{
                 }
             }
         },
-        "/api/sun/general/version": {
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "получение версии приложения",
-                "responses": {
-                    "200": {
-                        "description": "version",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/api/sun/websocket/gorilla/{id}": {
             "get": {
                 "security": [
@@ -95,7 +95,7 @@ var doc = `{
                     }
                 ],
                 "tags": [
-                    "General"
+                    "Websocket"
                 ],
                 "summary": "пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)",
                 "responses": {

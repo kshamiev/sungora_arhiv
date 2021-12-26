@@ -72,7 +72,17 @@ paths:
       summary: ping
       tags:
       - General
-  /api/sun/general/test/{id}:
+  /api/sun/general/version:
+    get:
+      responses:
+        "200":
+          description: version
+          schema:
+            type: string
+      summary: получение версии приложения
+      tags:
+      - General
+  /api/sun/user-test/{id}:
     get:
       parameters:
       - description: ID
@@ -85,19 +95,9 @@ paths:
           description: user
           schema:
             $ref: '#/definitions/mdsun.User'
-      summary: test
+      summary: test user
       tags:
-      - General
-  /api/sun/general/version:
-    get:
-      responses:
-        "200":
-          description: version
-          schema:
-            type: string
-      summary: получение версии приложения
-      tags:
-      - General
+      - Users
   /api/sun/websocket/gorilla/{id}:
     get:
       responses:
@@ -109,7 +109,7 @@ paths:
       - ApiKeyAuth: []
       summary: пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
       tags:
-      - General
+      - Websocket
 schemes:
 - http
 - https

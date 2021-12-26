@@ -1,17 +1,14 @@
-package query
+package test
 
 import (
 	"context"
 	"testing"
 
 	"sungora/lib/app"
-	"sungora/lib/storage"
 	"sungora/lib/storage/pgsql"
+	"sungora/src/general"
+	"sungora/src/user"
 )
-
-type PGTest struct {
-	storage.Face
-}
 
 func TestQuery(t *testing.T) {
 	var cfg = struct {
@@ -25,7 +22,13 @@ func TestQuery(t *testing.T) {
 	}
 	st := pgsql.Gist()
 
-	for _, q := range GetQueries() {
+	for _, q := range general.GetQueries() {
+		if _, _, err := st.Query(context.Background()).PrepareQuery(q, nil); err != nil {
+			t.Log(q)
+			t.Fatal(err)
+		}
+	}
+	for _, q := range user.GetQueries() {
 		if _, _, err := st.Query(context.Background()).PrepareQuery(q, nil); err != nil {
 			t.Log(q)
 			t.Fatal(err)

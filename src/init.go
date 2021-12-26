@@ -4,18 +4,22 @@ import (
 	"net/http"
 	"net/http/pprof"
 
+	"sungora/lib/worker"
+	"sungora/src/chat"
+	"sungora/src/config"
+	"sungora/src/general"
+	"sungora/src/user"
+
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"sungora/lib/request"
-	"sungora/src/config"
-	"sungora/src/handler"
 	_ "sungora/template/swagger"
 )
 
-// инициализация маршрутов
-func initRoutes(cfg *config.App) *chi.Mux {
+// Init инициализация приложения
+func Init(cfg *config.App) *chi.Mux {
 	mid := request.NewMid(cfg.Token, cfg.SigningKey, cfg.DirStatic)
 
 	router := chi.NewRouter()
@@ -30,8 +34,14 @@ func initRoutes(cfg *config.App) *chi.Mux {
 	// swagger
 	router.Get("/api/sun/swag/*", httpSwagger.Handler())
 
-	// rest
-	general(router)
+	// business
+
+	user.NewHandler(router)
+	worker.AddStart(user.NewTaskOnlineOff())
+
+	general.NewHandler(router)
+
+	chat.NewHandler(router)
 
 	// pprof
 	router.Get("/api/sun/debug/pprof/trace", func(w http.ResponseWriter, r *http.Request) {
@@ -48,15 +58,4 @@ func initRoutes(cfg *config.App) *chi.Mux {
 	router.Get("/api/sun/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
 
 	return router
-}
-
-func general(router *chi.Mux) {
-	contra := handler.NewGeneral()
-	router.Route("/api/sun/general", func(router chi.Router) {
-		router.Get("/ping", contra.Ping)
-		router.Get("/version", contra.Version)
-		router.Get("/test/{id}", contra.Test)
-	})
-	// websocket
-	router.HandleFunc("/api/sun/websocket/gorilla/{id}", contra.WebSocketSample)
 }

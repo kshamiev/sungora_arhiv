@@ -1,4 +1,4 @@
-package handler
+package chat
 
 import (
 	"context"
@@ -8,83 +8,31 @@ import (
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/response"
-	"sungora/lib/storage/pgsql"
-	"sungora/lib/typ"
 	"sungora/lib/web"
-	"sungora/src/client"
-	"sungora/src/config"
-	"sungora/src/model"
 
 	"github.com/go-chi/chi"
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/gorilla/websocket"
 )
 
-type General struct {
+type Handler struct {
 	WsBus web.SocketBus
 }
 
-func NewGeneral() *General {
-	return &General{
+func NewHandler(router *chi.Mux) *Handler {
+	hh := &Handler{
 		WsBus: web.NewSocketBus(),
 	}
-}
-
-// Ping ping
-// @Summary ping
-// @Tags General
-// @Router /api/sun/general/ping [get]
-// @Success 200 {string} string "OK"
-func (c *General) Ping(w http.ResponseWriter, r *http.Request) {
-	rw := response.New(r, w)
-	rw.JSON("OK")
-}
-
-// Version получение версии приложения
-// @Summary получение версии приложения
-// @Tags General
-// @Router /api/sun/general/version [get]
-// @Success 200 {string} string "version"
-func (c *General) Version(w http.ResponseWriter, r *http.Request) {
-	rw := response.New(r, w)
-	rw.JSON(config.Get().App.Version)
-}
-
-// Test
-// @Summary test
-// @Tags General
-// @Router /api/sun/general/test/{id} [get]
-// @Param id path string true "ID"
-// @Success 200 {object} mdsun.User "user"
-func (c *General) Test(w http.ResponseWriter, r *http.Request) {
-	rw := response.New(r, w)
-
-	usM := model.NewUser(pgsql.Gist())
-	us, err := usM.Load(r.Context(), typ.UUIDMustParse(chi.URLParam(r, "id")))
-	if err != nil {
-		rw.JSONError(err)
-		return
-	}
-
-	lg := logger.GetLogger(r.Context())
-	lg.Info("General.Test")
-
-	cli := client.GistSunGRPC()
-	if _, err := cli.Ping(r.Context(), &empty.Empty{}); err != nil {
-		rw.JSONError(err)
-		return
-	}
-
-	rw.JSON(us)
+	router.HandleFunc("/api/sun/websocket/gorilla/{id}", hh.WebSocketSample)
+	return hh
 }
 
 // WebSocketSample пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
 // @Summary пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
-// @Tags General
+// @Tags Websocket
 // @Router /api/sun/websocket/gorilla/{id} [get]
 // @Success 101 {string} string "Switching Protocols to websocket"
 // @Security ApiKeyAuth
-func (c *General) WebSocketSample(w http.ResponseWriter, r *http.Request) {
+func (hh *Handler) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 	var (
 		ws         *websocket.Conn
 		wsResponse http.Header
@@ -119,7 +67,7 @@ func (c *General) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 		Ws:  ws,
 		Ctx: r.Context(),
 	}
-	c.WsBus.StartClient(chi.URLParam(r, "id"), cli)
+	hh.WsBus.StartClient(chi.URLParam(r, "id"), cli)
 }
 
 // chatWS пример обработчика клиента
@@ -137,7 +85,7 @@ func (cli *chatWS) HookStartClient(cntClient int) error {
 // HookGetMessage метод при получении данных из вебсокета пользователя
 func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
 	lg := logger.GetLogger(cli.Ctx)
-	msg := &model.Message{}
+	msg := &Message{}
 	if err := cli.Ws.ReadJSON(msg); err != nil {
 		return nil, err
 	}
@@ -152,9 +100,9 @@ func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
 // HookSendMessage метод при отправке данных пользователю
 func (cli *chatWS) HookSendMessage(msg interface{}, cntClient int) error {
 	lg := logger.GetLogger(cli.Ctx)
-	res := &model.Message{}
+	res := &Message{}
 	switch o := msg.(type) {
-	case *model.Message:
+	case *Message:
 		res = o
 	case response.Error:
 		lg.WithError(o).Error(o.Response())
