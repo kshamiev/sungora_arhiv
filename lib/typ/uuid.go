@@ -22,8 +22,13 @@ func UUIDParse(s string) (UUID, error) {
 	return UUID{u}, nil
 }
 
+// return UUID{uuid.MustParse(s)}
 func UUIDMustParse(s string) UUID {
-	return UUID{uuid.MustParse(s)}
+	u, err := uuid.Parse(s)
+	if err != nil {
+		return UUID{}
+	}
+	return UUID{u}
 }
 
 func (u UUID) Value() (driver.Value, error) {

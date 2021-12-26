@@ -35,13 +35,9 @@ func Init(cfg *config.App) *chi.Mux {
 	router.Get("/api/sun/swag/*", httpSwagger.Handler())
 
 	// business
-
-	user.NewHandler(router)
-	worker.AddStart(user.NewTaskOnlineOff())
-
-	general.NewHandler(router)
-
-	chat.NewHandler(router)
+	initGeneral(router)
+	initUser(router)
+	initChat(router)
 
 	// pprof
 	router.Get("/api/sun/debug/pprof/trace", func(w http.ResponseWriter, r *http.Request) {
@@ -58,4 +54,31 @@ func Init(cfg *config.App) *chi.Mux {
 	router.Get("/api/sun/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
 
 	return router
+}
+
+func initChat(router *chi.Mux) {
+	hh := chat.NewHandler()
+	router.HandleFunc("/api/sun/websocket/gorilla/{id}", hh.WebSocketSample)
+}
+
+func initGeneral(router *chi.Mux) {
+	hh := general.NewHandler()
+	router.Route("/api/sun/general", func(router chi.Router) {
+		router.Get("/ping", hh.Ping)
+		router.Get("/version", hh.Version)
+	})
+}
+
+func initUser(router *chi.Mux) {
+	hh := user.NewHandler()
+	router.Get("/api/sun/users", hh.Test)
+	router.Route("/api/sun/user/{id}", func(router chi.Router) {
+		router.Post("/", hh.Post)
+		router.Put("/", hh.Put)
+		router.Get("/", hh.Get)
+		router.Delete("/", hh.Delete)
+	})
+	router.Get("/api/sun/user-test/{id}", hh.Test)
+
+	worker.AddStart(user.NewTaskOnlineOff())
 }

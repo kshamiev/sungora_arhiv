@@ -33,6 +33,14 @@ import (
 //
 // @tag.name General
 // @tag.description Общие запросы
+// @tag.name User
+// @tag.description Пользователи
+// @tag.name Websocket
+// @tag.description Чат (веб сокет)
+//
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	flagConfigPath := flag.String("c", "conf/config.yaml", "used for set path to config file")
 	flag.Parse()

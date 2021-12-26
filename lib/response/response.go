@@ -83,12 +83,12 @@ func (rw *Response) CookieRem(name string, path []string) {
 	}
 }
 
-// JsonBodyDecode декодирование полученного тела запроса в формате json в объект
+// JSONBodyDecode декодирование полученного тела запроса в формате json в объект
 func (rw *Response) JSONBodyDecode(object interface{}) error {
 	return JSONBodyDecode(rw.Request, object)
 }
 
-// JsonBodyDecode декодирование полученного тела запроса в формате json в объект
+// JSONBodyDecode декодирование полученного тела запроса в формате json в объект
 func JSONBodyDecode(r *http.Request, object interface{}) error {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {

@@ -16,12 +16,11 @@ import (
 )
 
 type User struct {
-	ID        typ.UUID    `db:"id" json:"id"`
-	ParentID  typ.UUID    `db:"parent_id" json:"parent_id"`
-	CreatedAt time.Time   `db:"created_at" json:"created_at"`
-	FullName  null.String `db:"full_name" json:"full_name"`
-	UserName  string      `db:"user_name" json:"user_name"`
-	Email     string      `db:"email" json:"email"`
+	ID          typ.UUID    `db:"id" json:"id"`
+	ParentID    typ.UUID    `db:"parent_id" json:"parent_id"`
+	CreatedAt   time.Time   `db:"created_at" json:"created_at"`
+	Login       string      `db:"login" json:"login"`
+	Description null.String `db:"description" json:"description"`
 }
 
 var cntGo = 90

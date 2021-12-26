@@ -64,10 +64,23 @@ var doc = `{
         },
         "/api/sun/user-test/{id}": {
             "get": {
-                "tags": [
-                    "Users"
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
                 ],
-                "summary": "test user",
+                "description": "Тестовый обработчик для примера",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Тестовый обработчик для примера",
+                "deprecated": true,
                 "parameters": [
                     {
                         "type": "string",
@@ -79,9 +92,142 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "user",
+                        "description": "пользователь",
                         "schema": {
                             "$ref": "#/definitions/mdsun.User"
+                        }
+                    },
+                    "400": {
+                        "description": "отрицательный ответ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sun/user/{id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Получение пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/mdsun.User"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Изменение пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "пользователь",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/mdsun.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/mdsun.User"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Создание пользователя",
+                "parameters": [
+                    {
+                        "description": "пользователь",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/mdsun.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/mdsun.User"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Удаление пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sun/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Получение списка пользователей",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/mdsun.User"
+                                }
+                            }
                         }
                     }
                 }
@@ -183,10 +329,25 @@ var doc = `{
             }
         }
     },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
     "tags": [
         {
             "description": "Общие запросы",
             "name": "General"
+        },
+        {
+            "description": "Пользователи",
+            "name": "User"
+        },
+        {
+            "description": "Чат (веб сокет)",
+            "name": "Websocket"
         }
     ]
 }`

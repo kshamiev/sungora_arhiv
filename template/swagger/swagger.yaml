@@ -84,6 +84,34 @@ paths:
       - General
   /api/sun/user-test/{id}:
     get:
+      consumes:
+      - application/json
+      deprecated: true
+      description: Тестовый обработчик для примера
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: пользователь
+          schema:
+            $ref: '#/definitions/mdsun.User'
+        "400":
+          description: отрицательный ответ
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Тестовый обработчик для примера
+      tags:
+      - User
+  /api/sun/user/{id}:
+    delete:
       parameters:
       - description: ID
         in: path
@@ -92,12 +120,78 @@ paths:
         type: string
       responses:
         "200":
-          description: user
+          description: OK
+          schema:
+            type: string
+      summary: Удаление пользователя
+      tags:
+      - User
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
           schema:
             $ref: '#/definitions/mdsun.User'
-      summary: test user
+      summary: Получение пользователя
       tags:
-      - Users
+      - User
+    post:
+      parameters:
+      - description: пользователь
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/mdsun.User'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/mdsun.User'
+      summary: Создание пользователя
+      tags:
+      - User
+    put:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: пользователь
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/mdsun.User'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/mdsun.User'
+      summary: Изменение пользователя
+      tags:
+      - User
+  /api/sun/users:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/mdsun.User'
+              type: array
+            type: array
+      summary: Получение списка пользователей
+      tags:
+      - User
   /api/sun/websocket/gorilla/{id}:
     get:
       responses:
@@ -113,7 +207,16 @@ paths:
 schemes:
 - http
 - https
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
 tags:
 - description: Общие запросы
   name: General
+- description: Пользователи
+  name: User
+- description: Чат (веб сокет)
+  name: Websocket

@@ -5,20 +5,13 @@ import (
 
 	"sungora/lib/response"
 	"sungora/src/config"
-
-	"github.com/go-chi/chi"
 )
 
 type Handler struct {
 }
 
-func NewHandler(router *chi.Mux) *Handler {
-	hh := &Handler{}
-	router.Route("/api/sun/general", func(router chi.Router) {
-		router.Get("/ping", hh.Ping)
-		router.Get("/version", hh.Version)
-	})
-	return hh
+func NewHandler() *Handler {
+	return &Handler{}
 }
 
 // Ping ping

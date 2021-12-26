@@ -15,15 +15,13 @@ import (
 )
 
 type Handler struct {
-	WsBus web.SocketBus
+	wsBus web.SocketBus
 }
 
-func NewHandler(router *chi.Mux) *Handler {
-	hh := &Handler{
-		WsBus: web.NewSocketBus(),
+func NewHandler() *Handler {
+	return &Handler{
+		wsBus: web.NewSocketBus(),
 	}
-	router.HandleFunc("/api/sun/websocket/gorilla/{id}", hh.WebSocketSample)
-	return hh
 }
 
 // WebSocketSample пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
@@ -67,7 +65,7 @@ func (hh *Handler) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 		Ws:  ws,
 		Ctx: r.Context(),
 	}
-	hh.WsBus.StartClient(chi.URLParam(r, "id"), cli)
+	hh.wsBus.StartClient(chi.URLParam(r, "id"), cli)
 }
 
 // chatWS пример обработчика клиента
