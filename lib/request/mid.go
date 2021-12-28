@@ -9,7 +9,7 @@ import (
 
 	"sungora/lib/enum"
 	"sungora/lib/logger"
-	"sungora/lib/observability"
+	"sungora/lib/request/observability"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-chi/chi"
