@@ -6,7 +6,7 @@ import (
 	"sungora/lib/app"
 	"sungora/lib/logger"
 	"sungora/lib/response"
-	"sungora/types/pbsun"
+	"sungora/services/pbsun"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 )

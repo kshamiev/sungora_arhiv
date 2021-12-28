@@ -16,7 +16,7 @@ import (
 	"sungora/src/client"
 	"sungora/src/config"
 	"sungora/src/service"
-	"sungora/types/pbsun"
+	"sungora/services/pbsun"
 )
 
 // @title Sungora API

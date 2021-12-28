@@ -9,7 +9,7 @@ import (
 	"sungora/lib/storage"
 	"sungora/lib/storage/pgsql"
 	"sungora/lib/typ"
-	"sungora/types/mdsun"
+	"sungora/services/mdsun"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )

@@ -3,7 +3,7 @@ package client
 import (
 	"sungora/lib/errs"
 	"sungora/lib/web"
-	"sungora/types/pbsun"
+	"sungora/services/pbsun"
 )
 
 var sunClient pbsun.SunClient
