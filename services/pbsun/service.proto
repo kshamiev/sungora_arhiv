@@ -2,7 +2,7 @@ syntax = "proto3";
 package pbsun;
 option go_package = "./;pbsun";
 import "google/protobuf/empty.proto";
-import "types/pbsun/types.proto";
+import "services/pbsun/types.proto";
 
 service Sun {
   rpc Ping (google.protobuf.Empty) returns (Test) {

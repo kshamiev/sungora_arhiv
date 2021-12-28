@@ -34,7 +34,7 @@ const (
 // При первой работе удаляются все файлы кроме этого.
 var GenerateConfig = map[string][]interface{}{}
 
-func Init() (int, string, string, string) {
+func Init() (stepRun int, dir, pkgType, pkgProto string) {
 	md := flag.String("md", "", "package type name (folder)")
 	pb := flag.String("pb", "", "package proto name (folder)")
 	step := flag.Int("step", 1, "generate step")

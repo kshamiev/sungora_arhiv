@@ -26,7 +26,7 @@ import (
 	"strings"
 )
 
-func Generate4(dir string, md string, pb string) {
+func Generate4(dir, md, pb string) {
 	var err error
 	var tplSFull, tplPFull, tplMFull, tplP, tplM string
 	gen := Generate{
@@ -126,7 +126,7 @@ func (gen *Generate) ParseType(object interface{}, pkgType, pkgProto string) (tp
 }
 
 // GenerateFuncSliceTypeProto генерация метода конвертации среза типа в срез его прототипа
-func (gen *Generate) GenerateFuncSliceTypeProto(typ string, pkgProto string) (s string) {
+func (gen *Generate) GenerateFuncSliceTypeProto(typ, pkgProto string) (s string) {
 	s += fmt.Sprintf("func New%s%s"+ToProto+" (tt []*%s) []*%s.%s {", typ, SuffixSlice, typ, pkgProto, typ)
 	s += fmt.Sprintf("\n\tres := make([]*%s.%s, len(tt))", pkgProto, typ)
 	s += "\n\tfor i := range tt {"
@@ -135,7 +135,7 @@ func (gen *Generate) GenerateFuncSliceTypeProto(typ string, pkgProto string) (s 
 }
 
 // GenerateFuncSliceProtoType генерация метода конвертации среза прототипа в соответсвующий ему срез типа
-func (gen *Generate) GenerateFuncSliceProtoType(typ string, pkgProto string) (s string) {
+func (gen *Generate) GenerateFuncSliceProtoType(typ, pkgProto string) (s string) {
 	s += fmt.Sprintf("func New%s%s"+FromProto+"(list []*%s.%s) []*%s {", typ, SuffixSlice, pkgProto, typ, typ)
 	s += fmt.Sprintf("\n\tres := make([]*%s, len(list))", typ)
 	s += "\n\tfor i := range list {"

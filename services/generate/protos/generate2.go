@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func Generate2(dir string, md string) {
+func Generate2(dir, md string) {
 	for i := range FileListCustom {
 		fi, err := os.Stat(dir + "/" + FileListCustom[i])
 		if err == nil && fi.Mode().IsRegular() {

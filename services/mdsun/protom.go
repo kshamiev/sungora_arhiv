@@ -1,10 +1,9 @@
 package mdsun
 
 import (
-	"time"
-
 	"sungora/lib/typ"
 	"sungora/services/pbsun"
+	"time"
 )
 
 func NewGooseDBVersionToProto(tt *GooseDBVersion) *pbsun.GooseDBVersion {

@@ -99,5 +99,5 @@ var Sun_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "types/pbsun/service.proto",
+	Metadata: "services/pbsun/service.proto",
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func Generate1(dir string, md string, pb string) {
+func Generate1(dir, md, pb string) {
 	_ = os.Mkdir(dir+"/"+md, 0700)
 	_ = os.Mkdir(dir+"/"+pb, 0700)
 

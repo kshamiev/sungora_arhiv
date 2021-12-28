@@ -12,11 +12,11 @@ import (
 	"sungora/lib/storage/pgsql"
 	"sungora/lib/web"
 	"sungora/lib/worker"
+	"sungora/services/pbsun"
 	"sungora/src"
 	"sungora/src/client"
 	"sungora/src/config"
 	"sungora/src/service"
-	"sungora/services/pbsun"
 )
 
 // @title Sungora API

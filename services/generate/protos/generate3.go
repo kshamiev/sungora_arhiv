@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func Generate3(dir string, md string) {
+func Generate3(dir, md string) {
 	Tag(dir, md)
 }
 
