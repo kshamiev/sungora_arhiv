@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -20,7 +19,7 @@ func LoadConfig(fileConf string, cfg interface{}) error {
 		if err == nil {
 			return yaml.Unmarshal(data, cfg)
 		}
-		if !strings.Contains(dir, "/") {
+		if dir == "/" {
 			return fmt.Errorf("config '" + fileConf + "' not found")
 		}
 		dir = filepath.Dir(dir)
