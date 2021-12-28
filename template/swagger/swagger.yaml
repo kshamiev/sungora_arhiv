@@ -62,6 +62,26 @@ info:
   title: Sungora API
   version: 1.0.0
 paths:
+  /api/sun/general/file/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: загружаемый файл
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: загрузка файла на сервер
+      tags:
+      - General
   /api/sun/general/ping:
     get:
       responses:

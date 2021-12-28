@@ -25,11 +25,11 @@ func NewHandler() *Handler {
 }
 
 // WebSocketSample пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
-// @Summary пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
 // @Tags Websocket
-// @Router /api/sun/websocket/gorilla/{id} [get]
+// @Summary пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
 // @Success 101 {string} string "Switching Protocols to websocket"
 // @Security ApiKeyAuth
+// @Router /api/sun/websocket/gorilla/{id} [get]
 func (hh *Handler) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 	var (
 		ws         *websocket.Conn

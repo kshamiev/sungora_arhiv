@@ -26,6 +26,21 @@ TYPE_VALUE      = string | int  | number | bool | file | pkg.CustomStruct
 TYPE_RESPONSE   = string | int  | number | bool | file | object | array
 </pre>
 
+@Accept & @Produce
+
+    son                     application/json
+    xml                     text/xml
+    plain                   text/plain
+    html                    text/html
+    mpfd                    multipart/form-data
+    x-www-form-urlencoded   application/x-www-form-urlencoded
+    json-api                application/vnd.api+json
+    json-stream             application/x-json-stream
+    octet-stream            application/octet-stream
+    png                     image/png
+    jpeg                    image/jpeg
+    gif                     image/gif
+
 Пример:
 <pre>
 // Login авторизация пользователя по логину и паролю ldap

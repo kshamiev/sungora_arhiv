@@ -1,6 +1,7 @@
 package response
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -135,29 +136,22 @@ func (rw *Response) JSON(object interface{}, status ...int) {
 		for _, t := range e.Trace() {
 			rw.lg.Trace(t)
 		}
-		// Заголовки
-		rw.generalHeaderSet("application/json; charset=utf-8", int64(len(data)), http.StatusBadRequest)
-		// Тело документа
+		rw.generalHeaderSet("error.json", len(data), http.StatusBadRequest)
 		_, _ = rw.response.Write([]byte(e.Response()))
-
 		return
 	}
-	// Статус ответа
 	if len(status) == 0 {
 		status = append(status, http.StatusOK)
 	}
-
-	// Заголовки
-	rw.generalHeaderSet("application/json; charset=utf-8", int64(len(data)), status[0])
-	// Тело документа
+	rw.generalHeaderSet("data.json", len(data), status[0])
 	_, _ = rw.response.Write(data)
 }
 
 // Static ответ - отдача статических данных
-func (rw *Response) Static(pathFile string) {
-	fi, err := os.Stat(pathFile)
+func (rw *Response) Static(fileName string) {
+	fi, err := os.Stat(fileName)
 	if err != nil {
-		data := []byte(http.StatusText(http.StatusNotFound) + ": " + filepath.Base(pathFile))
+		data := []byte(http.StatusText(http.StatusNotFound) + ": " + filepath.Base(fileName))
 		rw.response.WriteHeader(http.StatusNotFound)
 		_, _ = rw.response.Write(data)
 		return
@@ -165,13 +159,13 @@ func (rw *Response) Static(pathFile string) {
 
 	if fi.IsDir() {
 		if rw.Request.URL.Path != "/" {
-			pathFile += string(os.PathSeparator)
+			fileName += string(os.PathSeparator)
 		}
 
-		pathFile += "index.html"
+		fileName += "index.html"
 
-		if _, err = os.Stat(pathFile); err != nil {
-			data := []byte(http.StatusText(http.StatusNotFound) + ": " + filepath.Base(pathFile))
+		if _, err = os.Stat(fileName); err != nil {
+			data := []byte(http.StatusText(http.StatusNotFound) + ": " + filepath.Base(fileName))
 			rw.response.WriteHeader(http.StatusNotFound)
 			_, _ = rw.response.Write(data)
 			return
@@ -179,56 +173,26 @@ func (rw *Response) Static(pathFile string) {
 	}
 
 	// content
-	data, err := ioutil.ReadFile(pathFile)
+	data, err := ioutil.ReadFile(fileName)
 	if err != nil {
-		data = []byte(http.StatusText(http.StatusBadRequest) + ": " + filepath.Base(pathFile))
+		data = []byte(http.StatusText(http.StatusBadRequest) + ": " + filepath.Base(fileName))
 		rw.response.WriteHeader(http.StatusBadRequest)
 		_, _ = rw.response.Write(data)
 		return
 	}
-	// type
-	var tp = `application/octet-stream`
-
-	l := strings.Split(pathFile, ".")
-	fileExt := `.` + l[len(l)-1]
-
-	if mimeType := mime.TypeByExtension(fileExt); mimeType != `` {
-		tp = mimeType
-	}
-	// Аттач если документ не картинка и не текстововой
-	if strings.LastIndex(tp, `image`) == -1 && strings.LastIndex(tp, `text`) == -1 {
-		rw.response.Header().Set("Content-Disposition", "attachment; filename = "+filepath.Base(pathFile))
-	}
-	// Заголовки
-	rw.generalHeaderSet(tp, int64(len(data)), http.StatusOK)
-	// Тело документа
+	rw.generalHeaderSet(fileName, len(data), http.StatusOK)
 	_, _ = rw.response.Write(data)
 }
 
 // Reader ответ
-func (rw *Response) Reader(data io.Reader, dataLen int64, fileName, mimeType string, status int) {
-	// Аттач если документ не картинка и не текстововой
-	if strings.LastIndex(mimeType, `image`) == -1 && strings.LastIndex(mimeType, `text`) == -1 {
-		rw.response.Header().Set("Content-Disposition", "attachment; filename = "+fileName)
-	}
-	// Заголовки
-	rw.generalHeaderSet(mimeType, dataLen, status)
-	// Тело документа
+func (rw *Response) Reader(data io.Reader, fileName string, status int) {
+	rw.generalHeaderSet(fileName, 0, status)
 	_, _ = io.Copy(rw.response, data)
 }
 
 // Bytes ответ
 func (rw *Response) Bytes(data []byte, fileName string) {
-	l := strings.Split(fileName, ".")
-	mimeType := mime.TypeByExtension("." + l[len(l)-1])
-
-	// Аттач если документ не картинка и не текстововой
-	if strings.LastIndex(mimeType, `image`) == -1 && strings.LastIndex(mimeType, `text`) == -1 {
-		rw.response.Header().Set("Content-Disposition", "attachment; filename = "+filepath.Base(fileName))
-	}
-	// Заголовки
-	rw.generalHeaderSet(mimeType, int64(len(data)), http.StatusOK)
-	// Тело документа
+	rw.generalHeaderSet(fileName, len(data), http.StatusOK)
 	_, _ = rw.response.Write(data)
 }
 
@@ -245,7 +209,7 @@ func (rw *Response) Redirect302(redirectURL string) {
 }
 
 // generalHeaderSet общие заголовки любого ответа
-func (rw *Response) generalHeaderSet(contentTyp string, l int64, status int) {
+func (rw *Response) generalHeaderSet(fileName string, l, status int) {
 	t := time.Now()
 	// запрет кеширования
 	rw.response.Header().Set("Cache-Control", "no-cache, must-revalidate")
@@ -253,12 +217,21 @@ func (rw *Response) generalHeaderSet(contentTyp string, l int64, status int) {
 	rw.response.Header().Set("Date", t.Format(time.RFC3339))
 	rw.response.Header().Set("Last-Modified", t.Format(time.RFC3339))
 	// размер и тип контента
-	rw.response.Header().Set("Content-Type", contentTyp)
-
 	if l > 0 {
 		rw.response.Header().Set("Content-Length", fmt.Sprintf("%d", l))
 	}
-
+	tp := `application/octet-stream`
+	ext := strings.Split(fileName, ".")
+	if m := mime.TypeByExtension("." + ext[len(ext)-1]); m != `` {
+		tp = m
+	}
+	rw.response.Header().Set("Content-Type", tp)
+	//
+	if !strings.Contains(tp, `image`) &&
+		!strings.Contains(tp, `text`) &&
+		!strings.Contains(tp, `json`) {
+		rw.response.Header().Set("Content-Disposition", "attachment; filename = "+filepath.Base(fileName))
+	}
 	// status
 	rw.response.WriteHeader(status)
 }
@@ -283,18 +256,10 @@ func (rw *Response) UploadFiles(dir string) ([]string, error) {
 		} else if err != nil {
 			return nil, errs.NewBadRequest(err, "ошибка получения файла")
 		}
-
-		formName := part.FormName()
-		if formName == "" {
-			continue
-		}
-
 		fileName := part.FileName()
 		if fileName == "" {
 			continue
 		}
-
-		var read int64
 
 		l := strings.Split(fileName, ".")
 		l[0] += time.Now().Format("_20060102150405")
@@ -306,6 +271,7 @@ func (rw *Response) UploadFiles(dir string) ([]string, error) {
 		}
 
 		buffer := make([]byte, 100000)
+		var read int
 		for {
 			n, err := part.Read(buffer)
 			if err != nil && err != io.EOF {
@@ -316,11 +282,8 @@ func (rw *Response) UploadFiles(dir string) ([]string, error) {
 			if n == 0 {
 				break
 			}
-
-			read += int64(n)
-
-			_, err = dst.Write(buffer[:n])
-			if err != nil {
+			read += n
+			if _, err = dst.Write(buffer[:n]); err != nil {
 				_ = dst.Close()
 				_ = os.Remove(path)
 				return nil, errs.NewBadRequest(err, "ошибка записи в файл")
@@ -333,6 +296,52 @@ func (rw *Response) UploadFiles(dir string) ([]string, error) {
 		return nil, errs.NewBadRequest(errors.New("request is empty"))
 	}
 	return result, nil
+}
+
+// UploadBuffer загрузка файлов на сервер
+func (rw *Response) UploadBuffer() (fileData map[string]*bytes.Buffer, fileName []string, err error) {
+	mr, err := rw.Request.MultipartReader()
+	if err != nil {
+		return nil, nil, errs.NewBadRequest(err, "ошибка получения информации о загрузке")
+	}
+
+	fileData = map[string]*bytes.Buffer{}
+	fileName = make([]string, 0, 1)
+	for {
+		part, err := mr.NextPart()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			return nil, nil, errs.NewBadRequest(err, "ошибка получения файла")
+		}
+		fName := part.FileName()
+		if fName == "" {
+			continue
+		}
+
+		dst := &bytes.Buffer{}
+		buffer := make([]byte, 100000)
+		var read int
+		for {
+			n, err := part.Read(buffer)
+			if err != nil && err != io.EOF {
+				return nil, nil, errs.NewBadRequest(err, "ошибка чтения файла")
+			}
+			if n == 0 {
+				break
+			}
+			read += n
+			if _, err = dst.Write(buffer[:n]); err != nil {
+				return nil, nil, errs.NewBadRequest(err, "ошибка записи в файл")
+			}
+		}
+		fileData[fName] = dst
+		fileName = append(fileName, fName)
+	}
+	if len(fileData) == 0 {
+		return nil, nil, errs.NewBadRequest(errors.New("request is empty"))
+	}
+	return fileData, fileName, nil
 }
 
 func (rw *Response) GetUser() (*User, error) {

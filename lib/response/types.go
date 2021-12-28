@@ -21,7 +21,6 @@ type User struct {
 	Roles []enum.Role
 }
 
-// interface for responses with an error
 type Error interface {
 	Error() string
 	Response() string

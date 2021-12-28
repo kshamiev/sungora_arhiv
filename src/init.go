@@ -66,6 +66,7 @@ func initGeneral(router *chi.Mux) {
 	router.Route("/api/sun/general", func(router chi.Router) {
 		router.Get("/ping", hh.Ping)
 		router.Get("/version", hh.Version)
+		router.Post("/file/upload", hh.UploadFile)
 	})
 }
 
