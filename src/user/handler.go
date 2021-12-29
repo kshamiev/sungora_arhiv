@@ -14,6 +14,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 type Handler struct {
@@ -34,7 +35,10 @@ func NewHandler() *Handler {
 func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	list, err := mdsun.Users().All(r.Context(), hh.db.DB())
+	list, err := mdsun.Users(
+		qm.OrderBy(mdsun.UserColumns.CreatedAt+" ASC"),
+		qm.Offset(0), qm.Limit(20),
+	).All(r.Context(), hh.db.DB())
 	if err != nil {
 		rw.JSONError(errs.NewBadRequest(err))
 		return

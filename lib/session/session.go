@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-// TODO Mutex
 type Session struct {
 	t    time.Time
 	data map[string]interface{}

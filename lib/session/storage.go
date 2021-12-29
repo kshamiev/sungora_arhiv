@@ -2,13 +2,13 @@ package session
 
 import (
 	"net/http"
+	"sync"
 	"time"
 
 	"sungora/lib/response"
 	"sungora/lib/typ"
 )
 
-// TODO Mutex
 type SessionBus map[string]*Session
 
 func NewSessionBus(sessionTimeout time.Duration) SessionBus {
@@ -29,7 +29,11 @@ func (bus SessionBus) controlSessionBus(sessionTimeout time.Duration) {
 	}
 }
 
+var mu sync.Mutex
+
 func (bus SessionBus) Get(key string) interface{} {
+	mu.Lock()
+	defer mu.Unlock()
 	if elm, ok := bus[key]; ok {
 		if _, ok := elm.data[key]; ok {
 			return elm.data[key]
@@ -44,11 +48,15 @@ func (bus SessionBus) Set(key string, val interface{}) {
 	elm.data = map[string]interface{}{
 		key: val,
 	}
+	mu.Lock()
 	bus[key] = elm
+	mu.Unlock()
 }
 
 func (bus SessionBus) Del(key string) {
+	mu.Lock()
 	delete(bus, key)
+	mu.Unlock()
 }
 
 // GetSessionCookie Получение сессии по куке пришедшей из запроса
@@ -65,6 +73,8 @@ func (bus SessionBus) GetSessionCookie(
 
 // GetSession Получение сессии по токену
 func (bus SessionBus) GetSession(token string) *Session {
+	mu.Lock()
+	defer mu.Unlock()
 	if elm, ok := bus[token]; ok {
 		elm.t = time.Now()
 		return elm

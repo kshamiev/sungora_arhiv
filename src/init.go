@@ -72,7 +72,7 @@ func initGeneral(router *chi.Mux) {
 
 func initUser(router *chi.Mux) {
 	hh := user.NewHandler()
-	router.Get("/api/sun/users", hh.Test)
+	router.Get("/api/sun/users", hh.GetSlice)
 	router.Route("/api/sun/user/{id}", func(router chi.Router) {
 		router.Post("/", hh.Post)
 		router.Put("/", hh.Put)
