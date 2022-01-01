@@ -242,7 +242,7 @@ func CreateProtoServiceFile(d, pkgProto string) (proto string) {
 		}
 		proto = string(data)
 		proto = strings.ReplaceAll(proto, "TPLpackage", pkgProto)
-		proto = strings.ReplaceAll(proto, "TPLservice", strings.Title(pkgProto))
+		proto = strings.ReplaceAll(proto, "TPLservice", strings.Title(strings.Split(pkgProto, "-")[1]))
 		proto = strings.ReplaceAll(proto, "types.proto", filepath.Base(d)+"/"+pkgProto+"/types.proto")
 	}
 	return proto

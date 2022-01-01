@@ -1,8 +1,8 @@
 syntax = "proto3";
 package TPLpackage;
 option go_package = "./;TPLpackage";
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
+import "services/generate/google/protobuf/timestamp.proto";
+import "services/generate/google/protobuf/empty.proto";
 
 message Test {
   string text = 1;
