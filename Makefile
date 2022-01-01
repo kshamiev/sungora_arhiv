@@ -9,7 +9,9 @@ default: help
 
 # Сваггер
 swag:
-	swag i --parseVendor -o template/swagger;
+	swag i --parseVendor -o src/config;
+	@rm -f src/config/swagger.json
+	@rm -f src/config/swagger.yaml
 .PHONY: swag
 
 # FMT & GOIMPORT
@@ -34,12 +36,12 @@ com:
 
 # Запуск в режиме разработки
 run: com
-	$(DIR)/bin/app -c conf/config.yaml;
+	bin/app -c conf/config.yaml;
 .PHONY: run
 
 # Запуск в режиме отладки
 dev: swag fmt lint test com
-	$(DIR)/bin/app -c conf/config.yaml;
+	bin/app -c conf/config.yaml;
 .PHONY: dev
 
 # Создание шаблона миграции

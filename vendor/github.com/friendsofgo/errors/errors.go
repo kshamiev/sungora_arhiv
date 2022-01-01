@@ -1,3 +1,4 @@
+//go:build go1.13
 // +build go1.13
 
 // Original package created by Dave Cheney

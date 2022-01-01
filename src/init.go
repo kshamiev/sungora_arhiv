@@ -15,7 +15,6 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"sungora/lib/request"
-	_ "sungora/template/swagger"
 )
 
 // Init инициализация приложения
