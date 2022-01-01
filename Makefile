@@ -83,16 +83,16 @@ dbdump-a:
 .PHONY: dbdump-a
 
 # Инженеринг моделей по существующей структуре БД
-ser-sun:
+ser-sample:
 	@go run services/generate/main.go -step sample-1
-	@sqlboiler -c conf/sqlboiler_sun.yaml -p mdsample -o services/mdsample --no-auto-timestamps --no-tests --wipe psql
+	@sqlboiler -c conf/sqlboiler_sample.yaml -p mdsample -o services/mdsample --no-auto-timestamps --no-tests --wipe psql
 	@go run services/generate/main.go -step sample-2
 	@go run services/generate/main.go -step sample-3
 	@cd $(DIR)/services && goimports -w .
 	@go run services/generate/main.go -step sample-4
 	@protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative services/pbsample/*.proto;
 	@cd $(DIR)/services && go fmt ./... && goimports -w .
-.PHONY: ser-sun
+.PHONY: ser-sample
 
 # Help
 h:
@@ -110,7 +110,7 @@ h:
 	@echo "    mig-up		- Миграция вверх до конца"
 	@echo "    dbinit		- Восстановление БД из дампа bin/dump.sql (БД должна существовать)"
 	@echo "    dbdump		- Создание дампа БД bin/dump.sql"
-	@echo "    sersun:		- Инженеринг типов по БД и работа с GRPC в парадигме масштабируемого сервиса"
+	@echo "    ser-sample:		- Инженеринг типов по БД и работа с GRPC в парадигме масштабируемого сервиса"
 
 .PHONY: h
 help: h

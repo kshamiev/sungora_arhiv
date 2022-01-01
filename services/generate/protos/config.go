@@ -2,7 +2,6 @@ package protos
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -42,7 +41,6 @@ var serviceName string
 func Init() (stepRun int, dir, pkgType, pkgProto string) {
 	step := flag.String("step", "sample-1", "generate step: serviceName-stepNumber(1-4)")
 	flag.Parse()
-	fmt.Println(*step)
 	l := strings.Split(*step, "-")
 	if len(l) != 2 {
 		flag.PrintDefaults()
