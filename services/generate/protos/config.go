@@ -2,9 +2,12 @@ package protos
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
+	"strings"
 )
 
 // FileListCustom Файлы кодовую часть которых нужно сохранить в неизменном виде
@@ -34,15 +37,23 @@ const (
 // При первой работе удаляются все файлы кроме этого.
 var GenerateConfig = map[string][]interface{}{}
 
+var serviceName string
+
 func Init() (stepRun int, dir, pkgType, pkgProto string) {
-	md := flag.String("md", "", "package type name (folder)")
-	pb := flag.String("pb", "", "package proto name (folder)")
-	step := flag.Int("step", 1, "generate step")
+	step := flag.String("step", "sample-1", "generate step: serviceName-stepNumber(1-4)")
 	flag.Parse()
-	if *md == "" || *pb == "" {
+	fmt.Println(*step)
+	l := strings.Split(*step, "-")
+	if len(l) != 2 {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
+	n, err := strconv.Atoi(l[1])
+	if err != nil || n < 1 || n > 4 {
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
+	serviceName = l[0]
 	_, currentFile, _, _ := runtime.Caller(0)
-	return *step, filepath.Dir(filepath.Dir(filepath.Dir(currentFile))), *md, *pb
+	return n, filepath.Dir(filepath.Dir(filepath.Dir(currentFile))), "md" + serviceName, "pb" + serviceName
 }

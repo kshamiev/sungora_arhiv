@@ -9,7 +9,7 @@ import (
 	"sungora/lib/storage"
 	"sungora/lib/storage/pgsql"
 	"sungora/lib/typ"
-	"sungora/services/mdsun"
+	"sungora/services/mdsample"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
@@ -22,7 +22,7 @@ func NewModel(st *pgsql.Storage) *Model {
 	return &Model{st}
 }
 
-func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsun.User, error) {
+func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsample.User, error) {
 	s := app.NewSpan(ctx)
 	s.StringAttribute("param1", "fantik")
 	s.Int64Attribute("param2", 34)
@@ -30,7 +30,7 @@ func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsun.User, error) {
 	s.BoolAttribute("param4", true)
 	defer s.End()
 
-	us := &mdsun.User{}
+	us := &mdsample.User{}
 
 	// sqlx
 	if err := mm.st.DB().GetContext(ctx, us, "SELECT * FROM users WHERE id = $1", id); err != nil {

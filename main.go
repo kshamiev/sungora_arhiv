@@ -12,7 +12,6 @@ import (
 	"sungora/lib/storage/pgsql"
 	"sungora/lib/web"
 	"sungora/lib/worker"
-	"sungora/services/pbsun"
 	"sungora/src"
 	"sungora/src/client"
 	"sungora/src/config"
@@ -66,16 +65,15 @@ func main() {
 
 	// Server GRPC
 	var grpcServer *web.GRPCServer
-	if grpcServer, err = web.NewGRPCServer(&cfg.GRPCServer); err != nil {
-		lg.Fatal(errs.NewBadRequest(err))
+	if grpcServer, err = service.NewSampleServer(&cfg.GRPCServer); err != nil {
+		lg.Fatal(err)
 	}
-	pbsun.RegisterSunServer(grpcServer.Ser, service.NewSunServer())
 	defer grpcServer.Close()
 	lg.Info("start grpc server: ", grpcServer.Addr)
 
 	// Client GRPC
 	var grpcClient *web.GRPCClient
-	if grpcClient, err = client.InitSunClient(&cfg.GRPCClient); err != nil {
+	if grpcClient, err = client.InitSampleClient(&cfg.GRPCClient); err != nil {
 		lg.Fatal(err)
 	}
 	defer grpcClient.Close()

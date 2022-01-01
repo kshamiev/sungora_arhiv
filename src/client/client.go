@@ -3,20 +3,20 @@ package client
 import (
 	"sungora/lib/errs"
 	"sungora/lib/web"
-	"sungora/services/pbsun"
+	"sungora/services/pbsample"
 )
 
-var sunClient pbsun.SunClient
+var sampleClient pbsample.SampleClient
 
-func InitSunClient(cfg *web.GRPCConfig) (*web.GRPCClient, error) {
+func InitSampleClient(cfg *web.GRPCConfig) (*web.GRPCClient, error) {
 	grpcClient, err := web.NewGRPCClient(cfg)
 	if err != nil {
 		return nil, errs.NewBadRequest(err)
 	}
-	sunClient = pbsun.NewSunClient(grpcClient.Conn)
+	sampleClient = pbsample.NewSampleClient(grpcClient.Conn)
 	return grpcClient, nil
 }
 
-func GistSunGRPC() pbsun.SunClient {
-	return sunClient
+func GistSampleGRPC() pbsample.SampleClient {
+	return sampleClient
 }

@@ -114,7 +114,7 @@
                     "200": {
                         "description": "пользователь",
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     },
                     "400": {
@@ -145,7 +145,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 }
@@ -169,7 +169,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 ],
@@ -177,7 +177,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 }
@@ -194,7 +194,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 ],
@@ -202,7 +202,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 }
@@ -245,7 +245,7 @@
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/definitions/mdsun.User"
+                                    "$ref": "#/definitions/mdsample.User"
                                 }
                             }
                         }
@@ -276,7 +276,7 @@
         }
     },
     "definitions": {
-        "mdsun.User": {
+        "mdsample.User": {
             "type": "object",
             "properties": {
                 "alias": {

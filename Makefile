@@ -84,13 +84,13 @@ dbdump-a:
 
 # Инженеринг моделей по существующей структуре БД
 ser-sun:
-	@go run services/generate/main.go -step 1 -md mdsun -pb pbsun
-	@sqlboiler -c conf/sqlboiler_sun.yaml -p mdsun -o services/mdsun --no-auto-timestamps --no-tests --wipe psql
-	@go run services/generate/main.go -step 2 -md mdsun -pb pbsun
-	@go run services/generate/main.go -step 3 -md mdsun -pb pbsun
+	@go run services/generate/main.go -step sample-1
+	@sqlboiler -c conf/sqlboiler_sun.yaml -p mdsample -o services/mdsample --no-auto-timestamps --no-tests --wipe psql
+	@go run services/generate/main.go -step sample-2
+	@go run services/generate/main.go -step sample-3
 	@cd $(DIR)/services && goimports -w .
-	@go run services/generate/main.go -step 4 -md mdsun -pb pbsun
-	@protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative services/pbsun/*.proto;
+	@go run services/generate/main.go -step sample-4
+	@protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative services/pbsample/*.proto;
 	@cd $(DIR)/services && go fmt ./... && goimports -w .
 .PHONY: ser-sun
 

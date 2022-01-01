@@ -125,7 +125,7 @@ var doc = `{
                     "200": {
                         "description": "пользователь",
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     },
                     "400": {
@@ -156,7 +156,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 }
@@ -180,7 +180,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 ],
@@ -188,7 +188,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 }
@@ -205,7 +205,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 ],
@@ -213,7 +213,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsun.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 }
@@ -256,7 +256,7 @@ var doc = `{
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/definitions/mdsun.User"
+                                    "$ref": "#/definitions/mdsample.User"
                                 }
                             }
                         }
@@ -287,7 +287,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "mdsun.User": {
+        "mdsample.User": {
             "type": "object",
             "properties": {
                 "alias": {

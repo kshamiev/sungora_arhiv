@@ -1,0 +1,10 @@
+syntax = "proto3";
+package pbsample;
+option go_package = "./;pbsample";
+import "services/generate/google/protobuf/empty.proto";
+import "services/pbsample/types.proto";
+
+service Sample {
+  rpc Ping (google.protobuf.Empty) returns (Test) {
+  }
+}
