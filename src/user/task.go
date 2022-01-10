@@ -15,8 +15,8 @@ type TaskOnlineOff struct {
 	st *pgsql.Storage
 }
 
-func NewTaskOnlineOff() *TaskOnlineOff {
-	return &TaskOnlineOff{pgsql.Gist()}
+func NewTaskOnlineOff(st *pgsql.Storage) *TaskOnlineOff {
+	return &TaskOnlineOff{st: st}
 }
 
 func (task *TaskOnlineOff) Action(ctx context.Context) error {

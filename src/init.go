@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"net/http/pprof"
 
+	"sungora/lib/app"
 	"sungora/lib/request"
+	"sungora/lib/storage/pgsql"
 	"sungora/lib/worker"
-	"sungora/src/app/config"
 	"sungora/src/chat"
 	"sungora/src/general"
 	"sungora/src/user"
@@ -17,7 +18,7 @@ import (
 )
 
 // Init инициализация приложения
-func Init(cfg *config.App) *chi.Mux {
+func Init(cfg *app.Config) *chi.Mux {
 	mid := request.NewMid(cfg.Token, cfg.SigningKey, cfg.DirStatic)
 
 	router := chi.NewRouter()
@@ -88,5 +89,5 @@ func initUser(router *chi.Mux) {
 	})
 	router.Get("/api/sun/user-test/{id}", hh.Test)
 	// Worker
-	worker.AddStart(user.NewTaskOnlineOff())
+	worker.AddStart(user.NewTaskOnlineOff(pgsql.Gist()))
 }

@@ -1,7 +1,10 @@
 package config
 
 import (
+	"time"
+
 	"sungora/lib/app"
+	"sungora/lib/typ"
 
 	"sungora/lib/logger"
 	"sungora/lib/storage/pgsql"
@@ -11,7 +14,7 @@ import (
 const Version = "v1.10.100"
 
 type Config struct {
-	App        App                  `yaml:"app"`
+	App        app.Config           `yaml:"app"`
 	Lg         logger.Config        `yaml:"lg"`
 	ServeHTTP  web.HttpServerConfig `yaml:"http"`
 	Postgresql pgsql.Config         `yaml:"postgresql"`
@@ -34,6 +37,7 @@ func Init(fileConf string, cfg *Config) error {
 		return err
 	}
 	cfg.App.SetDefault()
+	cfg.App.Version = Version + " " + time.Now().Format(typ.TimeFormatDMGHIS)
 	config = cfg
 	return nil
 }
