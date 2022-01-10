@@ -9,9 +9,9 @@ default: help
 
 # Сваггер
 swag:
-	swag i --parseVendor -o src/config;
-	@rm -f src/config/swagger.json
-	@rm -f src/config/swagger.yaml
+	swag i --parseVendor -o src/app/config;
+	@rm -f src/app/config/swagger.json
+	@rm -f src/app/config/swagger.yaml
 .PHONY: swag
 
 # FMT & GOIMPORT

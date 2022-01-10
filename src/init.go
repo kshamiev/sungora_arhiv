@@ -27,17 +27,17 @@ func Init(cfg *config.App) *chi.Mux {
 	router.Use(mid.Observation())
 	router.NotFound(mid.Static(cfg.DirWww))
 
+	// business
+	initChat(router)
+	initGeneral(router)
+	initUser(router)
+
 	// swagger
 	router.Get("/api/sun/swag/*", httpSwagger.Handler())
 
 	// static
 	router.Handle("/gorilla/*", http.FileServer(http.Dir(cfg.DirWww)))
 	router.Handle("/assets/*", http.FileServer(http.Dir(cfg.DirWww)))
-
-	// business
-	initGeneral(router)
-	initUser(router)
-	initChat(router)
 
 	// pprof
 	router.Get("/api/sun/debug/pprof/trace", func(w http.ResponseWriter, r *http.Request) {
