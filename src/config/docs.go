@@ -274,10 +274,42 @@ var doc = `{
                 "tags": [
                     "Websocket"
                 ],
-                "summary": "пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)",
+                "summary": "пример работы с веб-сокетом (http://localhost:8080/gorilla/index.html)",
                 "responses": {
                     "101": {
                         "description": "Switching Protocols to websocket",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/index.hml": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "пример динамического контента (html)",
+                "responses": {
+                    "200": {
+                        "description": "html страница",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/page/index.html": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "пример динамического контента (html)",
+                "responses": {
+                    "200": {
+                        "description": "html страница",
                         "schema": {
                             "type": "string"
                         }

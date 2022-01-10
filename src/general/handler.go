@@ -5,7 +5,10 @@ import (
 
 	"sungora/lib/logger"
 	"sungora/lib/response"
+	"sungora/lib/tpl"
 	"sungora/src/config"
+
+	"github.com/shopspring/decimal"
 )
 
 type Handler struct {
@@ -35,6 +38,67 @@ func (hh *Handler) Version(w http.ResponseWriter, r *http.Request) {
 	rw.JSON(config.Get().App.Version)
 }
 
+// PageIndex пример динамического контента (html)
+// @Tags General
+// @Summary пример динамического контента (html)
+// @Success 200 {string} string "html страница"
+// @Router /index.hml [get]
+func (hh *Handler) PageIndex(w http.ResponseWriter, r *http.Request) {
+	rw := response.New(r, w)
+	if r.URL.Path == "/" {
+		r.URL.Path = "index.html"
+	}
+
+	goods := Goods{
+		{ID: 37, Name: "Item 10", Price: decimal.NewFromFloat(23.76)},
+		{ID: 49, Name: "Item 2", Price: decimal.NewFromFloat(87.42)},
+		{ID: 54, Name: "Item 30", Price: decimal.NewFromFloat(38.23)},
+	}
+
+	variable := map[string]interface{}{
+		"Title": "PageIndex",
+		"Goods": goods,
+	}
+
+	ret, err := tpl.ExecuteStorage("index.html", variable)
+	if err != nil {
+		logger.Gist(r.Context()).Error(err)
+		rw.Bytes([]byte("ошибка шаблона"), "error.html", http.StatusBadRequest)
+		return
+	}
+
+	rw.Bytes(ret.Bytes(), r.URL.Path, http.StatusOK)
+}
+
+// PagePage пример динамического контента (html)
+// @Tags General
+// @Summary пример динамического контента (html)
+// @Success 200 {string} string "html страница"
+// @Router /page/index.html [get]
+func (hh *Handler) PagePage(w http.ResponseWriter, r *http.Request) {
+	rw := response.New(r, w)
+
+	goods := Goods{
+		{ID: 37, Name: "Item 10", Price: decimal.NewFromFloat(23.76)},
+		{ID: 49, Name: "Item 2", Price: decimal.NewFromFloat(87.42)},
+		{ID: 54, Name: "Item 30", Price: decimal.NewFromFloat(38.23)},
+	}
+
+	variable := map[string]interface{}{
+		"Title": "PagePage",
+		"Goods": goods,
+	}
+
+	ret, err := tpl.ExecuteStorage("page/page.html", variable)
+	if err != nil {
+		logger.Gist(r.Context()).Error(err)
+		rw.Bytes([]byte("ошибка шаблона"), "error.html", http.StatusBadRequest)
+		return
+	}
+
+	rw.Bytes(ret.Bytes(), r.URL.Path, http.StatusOK)
+}
+
 // UploadFile загрузка файла на сервер
 // @Tags General
 // @Summary загрузка файла на сервер
@@ -54,5 +118,5 @@ func (hh *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
 	lg := logger.Gist(r.Context())
 	lg.Info(dataName[0])
 
-	rw.Bytes(data[dataName[0]].Bytes(), dataName[0])
+	rw.Bytes(data[dataName[0]].Bytes(), dataName[0], http.StatusOK)
 }

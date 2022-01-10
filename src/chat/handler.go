@@ -24,9 +24,9 @@ func NewHandler() *Handler {
 	}
 }
 
-// WebSocketSample пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
+// WebSocketSample пример работы с веб-сокетом (http://localhost:8080/gorilla/index.html)
 // @Tags Websocket
-// @Summary пример работы с веб-сокетом (http://localhost:8080/template/gorilla/index.html)
+// @Summary пример работы с веб-сокетом (http://localhost:8080/gorilla/index.html)
 // @Success 101 {string} string "Switching Protocols to websocket"
 // @Security ApiKeyAuth
 // @Router /api/sun/websocket/gorilla/{id} [get]

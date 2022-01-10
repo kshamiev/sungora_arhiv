@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/pprof"
 
+	"sungora/lib/request"
 	"sungora/lib/worker"
 	"sungora/src/chat"
 	"sungora/src/config"
@@ -13,8 +14,6 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	httpSwagger "github.com/swaggo/http-swagger"
-
-	"sungora/lib/request"
 )
 
 // Init инициализация приложения
@@ -26,12 +25,14 @@ func Init(cfg *config.App) *chi.Mux {
 	router.Use(middleware.Recoverer)
 	router.Use(mid.Logger())
 	router.Use(mid.Observation())
-
-	// static
-	router.Handle("/template/*", http.FileServer(http.Dir(cfg.DirWork)))
+	router.NotFound(mid.Static(cfg.DirWww))
 
 	// swagger
 	router.Get("/api/sun/swag/*", httpSwagger.Handler())
+
+	// static
+	router.Handle("/gorilla/*", http.FileServer(http.Dir(cfg.DirWww)))
+	router.Handle("/assets/*", http.FileServer(http.Dir(cfg.DirWww)))
 
 	// business
 	initGeneral(router)
@@ -57,11 +58,17 @@ func Init(cfg *config.App) *chi.Mux {
 
 func initChat(router *chi.Mux) {
 	hh := chat.NewHandler()
+	// API
 	router.HandleFunc("/api/sun/websocket/gorilla/{id}", hh.WebSocketSample)
 }
 
 func initGeneral(router *chi.Mux) {
 	hh := general.NewHandler()
+	// generate html
+	router.Get("/", hh.PageIndex)
+	router.Get("/index.html", hh.PageIndex)
+	router.Get("/page/*", hh.PagePage)
+	// API
 	router.Route("/api/sun/general", func(router chi.Router) {
 		router.Get("/ping", hh.Ping)
 		router.Get("/version", hh.Version)
@@ -71,6 +78,7 @@ func initGeneral(router *chi.Mux) {
 
 func initUser(router *chi.Mux) {
 	hh := user.NewHandler()
+	// API
 	router.Get("/api/sun/users", hh.GetSlice)
 	router.Route("/api/sun/user/{id}", func(router chi.Router) {
 		router.Post("/", hh.Post)
@@ -79,6 +87,6 @@ func initUser(router *chi.Mux) {
 		router.Delete("/", hh.Delete)
 	})
 	router.Get("/api/sun/user-test/{id}", hh.Test)
-
+	// Worker
 	worker.AddStart(user.NewTaskOnlineOff())
 }

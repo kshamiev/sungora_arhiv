@@ -4,6 +4,7 @@ app:
   domain: "localhost"
   mode: "dev"
   dirStatic: "/template"
+  dirWww: "/www"
   signingKey: "xxx-xxx-xxx"
 
 lg:

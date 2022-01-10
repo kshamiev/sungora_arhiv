@@ -88,10 +88,10 @@ func (mid *Mid) Cors() *cors.Cors {
 }
 
 // Static статика или отдача существующего файла по запросу
-func (mid *Mid) Static(p string) http.HandlerFunc {
+func (mid *Mid) Static(pathWww string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		rw := response.New(r, w)
-		rw.Static(p + r.URL.Path)
+		rw.Static(pathWww + r.URL.Path)
 	}
 }
 

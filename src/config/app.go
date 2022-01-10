@@ -14,6 +14,7 @@ type App struct {
 	Mode           string        `yaml:"mode"`           //
 	DirWork        string        `yaml:"dirWork"`        //
 	DirStatic      string        `yaml:"dirStatic"`      //
+	DirWww         string        `yaml:"dirWww"`         //
 	Version        string        `json:"version"`        //
 	SigningKey     string        `yaml:"signingKey"`     //
 }
@@ -44,6 +45,7 @@ func (cfg *App) SetDefault() {
 		cfg.DirWork = strings.Join(sl, sep)
 	}
 	cfg.DirStatic = cfg.DirWork + cfg.DirStatic
+	cfg.DirWww = cfg.DirWork + cfg.DirWww
 
 	// сессия
 	if cfg.Token == "" {

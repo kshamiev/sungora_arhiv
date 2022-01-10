@@ -2,13 +2,16 @@ package tpl
 
 import (
 	"text/template"
+	"time"
 )
 
 var tplStore = map[string]*template.Template{}
-var Functions = map[string]interface{}{
-	"Test": Test,
+var tplStoreInfo = map[string]time.Time{}
+
+var functions = map[string]interface{}{
+	"TplTest": TplTest,
 }
 
-func Test(name string) string {
+func TplTest(name string) string {
 	return "<H1>" + name + "</H1>"
 }

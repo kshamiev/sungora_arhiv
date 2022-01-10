@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/storage/pgsql"
+	"sungora/lib/tpl"
 	"sungora/lib/web"
 	"sungora/lib/worker"
 	"sungora/src"
@@ -80,6 +82,11 @@ func main() {
 
 	// Workflow
 	worker.Init()
+	task := tpl.NewTaskTemplateParse(cfg.App.DirWww)
+	if err = task.Action(context.Background()); err != nil {
+		lg.Fatal(err)
+	}
+	worker.AddStart(task)
 	defer worker.CloseWait()
 
 	// Server Web & Handlers

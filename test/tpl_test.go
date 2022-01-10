@@ -1,16 +1,35 @@
-package tpl
+package test
 
 import (
-	"fmt"
 	"testing"
+
+	"sungora/lib/tpl"
 
 	"github.com/shopspring/decimal"
 )
 
-func TestInit(t *testing.T) {
-	Init("../../template")
-	for _, i := range GetTplIndex() {
-		if _, err := Execute(i, nil); err != nil {
+func TestStorage(t *testing.T) {
+	cfg, ctx := GetEnv()
+
+	task := tpl.NewTaskTemplateParse(cfg.App.DirWww)
+	if err := task.Action(ctx); err != nil {
+		t.Fatal(err)
+	}
+
+	goods := Goods{
+		{ID: 37, Name: "Item 10", Price: decimal.NewFromFloat(23.76)},
+		{ID: 49, Name: "Item 2", Price: decimal.NewFromFloat(87.42)},
+		{ID: 54, Name: "Item 30", Price: decimal.NewFromFloat(38.23)},
+	}
+
+	variable := map[string]interface{}{
+		"Title": "Fantik",
+		"Goods": goods,
+	}
+
+	for _, i := range tpl.GetTplIndex() {
+		t.Log(i)
+		if _, err := tpl.ExecuteStorage(i, variable); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -28,11 +47,10 @@ func TestTpl(t *testing.T) {
 		"Goods": goods,
 	}
 
-	data, err := ParseText(testTpl, Functions, variable)
+	_, err := tpl.ExecuteString(testTpl, nil, variable)
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println(data.String())
 }
 
 type Good struct {
@@ -60,7 +78,7 @@ const testTpl = `
 </head>
 <body>
 
-{{Test .Title}}
+{{TplTest .Title}}
 <table cellspacing="2" cellpadding="2">
 	{{range .Goods}}
 	{{if eq .Name "Item 2"}}

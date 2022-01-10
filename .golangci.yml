@@ -58,8 +58,10 @@ run:
   skip-dirs:
     - bin
     - conf
+    - dev
     - doc
     - migration
     - template
+    - vendor
     - www
   timeout: 5m

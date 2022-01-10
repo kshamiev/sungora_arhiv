@@ -191,8 +191,8 @@ func (rw *Response) Reader(data io.Reader, fileName string, status int) {
 }
 
 // Bytes ответ
-func (rw *Response) Bytes(data []byte, fileName string) {
-	rw.generalHeaderSet(fileName, len(data), http.StatusOK)
+func (rw *Response) Bytes(data []byte, fileName string, status int) {
+	rw.generalHeaderSet(fileName, len(data), status)
 	_, _ = rw.response.Write(data)
 }
 
