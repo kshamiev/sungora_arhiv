@@ -8,10 +8,13 @@ import (
 	"time"
 
 	"sungora/lib/enum"
+	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/request/observability"
+	"sungora/lib/response"
+	"sungora/lib/typ"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go/v4"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/google/uuid"
@@ -19,10 +22,6 @@ import (
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/trace"
 	"google.golang.org/grpc/metadata"
-
-	"sungora/lib/errs"
-	"sungora/lib/response"
-	"sungora/lib/typ"
 )
 
 type Mid struct {

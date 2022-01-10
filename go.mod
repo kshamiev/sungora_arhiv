@@ -6,7 +6,7 @@ require (
 	contrib.go.opencensus.io/exporter/jaeger v0.2.1
 	contrib.go.opencensus.io/exporter/prometheus v0.4.0
 	contrib.go.opencensus.io/integrations/ocsql v0.1.7
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/evalphobia/logrus_sentry v0.8.2
 	github.com/friendsofgo/errors v0.9.2
 	github.com/getsentry/raven-go v0.2.0
