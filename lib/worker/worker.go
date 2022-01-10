@@ -6,12 +6,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
-	"github.com/volatiletech/sqlboiler/v4/boil"
-	"google.golang.org/grpc/metadata"
-
 	"sungora/lib/logger"
 	"sungora/lib/response"
+	"sungora/lib/typ"
+
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"google.golang.org/grpc/metadata"
 )
 
 type Task interface {
@@ -121,7 +121,7 @@ func runScheduler(task Task, ch chan bool) {
 
 // action выполнение задачи
 func action(task Task) {
-	requestID := uuid.New().String()
+	requestID := typ.UUIDNew().String()
 	ctx := context.Background()
 	lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
 

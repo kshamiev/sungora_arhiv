@@ -3,13 +3,13 @@ package request
 import (
 	"context"
 
-	"github.com/google/uuid"
+	"sungora/lib/logger"
+	"sungora/lib/response"
+	"sungora/lib/typ"
+
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
-
-	"sungora/lib/logger"
-	"sungora/lib/response"
 )
 
 func LoggerInterceptor() grpc.UnaryServerInterceptor {
@@ -27,7 +27,7 @@ func LoggerInterceptor() grpc.UnaryServerInterceptor {
 				ctx = context.WithValue(ctx, response.CtxTraceID, md.Get(response.LogTraceID)[0])
 			}
 		} else {
-			requestID := uuid.New().String()
+			requestID := typ.UUIDNew().String()
 			lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
 			ctx = logger.WithLogger(ctx, lg)
 			ctx = boil.WithDebugWriter(ctx, lg.Writer())

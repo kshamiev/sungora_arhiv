@@ -17,7 +17,6 @@ import (
 	"github.com/dgrijalva/jwt-go/v4"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
-	"github.com/google/uuid"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/trace"
@@ -151,7 +150,7 @@ func (mid *Mid) VerifyToken(token string) (*response.User, error) {
 func (mid *Mid) Logger() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			requestID := uuid.New().String()
+			requestID := typ.UUIDNew().String()
 			ctx := r.Context()
 
 			lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)

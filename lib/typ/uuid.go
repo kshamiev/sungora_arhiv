@@ -3,7 +3,7 @@ package typ
 import (
 	"database/sql/driver"
 
-	"github.com/google/uuid"
+	"github.com/gofrs/uuid"
 )
 
 type UUID struct {
@@ -11,11 +11,11 @@ type UUID struct {
 }
 
 func UUIDNew() UUID {
-	return UUID{UUID: uuid.Must(uuid.NewRandom())}
+	return UUID{UUID: uuid.Must(uuid.NewV4())}
 }
 
 func UUIDParse(s string) (UUID, error) {
-	u, err := uuid.Parse(s)
+	u, err := uuid.FromString(s)
 	if err != nil {
 		return UUID{}, err
 	}
@@ -24,7 +24,7 @@ func UUIDParse(s string) (UUID, error) {
 
 // return UUID{uuid.MustParse(s)}
 func UUIDMustParse(s string) UUID {
-	u, err := uuid.Parse(s)
+	u, err := uuid.FromString(s)
 	if err != nil {
 		return UUID{}
 	}
@@ -32,7 +32,7 @@ func UUIDMustParse(s string) UUID {
 }
 
 func (u UUID) Value() (driver.Value, error) {
-	if u.ID() == 0 {
+	if u.IsNull() {
 		return nil, nil
 	}
 	return u.String(), nil
