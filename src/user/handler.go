@@ -9,7 +9,7 @@ import (
 	"sungora/lib/storage/pgsql"
 	"sungora/lib/typ"
 	"sungora/services/mdsample"
-	"sungora/src/client"
+	"sungora/src/app/client"
 
 	"github.com/go-chi/chi"
 	"github.com/golang/protobuf/ptypes/empty"

@@ -32,7 +32,7 @@ func Unlock(ch chan os.Signal) {
 	<-ch
 }
 
-// Dump all variables to STDOUT
+// Dumper all variables to STDOUT
 // From local debug
 func Dumper(idl ...interface{}) string {
 	ret := dump(idl...)

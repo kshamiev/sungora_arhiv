@@ -15,9 +15,9 @@ import (
 	"sungora/lib/web"
 	"sungora/lib/worker"
 	"sungora/src"
-	"sungora/src/client"
-	"sungora/src/config"
-	"sungora/src/service"
+	"sungora/src/app/client"
+	"sungora/src/app/config"
+	"sungora/src/app/service"
 )
 
 // @title Sungora API

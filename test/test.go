@@ -8,7 +8,7 @@ import (
 	"runtime"
 
 	"sungora/lib/errs"
-	"sungora/src/config"
+	"sungora/src/app/config"
 )
 
 func GetEnv() (*config.Config, context.Context) {

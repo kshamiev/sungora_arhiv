@@ -6,7 +6,7 @@ import (
 	"sungora/lib/logger"
 	"sungora/lib/response"
 	"sungora/lib/tpl"
-	"sungora/src/config"
+	"sungora/src/app/config"
 
 	"github.com/shopspring/decimal"
 )

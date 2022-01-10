@@ -6,8 +6,8 @@ import (
 
 	"sungora/lib/request"
 	"sungora/lib/worker"
+	"sungora/src/app/config"
 	"sungora/src/chat"
-	"sungora/src/config"
 	"sungora/src/general"
 	"sungora/src/user"
 
