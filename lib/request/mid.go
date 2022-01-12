@@ -14,9 +14,9 @@ import (
 	"sungora/lib/response"
 	"sungora/lib/typ"
 
-	"github.com/dgrijalva/jwt-go/v4"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/trace"

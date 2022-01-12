@@ -6,6 +6,7 @@ package chi
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 	"regexp"
 	"sort"
@@ -54,10 +55,10 @@ func RegisterMethod(method string) {
 		return
 	}
 	n := len(methodMap)
-	if n > strconv.IntSize-2 {
+	if n > strconv.IntSize {
 		panic(fmt.Sprintf("chi: max number of methods reached (%d)", strconv.IntSize))
 	}
-	mt := methodTyp(2 << n)
+	mt := methodTyp(math.Exp2(float64(n)))
 	methodMap[method] = mt
 	mALL |= mt
 }
@@ -416,6 +417,8 @@ func (n *node) findRoute(rctx *Context, method methodTyp, path string) *node {
 				continue
 			}
 
+			found := false
+
 			// serially loop through each node grouped by the tail delimiter
 			for idx := 0; idx < len(nds); idx++ {
 				xn = nds[idx]
@@ -429,12 +432,10 @@ func (n *node) findRoute(rctx *Context, method methodTyp, path string) *node {
 					} else {
 						continue
 					}
-				} else if ntyp == ntRegexp && p == 0 {
-					continue
 				}
 
 				if ntyp == ntRegexp && xn.rex != nil {
-					if !xn.rex.MatchString(xsearch[:p]) {
+					if !xn.rex.Match([]byte(xsearch[:p])) {
 						continue
 					}
 				} else if strings.IndexByte(xsearch[:p], '/') != -1 {
@@ -442,36 +443,15 @@ func (n *node) findRoute(rctx *Context, method methodTyp, path string) *node {
 					continue
 				}
 
-				prevlen := len(rctx.routeParams.Values)
 				rctx.routeParams.Values = append(rctx.routeParams.Values, xsearch[:p])
 				xsearch = xsearch[p:]
-
-				if len(xsearch) == 0 {
-					if xn.isLeaf() {
-						h := xn.endpoints[method]
-						if h != nil && h.handler != nil {
-							rctx.routeParams.Keys = append(rctx.routeParams.Keys, h.paramKeys...)
-							return xn
-						}
-
-						// flag that the routing context found a route, but not a corresponding
-						// supported method
-						rctx.methodNotAllowed = true
-					}
-				}
-
-				// recursively find the next node on this branch
-				fin := xn.findRoute(rctx, method, xsearch)
-				if fin != nil {
-					return fin
-				}
-
-				// not found on this branch, reset vars
-				rctx.routeParams.Values = rctx.routeParams.Values[:prevlen]
-				xsearch = search
+				found = true
+				break
 			}
 
-			rctx.routeParams.Values = append(rctx.routeParams.Values, "")
+			if !found {
+				rctx.routeParams.Values = append(rctx.routeParams.Values, "")
+			}
 
 		default:
 			// catch-all nodes
