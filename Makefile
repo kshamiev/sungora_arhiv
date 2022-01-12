@@ -7,11 +7,17 @@ include .env
 
 default: help
 
+# Зависимости
+dep:
+	go mod tidy
+	go mod vendor
+.PHONY: dep
+
 # Сваггер
 swag:
 	swag i --parseVendor -o src/app/config;
-	@rm -f src/app/config/swagger.json
-	@rm -f src/app/config/swagger.yaml
+	rm -f src/app/config/swagger.json
+	rm -f src/app/config/swagger.yaml
 .PHONY: swag
 
 # FMT & GOIMPORT
@@ -31,7 +37,7 @@ test:
 
 # Сборка
 com:
-	go build -o $(DIR)/bin/app $(DIR);
+	go build -o bin/app .;
 .PHONY: com
 
 # Запуск в режиме разработки
@@ -40,7 +46,7 @@ run: com
 .PHONY: run
 
 # Запуск в режиме отладки
-dev: swag fmt lint test com
+dev: dep swag fmt lint test com
 	bin/app -c conf/config.yaml;
 .PHONY: dev
 
