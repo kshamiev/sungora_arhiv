@@ -8,7 +8,7 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func TestStorage(t *testing.T) {
+func TestTplStorage(t *testing.T) {
 	cfg, ctx := GetEnv()
 
 	task := tpl.NewTaskTemplateParse(cfg.App.DirWww)

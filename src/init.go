@@ -10,6 +10,7 @@ import (
 	"sungora/lib/worker"
 	"sungora/src/chat"
 	"sungora/src/general"
+	"sungora/src/miniost"
 	"sungora/src/user"
 
 	"github.com/go-chi/chi"
@@ -53,6 +54,8 @@ func Init(cfg *app.Config) *chi.Mux {
 	router.Get("/api/sun/debug/pprof/allocs", pprof.Handler("allocs").ServeHTTP)
 	router.Get("/api/sun/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
 	router.Get("/api/sun/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
+
+	worker.AddStart(miniost.NewTaskStorageClear(pgsql.Gist()))
 
 	return router
 }

@@ -18,6 +18,7 @@ import (
 	"sungora/src/app/client"
 	"sungora/src/app/config"
 	"sungora/src/app/service"
+	"sungora/src/miniost"
 )
 
 // @title Sungora API
@@ -53,17 +54,22 @@ func main() {
 	}
 	lg := logger.Init(&cfg.Lg)
 
+	// ConnectDB postgres
+	if err := pgsql.InitConnect(&cfg.Postgresql); err != nil {
+		lg.Fatal(errs.NewBadRequest(err))
+	}
+
+	// Minio
+	if err := miniost.Init(&cfg.Minio); err != nil {
+		lg.Fatal(errs.NewBadRequest(err))
+	}
+
 	// Jaeger
 	jaeger, err := logger.NewJaeger(&cfg.Jaeger)
 	if err != nil {
 		lg.Fatal(errs.NewBadRequest(err))
 	}
 	defer jaeger.Close()
-
-	// ConnectDB postgres
-	if err = pgsql.InitConnect(&cfg.Postgresql); err != nil {
-		lg.Fatal(errs.NewBadRequest(err))
-	}
 
 	// Server GRPC
 	var grpcServer *web.GRPCServer

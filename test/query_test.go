@@ -9,13 +9,6 @@ import (
 )
 
 func TestQuery(t *testing.T) {
-	// var cfg = struct {
-	// 	Postgresql pgsql.Config `json:"postgresql"`
-	// }{}
-	// if err := app.LoadConfig("conf/config.yaml", &cfg); err != nil {
-	// 	t.Fatal(err)
-	// }
-
 	cfg, ctx := GetEnv()
 
 	if err := pgsql.InitConnect(&cfg.Postgresql); err != nil {

@@ -74,6 +74,37 @@ INSERT INTO public.users
 (id, login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online, metrika, created_at, updated_at)
 VALUES (uuid_generate_v4(), 'testLogin', 0, 0, 0, 0, 0, 0, false, '{}', now(), now());
 
+CREATE TABLE public.minio_st
+(
+    id         uuid        NOT NULL DEFAULT uuid_generate_v4(), -- ИД
+    bucket     text        NOT NULL,                            -- папка хранения - тип объекта
+    object_id  uuid        NOT NULL,                            -- файл хранения - ид объекта
+    "name"     text        NOT NULL,                            -- имя файла
+    file_type  text        NOT NULL,                            -- тип файла
+    file_size  int4        NOT NULL DEFAULT 0,                  -- размер файла
+    "label"    jsonb       NULL,                                -- дополнительные параметры файла
+    user_login text        NOT NULL,                            -- пользователь
+    created_at timestamptz NOT NULL DEFAULT now(),              -- дата и время создания
+    is_confirm bool        NOT NULL DEFAULT false,              -- подтверждение загрузки
+    CONSTRAINT minio_st_pk PRIMARY KEY (id)
+);
+CREATE INDEX minio_st_bucket_idx ON public.minio_st USING btree (bucket);
+CREATE UNIQUE INDEX minio_st_object_id_idx ON public.minio_st USING btree (object_id);
+
+-- Column comments
+
+COMMENT ON COLUMN public.minio_st.id IS 'ИД';
+COMMENT ON COLUMN public.minio_st.bucket IS 'папка хранения - тип объекта';
+COMMENT ON COLUMN public.minio_st.object_id IS 'файл хранения - ид объекта';
+COMMENT ON COLUMN public.minio_st."name" IS 'имя файла';
+COMMENT ON COLUMN public.minio_st.file_type IS 'тип файла';
+COMMENT ON COLUMN public.minio_st.file_size IS 'размер файла';
+COMMENT ON COLUMN public.minio_st."label" IS 'дополнительные параметры файла';
+COMMENT ON COLUMN public.minio_st.user_login IS 'пользователь';
+COMMENT ON COLUMN public.minio_st.created_at IS 'дата и время создания';
+COMMENT ON COLUMN public.minio_st.is_confirm IS 'подтверждение загрузки';
+
+
 -- +goose Down
 -- SQL in this section is executed when the migration is rolled back.
 
@@ -84,3 +115,5 @@ DROP TABLE public.users_roles;
 DROP TABLE public.users;
 
 DROP TABLE public.roles;
+
+DROP TABLE public.minio_st;

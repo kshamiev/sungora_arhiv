@@ -25,6 +25,23 @@ message GooseDBVersionSlice {
 	repeated GooseDBVersion slice = 1;
 }
 
+message MinioST {
+	string id = 1;
+	string bucket = 2;
+	string object_id = 3;
+	string name = 4;
+	string file_type = 5;
+	int64 file_size = 6;
+	bytes label = 7;
+	string user_login = 8;
+	google.protobuf.Timestamp created_at = 9;
+	bool is_confirm = 10;
+}
+
+message MinioSTSlice {
+	repeated MinioST slice = 1;
+}
+
 message Order {
 	string id = 1;
 	string user_id = 2;

@@ -5,12 +5,14 @@ package mdsample
 
 var TableNames = struct {
 	GooseDBVersion string
+	MinioST        string
 	Orders         string
 	Roles          string
 	Users          string
 	UsersRoles     string
 }{
 	GooseDBVersion: "goose_db_version",
+	MinioST:        "minio_st",
 	Orders:         "orders",
 	Roles:          "roles",
 	Users:          "users",

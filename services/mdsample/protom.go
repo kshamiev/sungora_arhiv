@@ -46,6 +46,58 @@ func NewGooseDBVersionSliceFromProto(list []*pbsample.GooseDBVersion) []*GooseDB
 	return res
 }
 
+func NewMinioSTToProto(tt *MinioST) *pbsample.MinioST {
+	if tt == nil {
+		return nil
+	}
+	return &pbsample.MinioST{
+		Id:        tt.ID.String(),
+		Bucket:    tt.Bucket,
+		ObjectId:  tt.ObjectID.String(),
+		Name:      tt.Name,
+		FileType:  tt.FileType,
+		FileSize:  int64(tt.FileSize),
+		Label:     tt.Label.JSON,
+		UserLogin: tt.UserLogin,
+		CreatedAt: pbToTime(tt.CreatedAt),
+		IsConfirm: tt.IsConfirm,
+	}
+}
+
+func NewMinioSTSliceToProto(tt []*MinioST) []*pbsample.MinioST {
+	res := make([]*pbsample.MinioST, len(tt))
+	for i := range tt {
+		res[i] = NewMinioSTToProto(tt[i])
+	}
+	return res
+}
+
+func NewMinioSTFromProto(proto *pbsample.MinioST) *MinioST {
+	if proto == nil {
+		return nil
+	}
+	return &MinioST{
+		ID:        typ.UUIDMustParse(proto.Id),
+		Bucket:    proto.Bucket,
+		ObjectID:  typ.UUIDMustParse(proto.ObjectId),
+		Name:      proto.Name,
+		FileType:  proto.FileType,
+		FileSize:  int(proto.FileSize),
+		Label:     pbFromNullJSON(proto.Label),
+		UserLogin: proto.UserLogin,
+		CreatedAt: pbFromTime(proto.CreatedAt),
+		IsConfirm: proto.IsConfirm,
+	}
+}
+
+func NewMinioSTSliceFromProto(list []*pbsample.MinioST) []*MinioST {
+	res := make([]*MinioST, len(list))
+	for i := range list {
+		res[i] = NewMinioSTFromProto(list[i])
+	}
+	return res
+}
+
 func NewOrderToProto(tt *Order) *pbsample.Order {
 	if tt == nil {
 		return nil

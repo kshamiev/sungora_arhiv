@@ -5,17 +5,17 @@ import (
 	"time"
 
 	"sungora/lib/logger"
-	"sungora/lib/storage/pgsql"
+	"sungora/lib/storage"
 )
 
 const TaskOnlineOffName = "TaskUserOnlineOff"
 
 // TaskOnlineOff Обновление онлайн статуса ушедших пользователей
 type TaskOnlineOff struct {
-	st *pgsql.Storage
+	st storage.Face
 }
 
-func NewTaskOnlineOff(st *pgsql.Storage) *TaskOnlineOff {
+func NewTaskOnlineOff(st storage.Face) *TaskOnlineOff {
 	return &TaskOnlineOff{st: st}
 }
 
