@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"sungora/lib/storage/pgsql"
+	"sungora/lib/storage/stpg"
 	"sungora/src/general"
 	"sungora/src/user"
 )
@@ -11,10 +11,10 @@ import (
 func TestQuery(t *testing.T) {
 	cfg, ctx := GetEnv()
 
-	if err := pgsql.InitConnect(&cfg.Postgresql); err != nil {
+	if err := stpg.InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)
 	}
-	st := pgsql.Gist()
+	st := stpg.Gist()
 
 	for _, q := range general.GetQueries() {
 		if _, _, err := st.Query(ctx).PrepareQuery(q, nil); err != nil {

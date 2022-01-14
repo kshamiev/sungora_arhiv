@@ -8,7 +8,7 @@ import (
 	"runtime"
 
 	"sungora/lib/errs"
-	"sungora/lib/storage/pgsql"
+	"sungora/lib/storage/stpg"
 	"sungora/src/app/client"
 	"sungora/src/app/config"
 	"sungora/src/miniost"
@@ -28,7 +28,7 @@ func GetEnv() (*config.Config, context.Context) {
 	}
 
 	// ConnectDB postgres
-	if err := pgsql.InitConnect(&cfg.Postgresql); err != nil {
+	if err := stpg.InitConnect(&cfg.Postgresql); err != nil {
 		log.Fatal(errs.NewBadRequest(err))
 	}
 

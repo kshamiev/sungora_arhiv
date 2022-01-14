@@ -8,7 +8,7 @@ import (
 	"sungora/src/miniost"
 
 	"sungora/lib/logger"
-	"sungora/lib/storage/pgsql"
+	"sungora/lib/storage/stpg"
 	"sungora/lib/web"
 )
 
@@ -18,7 +18,7 @@ type Config struct {
 	App        app.Config           `yaml:"app"`
 	Lg         logger.Config        `yaml:"lg"`
 	ServeHTTP  web.HttpServerConfig `yaml:"http"`
-	Postgresql pgsql.Config         `yaml:"postgresql"`
+	Postgresql stpg.Config          `yaml:"postgresql"`
 	Jaeger     logger.JaegerConfig  `yaml:"jaeger"`
 	GRPCClient web.GRPCConfig       `yaml:"grpcClient"`
 	GRPCServer web.GRPCConfig       `yaml:"grpcServer"`

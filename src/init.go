@@ -6,7 +6,7 @@ import (
 
 	"sungora/lib/app"
 	"sungora/lib/request"
-	"sungora/lib/storage/pgsql"
+	"sungora/lib/storage/stpg"
 	"sungora/lib/worker"
 	"sungora/src/chat"
 	"sungora/src/general"
@@ -55,7 +55,7 @@ func Init(cfg *app.Config) *chi.Mux {
 	router.Get("/api/sun/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
 	router.Get("/api/sun/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
 
-	worker.AddStart(miniost.NewTaskStorageClear(pgsql.Gist()))
+	worker.AddStart(miniost.NewTaskStorageClear(stpg.Gist()))
 
 	return router
 }
@@ -92,5 +92,5 @@ func initUser(router *chi.Mux) {
 	})
 	router.Get("/api/sun/user-test/{id}", hh.Test)
 	// Worker
-	worker.AddStart(user.NewTaskOnlineOff(pgsql.Gist()))
+	worker.AddStart(user.NewTaskOnlineOff(stpg.Gist()))
 }

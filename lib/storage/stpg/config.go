@@ -1,4 +1,4 @@
-package pgsql
+package stpg
 
 type Config struct {
 	Postgres     string `yaml:"postgres"`

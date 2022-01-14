@@ -6,7 +6,7 @@ import (
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/response"
-	"sungora/lib/storage/pgsql"
+	"sungora/lib/storage/stpg"
 	"sungora/lib/typ"
 	"sungora/services/mdsample"
 	"sungora/src/app/client"
@@ -18,12 +18,12 @@ import (
 )
 
 type Handler struct {
-	db *pgsql.Storage
+	db *stpg.Storage
 }
 
 func NewHandler() *Handler {
 	return &Handler{
-		db: pgsql.Gist(),
+		db: stpg.Gist(),
 	}
 }
 

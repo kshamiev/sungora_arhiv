@@ -10,7 +10,7 @@ import (
 	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
-	"sungora/lib/storage/pgsql"
+	"sungora/lib/storage/stpg"
 	"sungora/lib/tpl"
 	"sungora/lib/web"
 	"sungora/lib/worker"
@@ -55,7 +55,7 @@ func main() {
 	lg := logger.Init(&cfg.Lg)
 
 	// ConnectDB postgres
-	if err := pgsql.InitConnect(&cfg.Postgresql); err != nil {
+	if err := stpg.InitConnect(&cfg.Postgresql); err != nil {
 		lg.Fatal(errs.NewBadRequest(err))
 	}
 
