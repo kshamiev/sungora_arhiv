@@ -93,7 +93,7 @@ dbdump-a:
 # Инженеринг моделей по существующей структуре БД
 ser-sample:
 	@go run services/generate/main.go -step sample-1
-	@sqlboiler -c conf/sqlboiler_sample.yaml -p mdsample -o services/mdsample --no-auto-timestamps --no-tests --wipe psql
+	@sqlboiler -c conf/config.yaml -p mdsample -o services/mdsample --no-auto-timestamps --no-tests --wipe psql
 	@go run services/generate/main.go -step sample-2
 	@go run services/generate/main.go -step sample-3
 	@cd $(DIR)/services && goimports -w .

@@ -46,7 +46,7 @@ func (hh *Handler) Version(w http.ResponseWriter, r *http.Request) {
 func (hh *Handler) PageIndex(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 	if r.URL.Path == "/" {
-		r.URL.Path = "index.html"
+		r.URL.Path = response.IndexHtml
 	}
 
 	goods := Goods{
@@ -60,10 +60,10 @@ func (hh *Handler) PageIndex(w http.ResponseWriter, r *http.Request) {
 		"Goods": goods,
 	}
 
-	ret, err := tpl.ExecuteStorage("index.html", variable)
+	ret, err := tpl.ExecuteStorage(response.IndexHtml, variable)
 	if err != nil {
 		logger.Gist(r.Context()).Error(err)
-		rw.Bytes([]byte("ошибка шаблона"), "error.html", http.StatusBadRequest)
+		rw.Bytes([]byte("ошибка шаблона"), response.IndexHtml, http.StatusBadRequest)
 		return
 	}
 
@@ -92,7 +92,7 @@ func (hh *Handler) PagePage(w http.ResponseWriter, r *http.Request) {
 	ret, err := tpl.ExecuteStorage("page/page.html", variable)
 	if err != nil {
 		logger.Gist(r.Context()).Error(err)
-		rw.Bytes([]byte("ошибка шаблона"), "error.html", http.StatusBadRequest)
+		rw.Bytes([]byte("ошибка шаблона"), response.IndexHtml, http.StatusBadRequest)
 		return
 	}
 

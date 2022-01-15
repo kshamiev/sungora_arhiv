@@ -26,14 +26,12 @@ import (
 type Mid struct {
 	token      string
 	signingKey string
-	dirStatic  string
 }
 
-func NewMid(token, signingKey, dirStatic string) *Mid {
+func NewMid(token, signingKey string) *Mid {
 	return &Mid{
 		token:      token,
 		signingKey: signingKey,
-		dirStatic:  dirStatic,
 	}
 }
 

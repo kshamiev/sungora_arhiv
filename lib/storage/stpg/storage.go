@@ -32,10 +32,16 @@ func InitConnect(cfg *Config) error {
 	if config == nil {
 		return errors.New("config is empty")
 	}
+	cfg.Postgres = fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+		cfg.User,
+		cfg.Pass,
+		cfg.Host,
+		cfg.Port,
+		cfg.Dbname,
+	)
 
 	var err error
 	driverName := "pgx"
-
 	if config.OcSQLTrace {
 		driverName, err = ocsql.Register(
 			driverName,

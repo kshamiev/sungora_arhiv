@@ -1,9 +1,7 @@
 app:
   token: "sungora-dev" # cookie name
   sessionTimeout: 604800s
-  domain: "localhost"
   mode: "dev"
-  dirStatic: "/template"
   dirWww: "/www"
   signingKey: "xxx-xxx-xxx"
 
@@ -22,10 +20,16 @@ http:
   requestTimeout: 60s # Время ожидания окончания выполнения запроса
   maxHeaderBytes: 1048576 # Максимальный размер заголовка получаемого от браузера клиента в байтах
 
-postgresql:
-  postgres: "postgres://postgres:postgres@localhost:5432/sun"
-  max_idle_conns: 0
-  max_open_conns: 0
+psql:
+  user: "postgres"
+  pass: "postgres"
+  host: "localhost"
+  port: 5432
+  dbname: "sun"
+  sslmode: "disable"
+  blacklist: [ "test" ]
+  max_idle_conns: 50
+  max_open_conns: 50
   ocsql_trace: true
 
 jaeger:
@@ -35,11 +39,11 @@ jaeger:
 
 grpcClient:
   host: "localhost"
-  port: 9090
+  port: 7000
 
 grpcServer:
   host: "localhost"
-  port: 9090
+  port: 7000
 
 minio:
   host: "localhost:9000"
@@ -47,3 +51,33 @@ minio:
   secret_key: "Cf5IttjOxXnl"
   ssl: false
   region: "eu-east-1"
+
+# Boiler
+types:
+  - match:
+      name: duration
+    replace:
+      type: time.Duration
+  - match:
+      db_type: uuid
+      nullable: true
+    replace:
+      type: typ.UUID
+    imports:
+      third_party:
+        - '"sungora/lib/typ"'
+  - match:
+      db_type: uuid
+      nullable: false
+    replace:
+      type: typ.UUID
+    imports:
+      third_party:
+        - '"sungora/lib/typ"'
+  - match:
+      db_type: numeric
+    replace:
+      type: decimal.Decimal
+    imports:
+      third_party:
+        - '"github.com/shopspring/decimal"'

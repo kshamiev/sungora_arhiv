@@ -9,6 +9,7 @@ type CtxKey string
 
 const (
 	LogTraceID = "trace-id"
+	IndexHtml  = "index.html"
 
 	CtxUser    CtxKey = "user"
 	CtxToken   CtxKey = "token"

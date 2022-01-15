@@ -20,7 +20,7 @@ import (
 
 // Init инициализация приложения
 func Init(cfg *app.Config) *chi.Mux {
-	mid := request.NewMid(cfg.Token, cfg.SigningKey, cfg.DirStatic)
+	mid := request.NewMid(cfg.Token, cfg.SigningKey)
 
 	router := chi.NewRouter()
 	router.Use(mid.Cors().Handler)

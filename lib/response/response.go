@@ -162,7 +162,7 @@ func (rw *Response) Static(fileName string) {
 			fileName += string(os.PathSeparator)
 		}
 
-		fileName += "index.html"
+		fileName += IndexHtml
 
 		if _, err = os.Stat(fileName); err != nil {
 			data := []byte(http.StatusText(http.StatusNotFound) + ": " + filepath.Base(fileName))

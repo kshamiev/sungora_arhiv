@@ -48,10 +48,10 @@ http://localhost:16686
 ### Minio
 
 ```dockerfile
-docker run -d --rm --name minio \
+docker run -d --rm --name minio-sungora \
     -p 9000:9000 -p 9001:9001 \
-    -e "MINIO_ROOT_USER=admin" -e "MINIO_ROOT_PASSWORD=Cf5IttjOxXnl" \
-    -v /mnt/data:/data \
+    -e MINIO_ROOT_USER="admin" -e MINIO_ROOT_PASSWORD="Cf5IttjOxXnl" \
+    -v /mnt/data_sungora:/data \
     minio/minio \
     server /data --address ":9000" --console-address ":9001"
 ```

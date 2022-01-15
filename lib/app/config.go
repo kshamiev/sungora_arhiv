@@ -32,10 +32,8 @@ func LoadConfig(fileConf string, cfg interface{}) error {
 type Config struct {
 	Token          string        `json:"token"`          //
 	SessionTimeout time.Duration `yaml:"sessionTimeout"` //
-	Domain         string        `yaml:"domain"`         //
 	Mode           string        `yaml:"mode"`           //
 	DirWork        string        `yaml:"dirWork"`        //
-	DirStatic      string        `yaml:"dirStatic"`      //
 	DirWww         string        `yaml:"dirWww"`         //
 	Version        string        `json:"version"`        //
 	SigningKey     string        `yaml:"signingKey"`     //
@@ -45,10 +43,6 @@ type Config struct {
 func (cfg *Config) SetDefault() {
 	if cfg == nil {
 		cfg = &Config{}
-	}
-
-	if cfg.Domain == "" {
-		cfg.Domain = "localhost"
 	}
 
 	// режим работы приложения
@@ -66,13 +60,9 @@ func (cfg *Config) SetDefault() {
 		}
 		cfg.DirWork = strings.Join(sl, sep)
 	}
-	cfg.DirStatic = cfg.DirWork + cfg.DirStatic
 	cfg.DirWww = cfg.DirWork + cfg.DirWww
 
 	// сессия
-	if cfg.Token == "" {
-		cfg.Token = cfg.Domain
-	}
 	if cfg.SessionTimeout == 0 {
 		cfg.SessionTimeout = time.Duration(14400) * time.Second
 	}
