@@ -11,14 +11,12 @@ import (
 
 func TestTplStorage(t *testing.T) {
 	var cfg = struct {
-		App app.Config `json:"app"`
+		App app.Config `yaml:"app"`
 	}{}
 	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
 		t.Fatal(err)
 	}
 	cfg.App.SetDefault()
-
-	app.Dumper(cfg)
 
 	task := NewTaskTemplateParse(cfg.App.DirWww)
 	if err := task.Action(context.Background()); err != nil {

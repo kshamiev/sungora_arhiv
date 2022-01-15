@@ -3,13 +3,13 @@ package user
 import (
 	"net/http"
 
+	"sungora/app/client"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/response"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/typ"
 	"sungora/services/mdsample"
-	"sungora/src/app/client"
 
 	"github.com/go-chi/chi"
 	"github.com/golang/protobuf/ptypes/empty"

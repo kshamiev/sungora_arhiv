@@ -26,7 +26,7 @@ func LoadConfig(fileConf string, cfg interface{}) error {
 	dir := filepath.Dir(filepath.Dir(filepath.Dir(currentFile)))
 	_ = os.Chdir(dir)
 	data, err := ioutil.ReadFile(dir + "/" + fileConf)
-	if err == nil {
+	if err != nil {
 		return err
 	}
 	return yaml.Unmarshal(data, cfg)
@@ -34,12 +34,12 @@ func LoadConfig(fileConf string, cfg interface{}) error {
 
 // Config основная общая конфигурация
 type Config struct {
-	Token          string        `json:"token"`          //
+	Token          string        `yaml:"token"`          //
 	SessionTimeout time.Duration `yaml:"sessionTimeout"` //
 	Mode           string        `yaml:"mode"`           //
 	DirWork        string        `yaml:"dirWork"`        //
 	DirWww         string        `yaml:"dirWww"`         //
-	Version        string        `json:"version"`        //
+	Version        string        `yaml:"version"`        //
 	SigningKey     string        `yaml:"signingKey"`     //
 }
 

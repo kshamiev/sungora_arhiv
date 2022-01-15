@@ -6,10 +6,10 @@ import (
 	"os"
 	"testing"
 
+	"sungora/app/config"
 	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/typ"
-	"sungora/src/app/config"
 )
 
 func TestMinio(t *testing.T) {

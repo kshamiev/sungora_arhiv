@@ -28,7 +28,7 @@ var cntIteration = 100
 
 func TestPG(t *testing.T) {
 	var cfg = struct {
-		Postgresql Config `json:"postgresql"`
+		Postgresql Config `yaml:"psql"`
 	}{}
 	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
 		t.Fatal(err)
@@ -116,7 +116,7 @@ func testInsertUpdate(t *testing.T, st *Storage) chan bool {
 
 func TestPGQuery(t *testing.T) {
 	var cfg = struct {
-		Postgresql Config `json:"postgresql"`
+		Postgresql Config `yaml:"psql"`
 	}{}
 	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
 		t.Fatal(err)

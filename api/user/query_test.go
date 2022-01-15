@@ -1,12 +1,12 @@
-package general
+package user
 
 import (
 	"context"
 	"testing"
 
+	"sungora/app/config"
 	"sungora/lib/app"
 	"sungora/lib/storage/stpg"
-	"sungora/src/app/config"
 )
 
 func TestQuery(t *testing.T) {

@@ -1,4 +1,4 @@
-package src
+package api
 
 import (
 	"net/http"
@@ -8,10 +8,10 @@ import (
 	"sungora/lib/request"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/worker"
-	"sungora/src/chat"
-	"sungora/src/general"
-	"sungora/src/miniost"
-	"sungora/src/user"
+	"sungora/api/chat"
+	"sungora/api/general"
+	"sungora/api/miniost"
+	"sungora/api/user"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"

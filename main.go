@@ -7,6 +7,9 @@ import (
 	"log"
 	"os"
 
+	"sungora/app/client"
+	"sungora/app/config"
+	"sungora/app/service"
 	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
@@ -14,11 +17,8 @@ import (
 	"sungora/lib/tpl"
 	"sungora/lib/web"
 	"sungora/lib/worker"
-	"sungora/src"
-	"sungora/src/app/client"
-	"sungora/src/app/config"
-	"sungora/src/app/service"
-	"sungora/src/miniost"
+	"sungora/api"
+	"sungora/api/miniost"
 )
 
 // @title Sungora API
@@ -96,7 +96,7 @@ func main() {
 	defer worker.CloseWait()
 
 	// Server Web & Handlers
-	server, err := web.NewServer(&cfg.ServeHTTP, src.Init(&cfg.App))
+	server, err := web.NewServer(&cfg.ServeHTTP, api.Init(&cfg.App))
 	if err != nil {
 		lg.WithError(err).Fatal("new web server error")
 	}

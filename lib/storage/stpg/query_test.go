@@ -37,7 +37,7 @@ var pgQueries = []string{
 
 func TestQuery(t *testing.T) {
 	var cfg = struct {
-		Postgresql Config `json:"postgresql"`
+		Postgresql Config `yaml:"psql"`
 	}{}
 	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
 		t.Fatal(err)
