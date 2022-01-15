@@ -1,4 +1,4 @@
-package miniost
+package data
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"sungora/app/config"
 	"sungora/lib/app"
 	"sungora/lib/errs"
+	"sungora/lib/minio"
 	"sungora/lib/typ"
 )
 
@@ -19,11 +20,11 @@ func TestMinio(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := Init(&cfg.Minio); err != nil {
+	if err := minio.Init(&cfg.Minio); err != nil {
 		log.Fatal(errs.NewBadRequest(err))
 	}
 
-	if err := CreateBucket("popcorn"); err != nil {
+	if err := minio.CreateBucket("popcorn"); err != nil {
 		t.Fatal(err)
 	}
 
@@ -35,7 +36,7 @@ func TestMinio(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = PutFile(context.Background(), "popcorn", typ.UUIDNew().String(), fp, fi.Size())
+	err = minio.PutFile(context.Background(), "popcorn", typ.UUIDNew().String(), fp, fi.Size())
 	if err != nil {
 		t.Fatal(err)
 	}

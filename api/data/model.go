@@ -1,4 +1,4 @@
-package miniost
+package data
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"sungora/lib/errs"
+	"sungora/lib/minio"
 	"sungora/lib/response"
 	"sungora/lib/storage"
 	"sungora/lib/typ"
@@ -17,19 +18,19 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-type MinioST struct {
+type Model struct {
 	st  storage.Face
 	dir string
 }
 
-func NewMinioST(st storage.Face, dir string) *MinioST {
-	return &MinioST{
+func NewModel(st storage.Face, dir string) *Model {
+	return &Model{
 		st:  st,
 		dir: dir,
 	}
 }
 
-func (self *MinioST) UploadRequest(rw *response.Response, bucket string, objID typ.UUID) ([]*mdsample.MinioST, error) {
+func (mm *Model) UploadRequest(rw *response.Response, bucket string, objID typ.UUID) ([]*mdsample.MinioST, error) {
 	fileData, _, err := rw.UploadBuffer()
 	if err != nil {
 		return nil, err
@@ -52,12 +53,12 @@ func (self *MinioST) UploadRequest(rw *response.Response, bucket string, objID t
 		stM.FileSize = buf.Len()
 		stM.UserLogin = us.Login
 		stM.CreatedAt = time.Now()
-		err = PutFile(rw.Request.Context(), stM.Bucket, stM.ObjectID.String(), buf, int64(stM.FileSize))
+		err = minio.PutFile(rw.Request.Context(), stM.Bucket, stM.ObjectID.String(), buf, int64(stM.FileSize))
 		if err != nil {
 			return nil, err
 		}
 
-		err = stM.Insert(rw.Request.Context(), self.st.DB(), boil.Infer())
+		err = stM.Insert(rw.Request.Context(), mm.st.DB(), boil.Infer())
 		if err != nil {
 			return nil, errs.NewBadRequest(err, "couldn't insert file info")
 		}
@@ -68,23 +69,23 @@ func (self *MinioST) UploadRequest(rw *response.Response, bucket string, objID t
 	return res, nil
 }
 
-func (self *MinioST) Confirm(ctx context.Context, obj *mdsample.MinioST) error {
+func (mm *Model) Confirm(ctx context.Context, obj *mdsample.MinioST) error {
 	obj.IsConfirm = true
-	if _, err := obj.Update(ctx, self.st.DB(), boil.Whitelist(mdsample.MinioSTColumns.IsConfirm)); err != nil {
+	if _, err := obj.Update(ctx, mm.st.DB(), boil.Whitelist(mdsample.MinioSTColumns.IsConfirm)); err != nil {
 		return errs.NewBadRequest(err)
 	}
 	return nil
 }
 
-func (self *MinioST) SaveFS(ctx context.Context, obj *mdsample.MinioST) error {
-	if err := os.MkdirAll(self.dir, 0777); err != nil {
+func (mm *Model) SaveFS(ctx context.Context, obj *mdsample.MinioST) error {
+	if err := os.MkdirAll(mm.dir, 0777); err != nil {
 		return errs.NewBadRequest(err, "ошибка создания хранилища")
 	}
-	data, err := GetFile(ctx, obj.Bucket, obj.ObjectID.String())
+	data, err := minio.GetFile(ctx, obj.Bucket, obj.ObjectID.String())
 	if err != nil {
 		return err
 	}
-	fp, err := os.OpenFile(self.dir+"/"+obj.Name, os.O_RDWR|os.O_CREATE, 0x0755)
+	fp, err := os.OpenFile(mm.dir+"/"+obj.Name, os.O_RDWR|os.O_CREATE, 0x0755)
 	if err != nil {
 		return errs.NewBadRequest(err)
 	}
@@ -94,24 +95,24 @@ func (self *MinioST) SaveFS(ctx context.Context, obj *mdsample.MinioST) error {
 	return fp.Close()
 }
 
-func (self *MinioST) GetFiles(ctx context.Context, bucket string, objID typ.UUID) (mdsample.MinioSTSlice, error) {
+func (mm *Model) GetFiles(ctx context.Context, bucket string, objID typ.UUID) (mdsample.MinioSTSlice, error) {
 	return mdsample.MinioSTS(
 		mdsample.MinioSTWhere.Bucket.EQ(bucket),
 		mdsample.MinioSTWhere.ObjectID.EQ(objID),
 		qm.OrderBy(mdsample.MinioSTColumns.CreatedAt+" DESC"),
 		qm.Offset(0), qm.Limit(100),
-	).All(ctx, self.st.DB())
+	).All(ctx, mm.st.DB())
 }
 
-func (self *MinioST) GetFilesBucket(ctx context.Context, bucket string) (mdsample.MinioSTSlice, error) {
+func (mm *Model) GetFilesBucket(ctx context.Context, bucket string) (mdsample.MinioSTSlice, error) {
 	return mdsample.MinioSTS(
 		mdsample.MinioSTWhere.Bucket.EQ(bucket),
 		qm.OrderBy(mdsample.MinioSTColumns.CreatedAt+" DESC"),
 		qm.Offset(0), qm.Limit(100),
-	).All(ctx, self.st.DB())
+	).All(ctx, mm.st.DB())
 }
 
-func (self *MinioST) RemoveNotConfirm(ctx context.Context) error {
+func (self *Model) RemoveNotConfirm(ctx context.Context) error {
 	list, err := mdsample.MinioSTS(
 		mdsample.MinioSTWhere.IsConfirm.EQ(false),
 	).All(ctx, self.st.DB())
@@ -119,7 +120,7 @@ func (self *MinioST) RemoveNotConfirm(ctx context.Context) error {
 		return errs.NewBadRequest(err)
 	}
 	for i := range list {
-		if err := RemoveFile(list[i].Bucket, list[i].ObjectID.String()); err != nil {
+		if err := minio.RemoveFile(list[i].Bucket, list[i].ObjectID.String()); err != nil {
 			return err
 		}
 		if _, err := list[i].Delete(ctx, self.st.DB()); err != nil {

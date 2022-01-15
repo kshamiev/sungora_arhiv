@@ -1,4 +1,4 @@
-package miniost
+package data
 
 import (
 	"context"
@@ -16,7 +16,7 @@ type TaskStorageClear struct {
 func NewTaskStorageClear(st storage.Face) *TaskStorageClear { return &TaskStorageClear{st: st} }
 
 func (task *TaskStorageClear) Action(ctx context.Context) error {
-	stM := NewMinioST(task.st, "")
+	stM := NewModel(task.st, "")
 	return stM.RemoveNotConfirm(ctx)
 }
 

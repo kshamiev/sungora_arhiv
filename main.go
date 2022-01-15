@@ -7,18 +7,18 @@ import (
 	"log"
 	"os"
 
+	"sungora/api"
 	"sungora/app/client"
 	"sungora/app/config"
 	"sungora/app/service"
 	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
+	"sungora/lib/minio"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/tpl"
 	"sungora/lib/web"
 	"sungora/lib/worker"
-	"sungora/api"
-	"sungora/api/miniost"
 )
 
 // @title Sungora API
@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// Minio
-	if err = miniost.Init(&cfg.Minio); err != nil {
+	if err = minio.Init(&cfg.Minio); err != nil {
 		lg.Fatal(errs.NewBadRequest(err))
 	}
 

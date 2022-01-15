@@ -4,14 +4,14 @@ import (
 	"net/http"
 	"net/http/pprof"
 
+	"sungora/api/chat"
+	"sungora/api/data"
+	"sungora/api/general"
+	"sungora/api/user"
 	"sungora/lib/app"
 	"sungora/lib/request"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/worker"
-	"sungora/api/chat"
-	"sungora/api/general"
-	"sungora/api/miniost"
-	"sungora/api/user"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
@@ -55,7 +55,7 @@ func Init(cfg *app.Config) *chi.Mux {
 	router.Get("/api/sun/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
 	router.Get("/api/sun/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
 
-	worker.AddStart(miniost.NewTaskStorageClear(stpg.Gist()))
+	worker.AddStart(data.NewTaskStorageClear(stpg.Gist()))
 
 	return router
 }

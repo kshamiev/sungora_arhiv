@@ -17,7 +17,7 @@ const ConfigFilePath = "conf/config.yaml"
 
 func LoadConfig(fileConf string, cfg interface{}) error {
 	if fileConf == "" {
-		fileConf := os.Getenv("CONF")
+		fileConf = os.Getenv("CONF")
 		if fileConf == "" {
 			fileConf = ConfigFilePath
 		}

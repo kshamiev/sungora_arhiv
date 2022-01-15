@@ -1,8 +1,8 @@
 package config
 
 import (
-	"sungora/api/miniost"
 	"sungora/lib/app"
+	"sungora/lib/minio"
 
 	"sungora/lib/logger"
 	"sungora/lib/storage/stpg"
@@ -17,7 +17,7 @@ type Config struct {
 	Jaeger     logger.JaegerConfig  `yaml:"jaeger"`
 	GRPCClient web.GRPCConfig       `yaml:"grpcClient"`
 	GRPCServer web.GRPCConfig       `yaml:"grpcServer"`
-	Minio      miniost.Config       `yaml:"minio"`
+	Minio      minio.Config         `yaml:"minio"`
 }
 
 var config *Config

@@ -1,4 +1,4 @@
-package miniost
+package minio
 
 import (
 	"context"
