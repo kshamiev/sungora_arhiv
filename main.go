@@ -48,19 +48,19 @@ func main() {
 	flag.Parse()
 
 	// Config загрузка конфигурации & Logger
-	cfg := &config.Config{}
-	if err := config.Init(*flagConfigPath, cfg); err != nil {
+	cfg, err := config.Init(*flagConfigPath)
+	if err != nil {
 		log.Fatal(errs.NewBadRequest(err))
 	}
 	lg := logger.Init(&cfg.Lg)
 
 	// ConnectDB postgres
-	if err := stpg.InitConnect(&cfg.Postgresql); err != nil {
+	if err = stpg.InitConnect(&cfg.Postgresql); err != nil {
 		lg.Fatal(errs.NewBadRequest(err))
 	}
 
 	// Minio
-	if err := miniost.Init(&cfg.Minio); err != nil {
+	if err = miniost.Init(&cfg.Minio); err != nil {
 		lg.Fatal(errs.NewBadRequest(err))
 	}
 

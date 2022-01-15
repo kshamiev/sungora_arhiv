@@ -1,10 +1,7 @@
 package config
 
 import (
-	"time"
-
 	"sungora/lib/app"
-	"sungora/lib/typ"
 	"sungora/src/miniost"
 
 	"sungora/lib/logger"
@@ -12,13 +9,11 @@ import (
 	"sungora/lib/web"
 )
 
-const Version = "v1.10.100"
-
 type Config struct {
 	App        app.Config           `yaml:"app"`
 	Lg         logger.Config        `yaml:"lg"`
 	ServeHTTP  web.HttpServerConfig `yaml:"http"`
-	Postgresql stpg.Config          `yaml:"postgresql"`
+	Postgresql stpg.Config          `yaml:"psql"`
 	Jaeger     logger.JaegerConfig  `yaml:"jaeger"`
 	GRPCClient web.GRPCConfig       `yaml:"grpcClient"`
 	GRPCServer web.GRPCConfig       `yaml:"grpcServer"`
@@ -34,12 +29,12 @@ func Get() *Config {
 	return config
 }
 
-func Init(fileConf string, cfg *Config) error {
+func Init(fileConf string) (*Config, error) {
+	cfg := &Config{}
 	if err := app.LoadConfig(fileConf, cfg); err != nil {
-		return err
+		return nil, err
 	}
 	cfg.App.SetDefault()
-	cfg.App.Version = Version + " " + time.Now().Format(typ.TimeFormatDMGHIS)
 	config = cfg
-	return nil
+	return cfg, nil
 }

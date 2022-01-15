@@ -1,31 +1,35 @@
 package app
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
+
+	"sungora/lib/typ"
 
 	"gopkg.in/yaml.v3"
 )
 
+const ConfigFilePath = "conf/config.yaml"
+
 func LoadConfig(fileConf string, cfg interface{}) error {
-	dir, err := os.Getwd()
-	if err != nil {
+	if fileConf == "" {
+		fileConf := os.Getenv("CONF")
+		if fileConf == "" {
+			fileConf = ConfigFilePath
+		}
+	}
+	_, currentFile, _, _ := runtime.Caller(0)
+	dir := filepath.Dir(filepath.Dir(filepath.Dir(currentFile)))
+	_ = os.Chdir(dir)
+	data, err := ioutil.ReadFile(dir + "/" + fileConf)
+	if err == nil {
 		return err
 	}
-	for {
-		data, err := ioutil.ReadFile(dir + "/" + fileConf)
-		if err == nil {
-			return yaml.Unmarshal(data, cfg)
-		}
-		if dir == "/" {
-			return fmt.Errorf("config '" + fileConf + "' not found")
-		}
-		dir = filepath.Dir(dir)
-	}
+	return yaml.Unmarshal(data, cfg)
 }
 
 // Config основная общая конфигурация
@@ -66,4 +70,7 @@ func (cfg *Config) SetDefault() {
 	if cfg.SessionTimeout == 0 {
 		cfg.SessionTimeout = time.Duration(14400) * time.Second
 	}
+
+	// версия
+	cfg.Version = time.Now().Format(typ.TimeFormatDMGHIS)
 }

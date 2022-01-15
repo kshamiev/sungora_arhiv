@@ -1,18 +1,27 @@
-package test
+package tpl
 
 import (
+	"context"
 	"testing"
 
-	"sungora/lib/tpl"
+	"sungora/lib/app"
 
 	"github.com/shopspring/decimal"
 )
 
 func TestTplStorage(t *testing.T) {
-	cfg, ctx := GetEnv()
+	var cfg = struct {
+		App app.Config `json:"app"`
+	}{}
+	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
+		t.Fatal(err)
+	}
+	cfg.App.SetDefault()
 
-	task := tpl.NewTaskTemplateParse(cfg.App.DirWww)
-	if err := task.Action(ctx); err != nil {
+	app.Dumper(cfg)
+
+	task := NewTaskTemplateParse(cfg.App.DirWww)
+	if err := task.Action(context.Background()); err != nil {
 		t.Fatal(err)
 	}
 
@@ -27,9 +36,9 @@ func TestTplStorage(t *testing.T) {
 		"Goods": goods,
 	}
 
-	for _, i := range tpl.GetTplIndex() {
+	for _, i := range GetTplIndex() {
 		t.Log(i)
-		if _, err := tpl.ExecuteStorage(i, variable); err != nil {
+		if _, err := ExecuteStorage(i, variable); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -47,7 +56,7 @@ func TestTpl(t *testing.T) {
 		"Goods": goods,
 	}
 
-	_, err := tpl.ExecuteString(testTpl, nil, variable)
+	_, err := ExecuteString(testTpl, nil, variable)
 	if err != nil {
 		t.Fatal(err)
 	}

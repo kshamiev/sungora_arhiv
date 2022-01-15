@@ -274,7 +274,7 @@ var doc = `{
                 "tags": [
                     "Websocket"
                 ],
-                "summary": "пример работы с веб-сокетом (http://localhost:8080/gorilla/index.html)",
+                "summary": "пример работы с веб-сокетом (http://localhost:8010/assets/gorilla/index.html)",
                 "responses": {
                     "101": {
                         "description": "Switching Protocols to websocket",

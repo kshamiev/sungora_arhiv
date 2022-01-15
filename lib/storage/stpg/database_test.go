@@ -30,7 +30,7 @@ func TestPG(t *testing.T) {
 	var cfg = struct {
 		Postgresql Config `json:"postgresql"`
 	}{}
-	if err := app.LoadConfig("conf/config.yaml", &cfg); err != nil {
+	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
 		t.Fatal(err)
 	}
 	if err := InitConnect(&cfg.Postgresql); err != nil {
@@ -118,7 +118,7 @@ func TestPGQuery(t *testing.T) {
 	var cfg = struct {
 		Postgresql Config `json:"postgresql"`
 	}{}
-	if err := app.LoadConfig("conf/config.yaml", &cfg); err != nil {
+	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
 		t.Fatal(err)
 	}
 	if err := InitConnect(&cfg.Postgresql); err != nil {
