@@ -1,10 +1,10 @@
 syntax = "proto3";
-package pbsample;
-option go_package = "./;pbsample";
+package pbsungora;
+option go_package = "./;pbsungora";
 import "services/generate/google/protobuf/empty.proto";
-import "services/pbsample/types.proto";
+import "services/pbsungora/types.proto";
 
-service Sample {
+service Sungora {
   rpc Ping (google.protobuf.Empty) returns (Test) {
   }
 }

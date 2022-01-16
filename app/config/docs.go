@@ -125,7 +125,7 @@ var doc = `{
                     "200": {
                         "description": "пользователь",
                         "schema": {
-                            "$ref": "#/definitions/mdsample.User"
+                            "$ref": "#/definitions/mdsungora.User"
                         }
                     },
                     "400": {
@@ -156,7 +156,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsample.User"
+                            "$ref": "#/definitions/mdsungora.User"
                         }
                     }
                 }
@@ -180,7 +180,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/mdsample.User"
+                            "$ref": "#/definitions/mdsungora.User"
                         }
                     }
                 ],
@@ -188,7 +188,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsample.User"
+                            "$ref": "#/definitions/mdsungora.User"
                         }
                     }
                 }
@@ -205,7 +205,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/mdsample.User"
+                            "$ref": "#/definitions/mdsungora.User"
                         }
                     }
                 ],
@@ -213,7 +213,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsample.User"
+                            "$ref": "#/definitions/mdsungora.User"
                         }
                     }
                 }
@@ -256,7 +256,7 @@ var doc = `{
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/definitions/mdsample.User"
+                                    "$ref": "#/definitions/mdsungora.User"
                                 }
                             }
                         }
@@ -319,7 +319,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "mdsample.User": {
+        "mdsungora.User": {
             "type": "object",
             "properties": {
                 "alias": {

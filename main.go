@@ -81,7 +81,7 @@ func main() {
 
 	// Client GRPC
 	var grpcClient *web.GRPCClient
-	if grpcClient, err = client.InitSampleClient(&cfg.GRPCClient); err != nil {
+	if grpcClient, err = client.InitSungoraClient(&cfg.GRPCClient); err != nil {
 		lg.Fatal(err)
 	}
 	defer grpcClient.Close()

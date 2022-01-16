@@ -74,7 +74,7 @@ INSERT INTO public.users
 (id, login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online, metrika, created_at, updated_at)
 VALUES (uuid_generate_v4(), 'testLogin', 0, 0, 0, 0, 0, 0, false, '{}', now(), now());
 
-CREATE TABLE public.minio_st
+CREATE TABLE public.minio
 (
     id         uuid        NOT NULL DEFAULT uuid_generate_v4(), -- ИД
     bucket     text        NOT NULL,                            -- папка хранения - тип объекта
@@ -88,21 +88,21 @@ CREATE TABLE public.minio_st
     is_confirm bool        NOT NULL DEFAULT false,              -- подтверждение загрузки
     CONSTRAINT minio_st_pk PRIMARY KEY (id)
 );
-CREATE INDEX minio_st_bucket_idx ON public.minio_st USING btree (bucket);
-CREATE UNIQUE INDEX minio_st_object_id_idx ON public.minio_st USING btree (object_id);
+CREATE INDEX minio_st_bucket_idx ON public.minio USING btree (bucket);
+CREATE UNIQUE INDEX minio_st_object_id_idx ON public.minio USING btree (object_id);
 
 -- Column comments
 
-COMMENT ON COLUMN public.minio_st.id IS 'ИД';
-COMMENT ON COLUMN public.minio_st.bucket IS 'папка хранения - тип объекта';
-COMMENT ON COLUMN public.minio_st.object_id IS 'файл хранения - ид объекта';
-COMMENT ON COLUMN public.minio_st."name" IS 'имя файла';
-COMMENT ON COLUMN public.minio_st.file_type IS 'тип файла';
-COMMENT ON COLUMN public.minio_st.file_size IS 'размер файла';
-COMMENT ON COLUMN public.minio_st."label" IS 'дополнительные параметры файла';
-COMMENT ON COLUMN public.minio_st.user_login IS 'пользователь';
-COMMENT ON COLUMN public.minio_st.created_at IS 'дата и время создания';
-COMMENT ON COLUMN public.minio_st.is_confirm IS 'подтверждение загрузки';
+COMMENT ON COLUMN public.minio.id IS 'ИД';
+COMMENT ON COLUMN public.minio.bucket IS 'папка хранения - тип объекта';
+COMMENT ON COLUMN public.minio.object_id IS 'файл хранения - ид объекта';
+COMMENT ON COLUMN public.minio."name" IS 'имя файла';
+COMMENT ON COLUMN public.minio.file_type IS 'тип файла';
+COMMENT ON COLUMN public.minio.file_size IS 'размер файла';
+COMMENT ON COLUMN public.minio."label" IS 'дополнительные параметры файла';
+COMMENT ON COLUMN public.minio.user_login IS 'пользователь';
+COMMENT ON COLUMN public.minio.created_at IS 'дата и время создания';
+COMMENT ON COLUMN public.minio.is_confirm IS 'подтверждение загрузки';
 
 
 -- +goose Down
@@ -116,4 +116,4 @@ DROP TABLE public.users;
 
 DROP TABLE public.roles;
 
-DROP TABLE public.minio_st;
+DROP TABLE public.minio;

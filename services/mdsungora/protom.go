@@ -1,16 +1,16 @@
-package mdsample
+package mdsungora
 
 import (
 	"sungora/lib/typ"
-	"sungora/services/pbsample"
+	"sungora/services/pbsungora"
 	"time"
 )
 
-func NewGooseDBVersionToProto(tt *GooseDBVersion) *pbsample.GooseDBVersion {
+func NewGooseDBVersionToProto(tt *GooseDBVersion) *pbsungora.GooseDBVersion {
 	if tt == nil {
 		return nil
 	}
-	return &pbsample.GooseDBVersion{
+	return &pbsungora.GooseDBVersion{
 		Id:        int64(tt.ID),
 		VersionId: tt.VersionID,
 		IsApplied: tt.IsApplied,
@@ -18,15 +18,15 @@ func NewGooseDBVersionToProto(tt *GooseDBVersion) *pbsample.GooseDBVersion {
 	}
 }
 
-func NewGooseDBVersionSliceToProto(tt []*GooseDBVersion) []*pbsample.GooseDBVersion {
-	res := make([]*pbsample.GooseDBVersion, len(tt))
+func NewGooseDBVersionSliceToProto(tt []*GooseDBVersion) []*pbsungora.GooseDBVersion {
+	res := make([]*pbsungora.GooseDBVersion, len(tt))
 	for i := range tt {
 		res[i] = NewGooseDBVersionToProto(tt[i])
 	}
 	return res
 }
 
-func NewGooseDBVersionFromProto(proto *pbsample.GooseDBVersion) *GooseDBVersion {
+func NewGooseDBVersionFromProto(proto *pbsungora.GooseDBVersion) *GooseDBVersion {
 	if proto == nil {
 		return nil
 	}
@@ -38,7 +38,7 @@ func NewGooseDBVersionFromProto(proto *pbsample.GooseDBVersion) *GooseDBVersion 
 	}
 }
 
-func NewGooseDBVersionSliceFromProto(list []*pbsample.GooseDBVersion) []*GooseDBVersion {
+func NewGooseDBVersionSliceFromProto(list []*pbsungora.GooseDBVersion) []*GooseDBVersion {
 	res := make([]*GooseDBVersion, len(list))
 	for i := range list {
 		res[i] = NewGooseDBVersionFromProto(list[i])
@@ -46,11 +46,11 @@ func NewGooseDBVersionSliceFromProto(list []*pbsample.GooseDBVersion) []*GooseDB
 	return res
 }
 
-func NewMinioSTToProto(tt *MinioST) *pbsample.MinioST {
+func NewMinioToProto(tt *Minio) *pbsungora.Minio {
 	if tt == nil {
 		return nil
 	}
-	return &pbsample.MinioST{
+	return &pbsungora.Minio{
 		Id:        tt.ID.String(),
 		Bucket:    tt.Bucket,
 		ObjectId:  tt.ObjectID.String(),
@@ -64,19 +64,19 @@ func NewMinioSTToProto(tt *MinioST) *pbsample.MinioST {
 	}
 }
 
-func NewMinioSTSliceToProto(tt []*MinioST) []*pbsample.MinioST {
-	res := make([]*pbsample.MinioST, len(tt))
+func NewMinioSliceToProto(tt []*Minio) []*pbsungora.Minio {
+	res := make([]*pbsungora.Minio, len(tt))
 	for i := range tt {
-		res[i] = NewMinioSTToProto(tt[i])
+		res[i] = NewMinioToProto(tt[i])
 	}
 	return res
 }
 
-func NewMinioSTFromProto(proto *pbsample.MinioST) *MinioST {
+func NewMinioFromProto(proto *pbsungora.Minio) *Minio {
 	if proto == nil {
 		return nil
 	}
-	return &MinioST{
+	return &Minio{
 		ID:        typ.UUIDMustParse(proto.Id),
 		Bucket:    proto.Bucket,
 		ObjectID:  typ.UUIDMustParse(proto.ObjectId),
@@ -90,19 +90,19 @@ func NewMinioSTFromProto(proto *pbsample.MinioST) *MinioST {
 	}
 }
 
-func NewMinioSTSliceFromProto(list []*pbsample.MinioST) []*MinioST {
-	res := make([]*MinioST, len(list))
+func NewMinioSliceFromProto(list []*pbsungora.Minio) []*Minio {
+	res := make([]*Minio, len(list))
 	for i := range list {
-		res[i] = NewMinioSTFromProto(list[i])
+		res[i] = NewMinioFromProto(list[i])
 	}
 	return res
 }
 
-func NewOrderToProto(tt *Order) *pbsample.Order {
+func NewOrderToProto(tt *Order) *pbsungora.Order {
 	if tt == nil {
 		return nil
 	}
-	return &pbsample.Order{
+	return &pbsungora.Order{
 		Id:        tt.ID.String(),
 		UserId:    tt.UserID.String(),
 		Number:    int64(tt.Number),
@@ -113,15 +113,15 @@ func NewOrderToProto(tt *Order) *pbsample.Order {
 	}
 }
 
-func NewOrderSliceToProto(tt []*Order) []*pbsample.Order {
-	res := make([]*pbsample.Order, len(tt))
+func NewOrderSliceToProto(tt []*Order) []*pbsungora.Order {
+	res := make([]*pbsungora.Order, len(tt))
 	for i := range tt {
 		res[i] = NewOrderToProto(tt[i])
 	}
 	return res
 }
 
-func NewOrderFromProto(proto *pbsample.Order) *Order {
+func NewOrderFromProto(proto *pbsungora.Order) *Order {
 	if proto == nil {
 		return nil
 	}
@@ -136,7 +136,7 @@ func NewOrderFromProto(proto *pbsample.Order) *Order {
 	}
 }
 
-func NewOrderSliceFromProto(list []*pbsample.Order) []*Order {
+func NewOrderSliceFromProto(list []*pbsungora.Order) []*Order {
 	res := make([]*Order, len(list))
 	for i := range list {
 		res[i] = NewOrderFromProto(list[i])
@@ -144,26 +144,26 @@ func NewOrderSliceFromProto(list []*pbsample.Order) []*Order {
 	return res
 }
 
-func NewRoleToProto(tt *Role) *pbsample.Role {
+func NewRoleToProto(tt *Role) *pbsungora.Role {
 	if tt == nil {
 		return nil
 	}
-	return &pbsample.Role{
+	return &pbsungora.Role{
 		Id:          tt.ID.String(),
 		Code:        tt.Code,
 		Description: tt.Description,
 	}
 }
 
-func NewRoleSliceToProto(tt []*Role) []*pbsample.Role {
-	res := make([]*pbsample.Role, len(tt))
+func NewRoleSliceToProto(tt []*Role) []*pbsungora.Role {
+	res := make([]*pbsungora.Role, len(tt))
 	for i := range tt {
 		res[i] = NewRoleToProto(tt[i])
 	}
 	return res
 }
 
-func NewRoleFromProto(proto *pbsample.Role) *Role {
+func NewRoleFromProto(proto *pbsungora.Role) *Role {
 	if proto == nil {
 		return nil
 	}
@@ -174,7 +174,7 @@ func NewRoleFromProto(proto *pbsample.Role) *Role {
 	}
 }
 
-func NewRoleSliceFromProto(list []*pbsample.Role) []*Role {
+func NewRoleSliceFromProto(list []*pbsungora.Role) []*Role {
 	res := make([]*Role, len(list))
 	for i := range list {
 		res[i] = NewRoleFromProto(list[i])
@@ -182,11 +182,11 @@ func NewRoleSliceFromProto(list []*pbsample.Role) []*Role {
 	return res
 }
 
-func NewUserToProto(tt *User) *pbsample.User {
+func NewUserToProto(tt *User) *pbsungora.User {
 	if tt == nil {
 		return nil
 	}
-	return &pbsample.User{
+	return &pbsungora.User{
 		Id:          tt.ID.String(),
 		Login:       tt.Login,
 		Description: tt.Description.String,
@@ -208,15 +208,15 @@ func NewUserToProto(tt *User) *pbsample.User {
 	}
 }
 
-func NewUserSliceToProto(tt []*User) []*pbsample.User {
-	res := make([]*pbsample.User, len(tt))
+func NewUserSliceToProto(tt []*User) []*pbsungora.User {
+	res := make([]*pbsungora.User, len(tt))
 	for i := range tt {
 		res[i] = NewUserToProto(tt[i])
 	}
 	return res
 }
 
-func NewUserFromProto(proto *pbsample.User) *User {
+func NewUserFromProto(proto *pbsungora.User) *User {
 	if proto == nil {
 		return nil
 	}
@@ -242,7 +242,7 @@ func NewUserFromProto(proto *pbsample.User) *User {
 	}
 }
 
-func NewUserSliceFromProto(list []*pbsample.User) []*User {
+func NewUserSliceFromProto(list []*pbsungora.User) []*User {
 	res := make([]*User, len(list))
 	for i := range list {
 		res[i] = NewUserFromProto(list[i])

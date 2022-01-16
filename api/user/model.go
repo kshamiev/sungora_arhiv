@@ -9,7 +9,7 @@ import (
 	"sungora/lib/storage"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/typ"
-	"sungora/services/mdsample"
+	"sungora/services/mdsungora"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
@@ -22,7 +22,7 @@ func NewModel(st *stpg.Storage) *Model {
 	return &Model{st}
 }
 
-func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsample.User, error) {
+func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsungora.User, error) {
 	s := app.NewSpan(ctx)
 	s.StringAttribute("param1", "fantik")
 	s.Int64Attribute("param2", 34)
@@ -30,7 +30,7 @@ func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsample.User, error) 
 	s.BoolAttribute("param4", true)
 	defer s.End()
 
-	us := &mdsample.User{}
+	us := &mdsungora.User{}
 
 	// sqlx
 	if err := mm.st.DB().GetContext(ctx, us, "SELECT * FROM users WHERE id = $1", id); err != nil {

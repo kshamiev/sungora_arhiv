@@ -91,16 +91,18 @@ dbdump-a:
 .PHONY: dbdump-a
 
 # Инженеринг моделей по существующей структуре БД
-ser-sample:
-	@go run services/generate/main.go -step sample-1
-	@sqlboiler -c conf/config.yaml -p mdsample -o services/mdsample --no-auto-timestamps --no-tests --wipe psql
-	@go run services/generate/main.go -step sample-2
-	@go run services/generate/main.go -step sample-3
+
+SERVICE1 := sungora
+ser-sungora:
+	@go run services/generate/main.go -step $(SERVICE1)-1
+	@sqlboiler -c conf/config.yaml -p md$(SERVICE1) -o services/md$(SERVICE1) --no-auto-timestamps --no-tests --wipe psql
+	@go run services/generate/main.go -step $(SERVICE1)-2
+	@go run services/generate/main.go -step $(SERVICE1)-3
 	@cd $(DIR)/services && goimports -w .
-	@go run services/generate/main.go -step sample-4
-	@protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative services/pbsample/*.proto;
+	@go run services/generate/main.go -step $(SERVICE1)-4
+	@protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative services/pb$(SERVICE1)/*.proto;
 	@cd $(DIR)/services && go fmt ./... && goimports -w .
-.PHONY: ser-sample
+.PHONY: ser-sungora
 
 # Help
 h:
@@ -118,7 +120,7 @@ h:
 	@echo "    mig-up		- Миграция вверх до конца"
 	@echo "    dbinit		- Восстановление БД из дампа bin/dump.sql (БД должна существовать)"
 	@echo "    dbdump		- Создание дампа БД bin/dump.sql"
-	@echo "    ser-sample:		- Инженеринг типов по БД и работа с GRPC в парадигме масштабируемого сервиса"
+	@echo "    ser-sungora:		- Инженеринг типов по БД и работа с GRPC в парадигме масштабируемого сервиса"
 
 .PHONY: h
 help: h

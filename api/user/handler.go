@@ -9,7 +9,7 @@ import (
 	"sungora/lib/response"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/typ"
-	"sungora/services/mdsample"
+	"sungora/services/mdsungora"
 
 	"github.com/go-chi/chi"
 	"github.com/golang/protobuf/ptypes/empty"
@@ -30,13 +30,13 @@ func NewHandler() *Handler {
 // GetSlice
 // @Tags User
 // @Summary Получение списка пользователей
-// @Success 200 {array} mdsample.UserSlice ""
+// @Success 200 {array} mdsungora.UserSlice ""
 // @Router /api/sun/users [get]
 func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	list, err := mdsample.Users(
-		qm.OrderBy(mdsample.UserColumns.CreatedAt+" ASC"),
+	list, err := mdsungora.Users(
+		qm.OrderBy(mdsungora.UserColumns.CreatedAt+" ASC"),
 		qm.Offset(0), qm.Limit(20),
 	).All(r.Context(), hh.db.DB())
 	if err != nil {
@@ -51,12 +51,12 @@ func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Summary Получение пользователя
 // @Param id path string true "ID"
-// @Success 200 {object} mdsample.User ""
+// @Success 200 {object} mdsungora.User ""
 // @Router /api/sun/user/{id} [get]
 func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj, err := mdsample.FindUser(r.Context(), hh.db.DB(), typ.UUIDMustParse(chi.URLParam(r, "id")))
+	obj, err := mdsungora.FindUser(r.Context(), hh.db.DB(), typ.UUIDMustParse(chi.URLParam(r, "id")))
 	if err != nil {
 		rw.JSONError(errs.NewBadRequest(err))
 		return
@@ -68,13 +68,13 @@ func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 // Post
 // @Tags User
 // @Summary Создание пользователя
-// @Param data body mdsample.User true "пользователь"
-// @Success 200 {object} mdsample.User ""
+// @Param data body mdsungora.User true "пользователь"
+// @Success 200 {object} mdsungora.User ""
 // @Router /api/sun/user/{id} [post]
 func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj := &mdsample.User{}
+	obj := &mdsungora.User{}
 	if err := rw.JSONBodyDecode(obj); err != nil {
 		rw.JSONError(err)
 		return
@@ -92,13 +92,13 @@ func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Summary Изменение пользователя
 // @Param id path string true "ID"
-// @Param data body mdsample.User true "пользователь"
-// @Success 200 {object} mdsample.User ""
+// @Param data body mdsungora.User true "пользователь"
+// @Success 200 {object} mdsungora.User ""
 // @Router /api/sun/user/{id} [put]
 func (hh *Handler) Put(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj := &mdsample.User{}
+	obj := &mdsungora.User{}
 	if err := rw.JSONBodyDecode(obj); err != nil {
 		rw.JSONError(err)
 		return
@@ -121,7 +121,7 @@ func (hh *Handler) Put(w http.ResponseWriter, r *http.Request) {
 func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj := &mdsample.User{ID: typ.UUIDMustParse(chi.URLParam(r, "id"))}
+	obj := &mdsungora.User{ID: typ.UUIDMustParse(chi.URLParam(r, "id"))}
 
 	if _, err := obj.Delete(r.Context(), hh.db.DB()); err != nil {
 		rw.JSONError(errs.NewBadRequest(err))
@@ -138,7 +138,7 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 // @Accept json
 // @Produce json
 // @Param id path string true "ID"
-// @Success 200 {object} mdsample.User "пользователь"
+// @Success 200 {object} mdsungora.User "пользователь"
 // @Failure 400 {string} response.Data "отрицательный ответ"
 // @Security ApiKeyAuth
 // @Router /api/sun/user-test/{id} [get]
@@ -157,7 +157,7 @@ func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	lg := logger.GetLogger(r.Context())
 	lg.Info("General.Test")
 
-	cli := client.GistSampleGRPC()
+	cli := client.GistSungoraGRPC()
 	if _, err := cli.Ping(r.Context(), &empty.Empty{}); err != nil {
 		rw.JSONError(err)
 		return

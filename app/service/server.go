@@ -8,14 +8,14 @@ import (
 	"sungora/lib/logger"
 	"sungora/lib/response"
 	"sungora/lib/web"
-	"sungora/services/pbsample"
+	"sungora/services/pbsungora"
 
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-type SampleServer struct {
-	pbsample.UnsafeSampleServer
+type SungoraServer struct {
+	pbsungora.UnsafeSungoraServer
 }
 
 func NewSampleServer(cfg *web.GRPCConfig, opts ...grpc.ServerOption) (*web.GRPCServer, error) {
@@ -23,19 +23,19 @@ func NewSampleServer(cfg *web.GRPCConfig, opts ...grpc.ServerOption) (*web.GRPCS
 	if err != nil {
 		return nil, errs.NewBadRequest(err)
 	}
-	pbsample.RegisterSampleServer(grpcServer.Ser, &SampleServer{})
+	pbsungora.RegisterSungoraServer(grpcServer.Ser, &SungoraServer{})
 	return grpcServer, nil
 }
 
-func (ser SampleServer) Ping(ctx context.Context, empty *emptypb.Empty) (*pbsample.Test, error) {
+func (ser SungoraServer) Ping(ctx context.Context, empty *emptypb.Empty) (*pbsungora.Test, error) {
 	s := app.NewSpan(ctx)
 	s.StringAttribute("description", "qwerty qwerty qwerty")
 	defer s.End()
 	lg := logger.Gist(ctx)
 	trid := ctx.Value(response.CtxTraceID).(string)
-	lg.Info("SampleServer.Ping: " + trid)
+	lg.Info("SungoraServer.Ping: " + trid)
 	lg.Info(s.Span.SpanContext().TraceID.String())
-	return &pbsample.Test{
+	return &pbsungora.Test{
 		Text: "Funtik",
 	}, nil
 }

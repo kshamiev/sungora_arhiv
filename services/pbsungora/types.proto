@@ -1,6 +1,6 @@
 syntax = "proto3";
-package pbsample;
-option go_package = "./;pbsample";
+package pbsungora;
+option go_package = "./;pbsungora";
 import "services/generate/google/protobuf/timestamp.proto";
 import "services/generate/google/protobuf/empty.proto";
 
@@ -25,7 +25,7 @@ message GooseDBVersionSlice {
 	repeated GooseDBVersion slice = 1;
 }
 
-message MinioST {
+message Minio {
 	string id = 1;
 	string bucket = 2;
 	string object_id = 3;
@@ -38,8 +38,8 @@ message MinioST {
 	bool is_confirm = 10;
 }
 
-message MinioSTSlice {
-	repeated MinioST slice = 1;
+message MinioSlice {
+	repeated Minio slice = 1;
 }
 
 message Order {
