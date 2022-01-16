@@ -98,25 +98,3 @@ func (hh *Handler) PagePage(w http.ResponseWriter, r *http.Request) {
 
 	rw.Bytes(ret.Bytes(), r.URL.Path, http.StatusOK)
 }
-
-// UploadFile загрузка файла на сервер
-// @Tags General
-// @Summary загрузка файла на сервер
-// @Param file formData file true "загружаемый файл"
-// @Accept mpfd
-// @Produce octet-stream
-// @Success 200 {string} string "OK"
-// @Router /api/sun/general/file/upload [post]
-func (hh *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
-	rw := response.New(r, w)
-
-	data, dataName, err := rw.UploadBuffer()
-	if err != nil {
-		rw.JSONError(err)
-		return
-	}
-	lg := logger.Gist(r.Context())
-	lg.Info(dataName[0])
-
-	rw.Bytes(data[dataName[0]].Bytes(), dataName[0], http.StatusOK)
-}

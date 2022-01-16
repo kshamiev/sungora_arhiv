@@ -5,9 +5,14 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
+	"net/http/pprof"
 	"os"
 
-	"sungora/api"
+	"sungora/api/chat"
+	"sungora/api/data"
+	"sungora/api/general"
+	"sungora/api/user"
 	"sungora/app/client"
 	"sungora/app/config"
 	"sungora/app/service"
@@ -15,10 +20,15 @@ import (
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/minio"
+	"sungora/lib/request"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/tpl"
 	"sungora/lib/web"
 	"sungora/lib/worker"
+
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // @title Sungora API
@@ -36,7 +46,9 @@ import (
 // @tag.name General
 // @tag.description Общие запросы
 // @tag.name User
-// @tag.description Пользователи
+// @tag.description Пример работы с моделью (Пользователи)
+// @tag.name Data
+// @tag.description Работа с бинарными данными
 // @tag.name Websocket
 // @tag.description Чат (веб сокет)
 //
@@ -96,7 +108,7 @@ func main() {
 	defer worker.CloseWait()
 
 	// Server Web & Handlers
-	server, err := web.NewServer(&cfg.ServeHTTP, api.Init(&cfg.App))
+	server, err := web.NewServer(&cfg.ServeHTTP, initDomain(&cfg.App))
 	if err != nil {
 		lg.WithError(err).Fatal("new web server error")
 	}
@@ -107,4 +119,44 @@ func main() {
 	)
 
 	app.Lock(make(chan os.Signal, 1))
+}
+
+func initDomain(cfg *app.Config) *chi.Mux {
+	mid := request.NewMid(cfg.Token, cfg.SigningKey)
+
+	router := chi.NewRouter()
+	router.Use(mid.Cors().Handler)
+	router.Use(middleware.Recoverer)
+	router.Use(mid.Logger())
+	router.Use(mid.Observation())
+	router.NotFound(mid.Static(cfg.DirWww))
+
+	// swagger
+	router.Get("/api/sun/swag/*", httpSwagger.Handler())
+
+	// static
+	router.Handle("/gorilla/*", http.FileServer(http.Dir(cfg.DirWww)))
+	router.Handle("/assets/*", http.FileServer(http.Dir(cfg.DirWww)))
+
+	// pprof
+	router.Get("/api/sun/debug/pprof/trace", func(w http.ResponseWriter, r *http.Request) {
+		pprof.Trace(w, r)
+	})
+	router.Get("/api/sun/debug/pprof/profile", func(w http.ResponseWriter, r *http.Request) {
+		pprof.Profile(w, r)
+	})
+	router.Get("/api/sun/debug/pprof/symbol", func(w http.ResponseWriter, r *http.Request) {
+		pprof.Symbol(w, r)
+	})
+	router.Get("/api/sun/debug/pprof/allocs", pprof.Handler("allocs").ServeHTTP)
+	router.Get("/api/sun/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
+	router.Get("/api/sun/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
+
+	// domains
+	chat.InitDomain(router)
+	data.InitDomain(router)
+	general.InitDomain(router)
+	user.InitDomain(router)
+
+	return router
 }

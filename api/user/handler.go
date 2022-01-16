@@ -7,7 +7,7 @@ import (
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/response"
-	"sungora/lib/storage/stpg"
+	"sungora/lib/storage"
 	"sungora/lib/typ"
 	"sungora/services/mdsungora"
 
@@ -18,12 +18,12 @@ import (
 )
 
 type Handler struct {
-	db *stpg.Storage
+	st storage.Face
 }
 
-func NewHandler() *Handler {
+func NewHandler(st storage.Face) *Handler {
 	return &Handler{
-		db: stpg.Gist(),
+		st: st,
 	}
 }
 
@@ -38,7 +38,7 @@ func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 	list, err := mdsungora.Users(
 		qm.OrderBy(mdsungora.UserColumns.CreatedAt+" ASC"),
 		qm.Offset(0), qm.Limit(20),
-	).All(r.Context(), hh.db.DB())
+	).All(r.Context(), hh.st.DB())
 	if err != nil {
 		rw.JSONError(errs.NewBadRequest(err))
 		return
@@ -56,7 +56,7 @@ func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj, err := mdsungora.FindUser(r.Context(), hh.db.DB(), typ.UUIDMustParse(chi.URLParam(r, "id")))
+	obj, err := mdsungora.FindUser(r.Context(), hh.st.DB(), typ.UUIDMustParse(chi.URLParam(r, "id")))
 	if err != nil {
 		rw.JSONError(errs.NewBadRequest(err))
 		return
@@ -80,7 +80,7 @@ func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := obj.Insert(r.Context(), hh.db.DB(), boil.Infer()); err != nil {
+	if err := obj.Insert(r.Context(), hh.st.DB(), boil.Infer()); err != nil {
 		rw.JSONError(errs.NewBadRequest(err))
 		return
 	}
@@ -104,7 +104,7 @@ func (hh *Handler) Put(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, err := obj.Update(r.Context(), hh.db.DB(), boil.Infer()); err != nil {
+	if _, err := obj.Update(r.Context(), hh.st.DB(), boil.Infer()); err != nil {
 		rw.JSONError(errs.NewBadRequest(err))
 		return
 	}
@@ -123,7 +123,7 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	obj := &mdsungora.User{ID: typ.UUIDMustParse(chi.URLParam(r, "id"))}
 
-	if _, err := obj.Delete(r.Context(), hh.db.DB()); err != nil {
+	if _, err := obj.Delete(r.Context(), hh.st.DB()); err != nil {
 		rw.JSONError(errs.NewBadRequest(err))
 		return
 	}
@@ -147,7 +147,7 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	usM := NewModel(hh.db)
+	usM := NewModel(hh.st)
 	us, err := usM.Load(r.Context(), typ.UUIDMustParse(chi.URLParam(r, "id")))
 	if err != nil {
 		rw.JSONError(err)

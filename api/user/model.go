@@ -7,7 +7,6 @@ import (
 	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/storage"
-	"sungora/lib/storage/stpg"
 	"sungora/lib/typ"
 	"sungora/services/mdsungora"
 
@@ -15,10 +14,10 @@ import (
 )
 
 type Model struct {
-	st *stpg.Storage
+	st storage.Face
 }
 
-func NewModel(st *stpg.Storage) *Model {
+func NewModel(st storage.Face) *Model {
 	return &Model{st}
 }
 

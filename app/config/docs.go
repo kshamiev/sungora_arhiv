@@ -30,7 +30,35 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/sun/general/file/upload": {
+        "/api/sun/data/upload": {
+            "post": {
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "Data"
+                ],
+                "summary": "загрузка файла на сервер",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "загружаемый файл",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "информация о загрузке",
+                        "schema": {
+                            "$ref": "#/definitions/mdsungora.Minio"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/sun/data/upload-test": {
             "post": {
                 "consumes": [
                     "multipart/form-data"
@@ -39,7 +67,7 @@ var doc = `{
                     "application/octet-stream"
                 ],
                 "tags": [
-                    "General"
+                    "Data"
                 ],
                 "summary": "загрузка файла на сервер",
                 "parameters": [
@@ -319,6 +347,54 @@ var doc = `{
         }
     },
     "definitions": {
+        "mdsungora.Minio": {
+            "type": "object",
+            "properties": {
+                "bucket": {
+                    "description": "папка хранения - тип объекта",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "дата и время создания",
+                    "type": "string",
+                    "example": "2006-01-02T15:04:05Z"
+                },
+                "file_size": {
+                    "description": "размер файла",
+                    "type": "integer"
+                },
+                "file_type": {
+                    "description": "тип файла",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "8ca3c9c3-cf1a-47fe-8723-3f957538ce42"
+                },
+                "is_confirm": {
+                    "description": "подтверждение загрузки",
+                    "type": "boolean"
+                },
+                "label": {
+                    "description": "дополнительные параметры файла",
+                    "type": "string",
+                    "example": "JSON"
+                },
+                "name": {
+                    "description": "имя файла",
+                    "type": "string"
+                },
+                "object_id": {
+                    "description": "файл хранения - ид объекта",
+                    "type": "string",
+                    "example": "8ca3c9c3-cf1a-47fe-8723-3f957538ce42"
+                },
+                "user_login": {
+                    "description": "пользователь",
+                    "type": "string"
+                }
+            }
+        },
         "mdsungora.User": {
             "type": "object",
             "properties": {
@@ -405,8 +481,12 @@ var doc = `{
             "name": "General"
         },
         {
-            "description": "Пользователи",
+            "description": "Пример работы с моделью (Пользователи)",
             "name": "User"
+        },
+        {
+            "description": "Работа с бинарными данными",
+            "name": "Data"
         },
         {
             "description": "Чат (веб сокет)",
