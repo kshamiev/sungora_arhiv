@@ -14,7 +14,6 @@ WORKDIR /home/app
 
 COPY --from=build1 /home/app/bin bin
 COPY --from=build1 /home/app/conf conf
-COPY --from=build1 /home/app/migrations migrations
 
 EXPOSE 8080:8080
 EXPOSE 7071:7071
