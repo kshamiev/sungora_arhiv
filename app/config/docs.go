@@ -30,6 +30,34 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/sun/data/download": {
+            "get": {
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "Data"
+                ],
+                "summary": "загрузка файла с сервера (minio)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "file",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        },
         "/api/sun/data/upload": {
             "post": {
                 "consumes": [
@@ -38,7 +66,7 @@ var doc = `{
                 "tags": [
                     "Data"
                 ],
-                "summary": "загрузка файла на сервер",
+                "summary": "загрузка файла на сервер (minio)",
                 "parameters": [
                     {
                         "type": "file",
@@ -52,7 +80,10 @@ var doc = `{
                     "200": {
                         "description": "информация о загрузке",
                         "schema": {
-                            "$ref": "#/definitions/mdsungora.Minio"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/mdsungora.Minio"
+                            }
                         }
                     }
                 }
@@ -81,9 +112,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "file",
                         "schema": {
-                            "type": "string"
+                            "type": "file"
                         }
                     }
                 }
@@ -302,7 +333,7 @@ var doc = `{
                 "tags": [
                     "Websocket"
                 ],
-                "summary": "пример работы с веб-сокетом (http://localhost:8010/assets/gorilla/index.html)",
+                "summary": "пример работы с веб-сокетом (http://localhost:8080/assets/gorilla/index.html)",
                 "responses": {
                     "101": {
                         "description": "Switching Protocols to websocket",

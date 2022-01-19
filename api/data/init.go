@@ -13,7 +13,7 @@ func InitDomain(router *chi.Mux) {
 	// API
 	router.Route("/api/sun/data", func(router chi.Router) {
 		router.Post("/upload-test", hh.UploadFile)
-		router.Post("/upload", hh.Post)
+		router.Post("/upload", hh.Upload)
 	})
 
 	// HTML

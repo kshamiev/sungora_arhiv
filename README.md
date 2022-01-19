@@ -54,6 +54,21 @@ docker run -d --rm --name minio-sungora \
     server /data --address ":9000" --console-address ":9001"
 ```
 
+Сборка
+
+```dockerfile
+docker build --no-cache -t kshamiev/sun:v1 .
+```
+
+Запуск
+
+```dockerfile
+docker run --rm -d --name sun1 \
+    -p 127.0.0.1:8080:8080 -p 127.0.0.1:7071:7071 -p 127.0.0.1:9000:9000 -p 127.0.0.1:14268:14268 \
+    --mount type=bind,source=/home/domains/www.funtik.ru/www,target=/home/app/www \
+    kshamiev/sun:v1
+```
+
 ### DOCKER
 
 ```dockerfile

@@ -14,10 +14,11 @@ WORKDIR /home/app
 
 COPY --from=build1 /home/app/bin bin
 COPY --from=build1 /home/app/conf conf
-COPY --from=build1 /home/app/www www
+COPY --from=build1 /home/app/migrations migrations
 
-CMD bin/app -c conf/config.yaml
+EXPOSE 8080:8080
+EXPOSE 7071:7071
+EXPOSE 9000:9000
+EXPOSE 14268:14268
 
-## docker build --no-cache -t kshamiev/sun:v1 .
-## docker run --rm -it kshamiev/sun:v1
-## docker run --rm -d --net host --name sun1 kshamiev/sun:v1
+CMD bin/app -c conf/config_docker.yaml

@@ -24,9 +24,9 @@ func NewHandler() *Handler {
 	}
 }
 
-// WebSocketSample пример работы с веб-сокетом (http://localhost:8010/assets/gorilla/index.html)
+// WebSocketSample пример работы с веб-сокетом (http://localhost:8080/assets/gorilla/index.html)
 // @Tags Websocket
-// @Summary пример работы с веб-сокетом (http://localhost:8010/assets/gorilla/index.html)
+// @Summary пример работы с веб-сокетом (http://localhost:8080/assets/gorilla/index.html)
 // @Success 101 {string} string "Switching Protocols to websocket"
 // @Security ApiKeyAuth
 // @Router /api/sun/websocket/gorilla/{id} [get]
@@ -89,8 +89,10 @@ func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
 	}
 	msg.Author += " - WS OK"
 	lg.Info("WS hook GetMessage")
-	if err := ioutil.WriteFile(msg.FileName, msg.FileData, 0600); err != nil {
-		return nil, err
+	if msg.FileSize > 0 {
+		if err := ioutil.WriteFile(msg.FileName, msg.FileData, 0600); err != nil {
+			return nil, err
+		}
 	}
 	return msg, nil
 }

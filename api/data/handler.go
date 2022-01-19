@@ -3,13 +3,15 @@ package data
 import (
 	"net/http"
 
-	"sungora/lib/errs"
 	"sungora/lib/logger"
+	"sungora/lib/minio"
 	"sungora/lib/response"
 	"sungora/lib/storage"
+	"sungora/lib/storage/stpg"
+	"sungora/lib/typ"
 	"sungora/services/mdsungora"
 
-	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/go-chi/chi"
 )
 
 type Handler struct {
@@ -28,7 +30,7 @@ func NewHandler(st storage.Face) *Handler {
 // @Param file formData file true "загружаемый файл"
 // @Accept mpfd
 // @Produce octet-stream
-// @Success 200 {string} string "OK"
+// @Success 200 {file} file "file"
 // @Router /api/sun/data/upload-test [post]
 func (hh *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
@@ -44,26 +46,47 @@ func (hh *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
 	rw.Bytes(data[dataName[0]].Bytes(), dataName[0], http.StatusOK)
 }
 
-// Post загрузка файла на сервер
+// Upload загрузка файла на сервер (minio)
 // @Tags Data
-// @Summary загрузка файла на сервер
+// @Summary загрузка файла на сервер (minio)
 // @Param file formData file true "загружаемый файл"
 // @Accept mpfd
-// @Success 200 {object} mdsungora.Minio "информация о загрузке"
+// @Success 200 {object} mdsungora.MinioSlice "информация о загрузке"
 // @Router /api/sun/data/upload [post]
-func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
+func (hh *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj := &mdsungora.User{}
-	if err := rw.JSONBodyDecode(obj); err != nil {
+	stM := NewModel(stpg.Gist(), "")
+	res, err := stM.UploadRequest(rw, "test", typ.UUIDNew())
+	if err != nil {
 		rw.JSONError(err)
 		return
 	}
 
-	if err := obj.Insert(r.Context(), hh.st.DB(), boil.Infer()); err != nil {
-		rw.JSONError(errs.NewBadRequest(err))
+	rw.JSON(res)
+}
+
+// Download загрузка файла c сервера (minio)
+// @Tags Data
+// @Summary загрузка файла с сервера (minio)
+// @Param id path string true "ID"
+// @Produce octet-stream
+// @Success 200 {file} file "file"
+// @Router /api/sun/data/download [get]
+func (hh *Handler) Download(w http.ResponseWriter, r *http.Request) {
+	rw := response.New(r, w)
+	id := typ.UUIDMustParse(chi.URLParam(r, "id"))
+
+	st, err := mdsungora.FindMinio(r.Context(), hh.st.DB(), id)
+	if err != nil {
+		rw.JSONError(err)
+		return
+	}
+	res, err := minio.GetFile(r.Context(), st.Bucket, st.ObjectID.String())
+	if err != nil {
+		rw.JSONError(err)
 		return
 	}
 
-	rw.JSON(obj)
+	rw.Reader(res, st.Name, http.StatusOK)
 }

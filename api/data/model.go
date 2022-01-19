@@ -30,7 +30,11 @@ func NewModel(st storage.Face, dir string) *Model {
 	}
 }
 
-func (mm *Model) UploadRequest(rw *response.Response, bucket string, objID typ.UUID) ([]*mdsungora.Minio, error) {
+func (mm *Model) UploadFile(filePath, bucket string, objID typ.UUID) (*mdsungora.Minio, error) {
+	return nil, nil
+}
+
+func (mm *Model) UploadRequest(rw *response.Response, bucket string, objID typ.UUID) (mdsungora.MinioSlice, error) {
 	fileData, _, err := rw.UploadBuffer()
 	if err != nil {
 		return nil, err
