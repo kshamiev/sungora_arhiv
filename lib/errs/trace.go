@@ -7,6 +7,12 @@ import (
 	"strings"
 )
 
+var traceAllow string
+
+func SetTraceAllow(key string) {
+	traceAllow = key
+}
+
 func Traces() []string {
 	tr := make([]string, 0, 10)
 	for i := 4; true; i++ {
@@ -14,16 +20,6 @@ func Traces() []string {
 		if t == "" {
 			break
 		}
-
-		switch {
-		case strings.Contains(t, "/go/src/"): // LIBRARY GOPATH
-			continue
-		case strings.Contains(t, "/mod/"): // LIBRARY MOD
-			continue
-		case strings.Contains(t, "/vendor/"): // LIBRARY VENDOR
-			continue
-		}
-
 		tr = append(tr, t)
 	}
 
@@ -32,7 +28,7 @@ func Traces() []string {
 
 func trace(step int) string {
 	pc, file, line, ok := runtime.Caller(step)
-	if line == 0 {
+	if line == 0 || (traceAllow != "" && !strings.Contains(file, traceAllow)) {
 		return ""
 	}
 

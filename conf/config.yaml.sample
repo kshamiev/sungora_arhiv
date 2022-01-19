@@ -2,7 +2,7 @@ app:
   token: "sungora-dev" # cookie name
   sessionTimeout: 604800s
   mode: "dev"
-  dirWww: "/www"
+  dirWww: "/www_test"
   signingKey: "xxx-xxx-xxx"
 
 lg:
@@ -48,7 +48,7 @@ grpcServer:
 minio:
   host: "localhost:9000"
   access_key: "admin"
-  secret_key: "Cf5IttjOxXnl"
+  secret_key: "xxx-xxx-xxx"
   ssl: false
   region: "eu-east-1"
 

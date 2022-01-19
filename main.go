@@ -65,6 +65,7 @@ func main() {
 		log.Fatal(errs.NewBadRequest(err))
 	}
 	lg := logger.Init(&cfg.Lg)
+	errs.SetTraceAllow(cfg.App.DirWork)
 
 	// ConnectDB postgres
 	if err = stpg.InitConnect(&cfg.Postgresql); err != nil {

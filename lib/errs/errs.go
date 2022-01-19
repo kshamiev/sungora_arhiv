@@ -6,17 +6,10 @@ import (
 	"net/http"
 )
 
-var (
-	ErrNotFound     = errors.New(http.StatusText(http.StatusNotFound))
-	ErrUnauthorized = errors.New(http.StatusText(http.StatusUnauthorized))
-	ErrForbidden    = errors.New(http.StatusText(http.StatusForbidden))
-	ErrBadRequest   = errors.New(http.StatusText(http.StatusBadRequest))
-)
-
 // NewUnauthorized new error type
 func NewUnauthorized(err error, args ...interface{}) *Errs {
 	if err == nil {
-		err = ErrUnauthorized
+		err = errors.New(http.StatusText(http.StatusUnauthorized))
 	}
 	return &Errs{
 		codeHTTP: http.StatusUnauthorized,
@@ -29,7 +22,7 @@ func NewUnauthorized(err error, args ...interface{}) *Errs {
 // NewNotFound new error type
 func NewNotFound(err error, args ...interface{}) *Errs {
 	if err == nil {
-		err = ErrNotFound
+		err = errors.New(http.StatusText(http.StatusNotFound))
 	}
 	return &Errs{
 		codeHTTP: http.StatusNotFound,
@@ -42,7 +35,7 @@ func NewNotFound(err error, args ...interface{}) *Errs {
 // NewForbidden new error type
 func NewForbidden(err error, args ...interface{}) *Errs {
 	if err == nil {
-		err = ErrForbidden
+		err = errors.New(http.StatusText(http.StatusForbidden))
 	}
 
 	return &Errs{
@@ -56,7 +49,7 @@ func NewForbidden(err error, args ...interface{}) *Errs {
 // NewBadRequest new error type
 func NewBadRequest(err error, args ...interface{}) *Errs {
 	if err == nil {
-		err = ErrBadRequest
+		err = errors.New(http.StatusText(http.StatusBadRequest))
 	}
 	codeHTTP := http.StatusBadRequest
 	if sql.ErrNoRows == err {

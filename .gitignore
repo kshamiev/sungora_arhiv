@@ -17,6 +17,11 @@ _dev
 /storage
 /tmp
 /rpmbuild
+/bin
+/pkg
+/cache
+/run
+/eev
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -33,27 +38,12 @@ _testmain.go
 *.test
 *.prof
 
-# Binaries
-/bin/
-/pkg/
-
-# Dependences
-/*.log
-
 # Configs and etc...
 /.env
 /.prj
-/cache
 /conf/*.yml
 /conf/*.yaml
 /conf/keys/jwt.private
 /conf/keys/jwt.public
 /conf/keys/server.private
 /conf/keys/server.public
-/run/*.pid
-/run/*.sock
-/run/*.state
-/run/*.bolt.db
-/doc/*.mwb.bak
-/doc/.~lock.*
-nohup.out
