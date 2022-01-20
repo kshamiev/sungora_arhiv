@@ -130,13 +130,11 @@ func initDomain(cfg *app.Config) *chi.Mux {
 	router.Use(middleware.Recoverer)
 	router.Use(mid.Logger())
 	router.Use(mid.Observation())
-	router.NotFound(mid.Static(cfg.DirWww))
 
 	// swagger
 	router.Get("/api/sun/swag/*", httpSwagger.Handler())
 
 	// static
-	router.Handle("/gorilla/*", http.FileServer(http.Dir(cfg.DirWww)))
 	router.Handle("/assets/*", http.FileServer(http.Dir(cfg.DirWww)))
 
 	// pprof

@@ -30,7 +30,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/sun/data/download": {
+        "/api/sun/data/download/{id}": {
             "get": {
                 "produces": [
                     "application/octet-stream"

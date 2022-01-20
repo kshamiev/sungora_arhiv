@@ -14,6 +14,7 @@ func InitDomain(router *chi.Mux) {
 	router.Route("/api/sun/data", func(router chi.Router) {
 		router.Post("/upload-test", hh.UploadFile)
 		router.Post("/upload", hh.Upload)
+		router.Get("/download/{id}", hh.Download)
 	})
 
 	// HTML

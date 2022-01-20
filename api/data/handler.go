@@ -72,7 +72,7 @@ func (hh *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 // @Param id path string true "ID"
 // @Produce octet-stream
 // @Success 200 {file} file "file"
-// @Router /api/sun/data/download [get]
+// @Router /api/sun/data/download/{id} [get]
 func (hh *Handler) Download(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 	id := typ.UUIDMustParse(chi.URLParam(r, "id"))
@@ -82,6 +82,7 @@ func (hh *Handler) Download(w http.ResponseWriter, r *http.Request) {
 		rw.JSONError(err)
 		return
 	}
+
 	res, err := minio.GetFile(r.Context(), st.Bucket, st.ObjectID.String())
 	if err != nil {
 		rw.JSONError(err)
