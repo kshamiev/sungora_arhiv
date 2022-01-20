@@ -2,7 +2,7 @@ app:
   token: "sungora-dev" # cookie name
   sessionTimeout: 604800s
   mode: "dev"
-  dirWww: "/www_test"
+  dirWww: "/www"
   signingKey: "xxx-xxx-xxx"
 
 lg:
@@ -13,7 +13,7 @@ lg:
 
 http:
   proto: "http"
-  host: "localhost"
+  host: "0.0.0.0"
   port: 8080
   writeTimeout: 60s  # Время ожидания окончания передачи ответа в секундах
   readTimeout: 60s   # Время ожидания web запроса в секундах
@@ -23,7 +23,7 @@ http:
 psql:
   user: "postgres"
   pass: "postgres"
-  host: "localhost"
+  host: "192.168.1.66"
   port: 5432
   dbname: "sungora"
   sslmode: "disable"
@@ -34,7 +34,7 @@ psql:
 
 jaeger:
   title: "sungora-dev"
-  oc_url: "http://localhost:14268/api/traces"
+  oc_url: "http://sungora-jaeger:14268/api/traces"
   fraction: 1
 
 grpcClient:
@@ -46,7 +46,7 @@ grpcServer:
   port: 7071
 
 minio:
-  host: "localhost:9000"
+  host: "sungora-minio:9000"
   access_key: "admin"
   secret_key: "xxx-xxx-xxx"
   ssl: false

@@ -115,8 +115,8 @@ func main() {
 	}
 	defer server.CloseWait()
 	lg.Info("start web server: ", fmt.Sprintf(
-		"%s://%s:%d/api/sun/swag/index.html",
-		cfg.ServeHTTP.Proto, cfg.ServeHTTP.Host, cfg.ServeHTTP.Port),
+		"%s://localhost:%d/api/sun/swag/index.html",
+		cfg.ServeHTTP.Proto, cfg.ServeHTTP.Port),
 	)
 
 	app.Lock(make(chan os.Signal, 1))

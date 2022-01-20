@@ -50,10 +50,10 @@ http://localhost:16686
 ```dockerfile
 docker run -d --rm --name sungora-minio --net sun \
     -p 9000:9000 -p 127.0.0.1:9001:9001 \
-    -e MINIO_ROOT_USER="admin" -e MINIO_ROOT_PASSWORD="Cf5IttjOxXnl" \
+    -e MINIO_ROOT_USER="admin" -e MINIO_ROOT_PASSWORD="xxx-xxx-xxx" \
     -v /mnt/data/sungora:/data \
     minio/minio \
-    server /data --address ":9000" --console-address ":9001"
+    server /data --address ":9000" --console-address "127.0.0.1:9001"
 ```
 
 http://localhost:9001
