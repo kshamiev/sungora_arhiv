@@ -16,8 +16,5 @@ COPY --from=build1 /home/app/bin bin
 COPY --from=build1 /home/app/conf conf
 
 EXPOSE 8080:8080
-EXPOSE 7071:7071
-EXPOSE 9000:9000
-EXPOSE 14268:14268
 
 CMD bin/app -c conf/config_docker.yaml

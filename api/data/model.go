@@ -39,7 +39,7 @@ func (mm *Model) UploadRequest(rw *response.Response, bucket string, objID typ.U
 	if err != nil {
 		return nil, err
 	}
-	us, err := rw.GetUser()
+	us, err := rw.GetUserTest()
 	if err != nil {
 		return nil, err
 	}

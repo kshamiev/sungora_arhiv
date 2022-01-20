@@ -23,7 +23,7 @@ import (
 	"sungora/lib/typ"
 )
 
-// Структура для работы с входящим запросом
+// Response Сопровождение входящего запроса и ответ на него
 type Response struct {
 	Request  *http.Request
 	response http.ResponseWriter
@@ -57,7 +57,7 @@ func (rw *Response) CookieGet(name string) (c string) {
 	return c
 }
 
-// CookiesSet Установка нескольких кук. Если время не указано кука сессионная (пока открыт браузер).
+// CookieSet Установка печенек. Если время не указано кука сессионная (пока открыт браузер).
 func (rw *Response) CookieSet(name, value string, path []string, t ...time.Time) {
 	for i := range path {
 		var cookie = new(http.Cookie)
@@ -73,7 +73,7 @@ func (rw *Response) CookieSet(name, value string, path []string, t ...time.Time)
 	}
 }
 
-// CookiesRem Удаление нескольких кук.
+// CookieRem Удаление печенек.
 func (rw *Response) CookieRem(name string, path []string) {
 	for i := range path {
 		var cookie = new(http.Cookie)
@@ -196,13 +196,11 @@ func (rw *Response) Bytes(data []byte, fileName string, status int) {
 	_, _ = rw.response.Write(data)
 }
 
-// Redirect 301
 func (rw *Response) Redirect301(redirectURL string) {
 	rw.response.Header().Set("Location", redirectURL)
 	rw.response.WriteHeader(http.StatusMovedPermanently)
 }
 
-// Redirect 302
 func (rw *Response) Redirect302(redirectURL string) {
 	rw.response.Header().Set("Location", redirectURL)
 	rw.response.WriteHeader(http.StatusFound)
@@ -350,6 +348,18 @@ func (rw *Response) GetUser() (*User, error) {
 		return nil, errs.NewUnauthorized(errors.New("user is not context (middleware.Auth)"))
 	}
 	return us, nil
+}
+
+func (rw *Response) GetUserTest() (*User, error) {
+	return &User{
+		ID:    typ.UUIDNew(),
+		Login: "test",
+		Roles: []enum.Role{
+			enum.Role_DEVELOP,
+			enum.Role_ADMIN,
+			enum.Role_MODERATOR,
+		},
+	}, nil
 }
 
 func (rw *Response) GetToken() (string, error) {

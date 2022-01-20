@@ -29,45 +29,42 @@
     go tool pprof http://localhost:8080/debug/pprof/heap
     go tool pprof http://localhost:8080/debug/pprof/goroutine
 
-### Jaeger
+### DOCKER
+
+#### Jaeger
 
 https://www.jaegertracing.io/docs/1.20/getting-started/
 
 ```dockerfile
-docker run -d --rm --name jaeger \
+docker run -d --rm --name sungora-jaeger --net sun \
     -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
     -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp \
-    -p 5778:5778 -p 16686:16686 -p 14268:14268 -p 14250:14250 -p 9411:9411 \
+    -p 5778:5778 -p 127.0.0.1:16686:16686 -p 14268:14268 -p 14250:14250 -p 9411:9411 \
     jaegertracing/all-in-one:1.20
 ```
 
 http://localhost:16686
 
-### Minio
+#### Minio
 
 ```dockerfile
-docker run -d --rm --name minio-sungora \
-    -p 9000:9000 -p 9001:9001 \
+docker run -d --rm --name sungora-minio --net sun \
+    -p 9000:9000 -p 127.0.0.1:9001:9001 \
     -e MINIO_ROOT_USER="admin" -e MINIO_ROOT_PASSWORD="Cf5IttjOxXnl" \
     -v /mnt/data/sungora:/data \
     minio/minio \
     server /data --address ":9000" --console-address ":9001"
 ```
-### DOCKER
 
-Сборка
+http://localhost:9001
 
-```dockerfile
-docker build --no-cache -t kshamiev/sun:v1 .
-```
-
-Запуск
+#### Сборка и запуск приложения
 
 ```dockerfile
-docker build --rm -t kshamiev/sungora .
+docker build --no-cache --rm -t kshamiev/sungora .
 
-docker run --rm -d --name sungora \
-    -p 127.0.0.1:8080:8080 -p 127.0.0.1:7071:7071 -p 127.0.0.1:9000:9000 -p 127.0.0.1:14268:14268 \
+docker run --rm -d --name sungora --net sun\
+    -p 127.0.0.1:8080:8080 \
     --mount type=bind,source=/home/domains/sungora.local/www,target=/home/app/www \
     kshamiev/sungora
 ```
