@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"context"
 	"os"
 
 	"sungora/lib/typ"
@@ -9,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var lg = logrus.New().WithField(titleField, "default")
+var logInstance Logger = logrus.New().WithField(titleField, "default")
 
 func Init(config *Config) Logger {
 	l := logrus.New()
@@ -40,22 +39,10 @@ func Init(config *Config) Logger {
 			l.SetOutput(fp)
 		}
 	}
-	lg = l.WithField(titleField, config.Title)
-	return lg
+	logInstance = l.WithField(titleField, config.Title)
+	return logInstance
 }
 
-// ////
-
-type ctxLog struct{}
-
-func WithLogger(ctx context.Context, lg Logger) context.Context {
-	return context.WithValue(ctx, ctxLog{}, lg)
-}
-
-func Gist(ctx context.Context) Logger {
-	l, ok := ctx.Value(ctxLog{}).(Logger)
-	if !ok {
-		return lg
-	}
-	return l
+func SetCustomLogger(lg Logger) {
+	logInstance = lg
 }
