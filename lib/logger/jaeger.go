@@ -1,25 +1,12 @@
 package logger
 
 import (
-	"context"
-
 	"contrib.go.opencensus.io/exporter/jaeger"
 	"go.opencensus.io/plugin/ocgrpc"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
 )
-
-func Init(config *Config) Logger {
-	DefaultLogger = newLogrusWrapper(config)
-	return DefaultLogger
-}
-
-func Gist(ctx context.Context) Logger {
-	return GetLogger(ctx)
-}
-
-// ////
 
 type JaegerConfig struct {
 	Title    string  `json:"title" yaml:"title"`

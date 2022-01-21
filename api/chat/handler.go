@@ -38,7 +38,7 @@ func (hh *Handler) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 		err error
 	)
 	rw := response.New(r, w)
-	lg := logger.GetLogger(r.Context())
+	lg := logger.Gist(r.Context())
 
 	// переключаемся на вебсокет
 	upgrader := websocket.Upgrader{
@@ -76,13 +76,13 @@ type chatWS struct {
 
 // HookStartClient метод при подключении и старте нового пользователя
 func (cli *chatWS) HookStartClient(cntClient int) error {
-	logger.GetLogger(cli.Ctx).Info("WS hook StartClient: ", cntClient)
+	logger.Gist(cli.Ctx).Info("WS hook StartClient: ", cntClient)
 	return nil
 }
 
 // HookGetMessage метод при получении данных из вебсокета пользователя
 func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
-	lg := logger.GetLogger(cli.Ctx)
+	lg := logger.Gist(cli.Ctx)
 	msg := &Message{}
 	if err := cli.Ws.ReadJSON(msg); err != nil {
 		return nil, err
@@ -99,7 +99,7 @@ func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
 
 // HookSendMessage метод при отправке данных пользователю
 func (cli *chatWS) HookSendMessage(msg interface{}, cntClient int) error {
-	lg := logger.GetLogger(cli.Ctx)
+	lg := logger.Gist(cli.Ctx)
 	res := &Message{}
 	switch o := msg.(type) {
 	case *Message:
@@ -120,6 +120,6 @@ func (cli *chatWS) HookSendMessage(msg interface{}, cntClient int) error {
 
 // Ping проверка соединения с пользователем
 func (cli *chatWS) Ping() error {
-	logger.GetLogger(cli.Ctx).Info("WS hook Ping")
+	logger.Gist(cli.Ctx).Info("WS hook Ping")
 	return cli.Ws.WriteMessage(websocket.PingMessage, []byte{})
 }

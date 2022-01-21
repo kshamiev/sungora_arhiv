@@ -1,26 +1,33 @@
-package log
+package logger
 
 import (
 	"context"
 	"os"
+
+	"sungora/lib/typ"
 
 	"github.com/sirupsen/logrus"
 )
 
 var lg = logrus.New().WithField(titleField, "default")
 
-func Init(config *Config) *logrus.Entry {
+func Init(config *Config) Logger {
 	l := logrus.New()
-
 	l.SetLevel(config.Level)
-
 	switch config.Formatter {
 	case formatterJSON:
-		l.SetFormatter(&logrus.TextFormatter{})
+		l.SetFormatter(&logrus.JSONFormatter{
+			TimestampFormat:   typ.TimeFormatGMDHIS,
+			DisableTimestamp:  false,
+			DisableHTMLEscape: false,
+			DataKey:           "",
+			FieldMap:          nil,
+			CallerPrettyfier:  nil,
+			PrettyPrint:       false,
+		})
 	default:
-		l.SetFormatter(&logrus.JSONFormatter{})
+		l.SetFormatter(&logrus.TextFormatter{})
 	}
-
 	switch config.Output {
 	case stdout:
 		l.SetOutput(os.Stdout)
@@ -41,12 +48,12 @@ func Init(config *Config) *logrus.Entry {
 
 type ctxLog struct{}
 
-func WithLogger(ctx context.Context, logger *logrus.Entry) context.Context {
-	return context.WithValue(ctx, ctxLog{}, logger)
+func WithLogger(ctx context.Context, lg Logger) context.Context {
+	return context.WithValue(ctx, ctxLog{}, lg)
 }
 
-func Gist(ctx context.Context) *logrus.Entry {
-	l, ok := ctx.Value(ctxLog{}).(*logrus.Entry)
+func Gist(ctx context.Context) Logger {
+	l, ok := ctx.Value(ctxLog{}).(Logger)
 	if !ok {
 		return lg
 	}

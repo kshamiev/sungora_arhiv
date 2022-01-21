@@ -15,12 +15,11 @@ import (
 	"time"
 
 	"sungora/lib/enum"
-
-	"github.com/go-chi/chi"
-
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/typ"
+
+	"github.com/go-chi/chi"
 )
 
 // Response Сопровождение входящего запроса и ответ на него
@@ -34,7 +33,7 @@ type Response struct {
 func New(r *http.Request, w http.ResponseWriter) *Response {
 	var rw = &Response{
 		response: w,
-		lg:       logger.GetLogger(r.Context()),
+		lg:       logger.Gist(r.Context()),
 		Request:  r,
 	}
 	return rw

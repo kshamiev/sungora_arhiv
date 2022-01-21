@@ -35,7 +35,7 @@ type Config struct {
 }
 
 func Enable(ctx context.Context, config *Config) {
-	log := logger.GetLogger(ctx).WithFields(map[string]interface{}{
+	log := logger.Gist(ctx).WithFields(map[string]interface{}{
 		"operation": "enableObservabilityAndExporters",
 	})
 	jaegerTags := []jaeger.Tag{}
