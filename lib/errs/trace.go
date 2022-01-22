@@ -32,6 +32,7 @@ func trace(step int) string {
 		return ""
 	}
 
+	file = strings.ReplaceAll(file, traceAllow, "")
 	kind := fmt.Sprintf("%s:%d ", file, line)
 
 	if ok {
