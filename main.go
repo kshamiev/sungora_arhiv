@@ -128,8 +128,6 @@ func initDomain(cfg *app.Config) *chi.Mux {
 	router := chi.NewRouter()
 	router.Use(mid.Cors().Handler)
 	router.Use(middleware.Recoverer)
-	router.Use(mid.Logger())
-	router.Use(mid.Observation())
 
 	// swagger
 	router.Get("/api/sun/swag/*", httpSwagger.Handler())
@@ -152,10 +150,14 @@ func initDomain(cfg *app.Config) *chi.Mux {
 	router.Get("/api/sun/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
 
 	// domains
-	chat.InitDomain(router)
-	data.InitDomain(router)
-	general.InitDomain(router)
-	user.InitDomain(router)
+	router.Group(func(router chi.Router) {
+		router.Use(mid.Logger())
+		router.Use(mid.Observation())
+		chat.InitDomain(router)
+		data.InitDomain(router)
+		general.InitDomain(router)
+		user.InitDomain(router)
+	})
 
 	return router
 }

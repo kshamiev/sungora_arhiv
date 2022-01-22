@@ -7,7 +7,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
-func InitDomain(router *chi.Mux) {
+func InitDomain(router chi.Router) {
 	hh := NewHandler(stpg.Gist())
 
 	// API
