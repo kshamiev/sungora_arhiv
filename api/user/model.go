@@ -33,7 +33,7 @@ func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsungora.User, error)
 
 	// sqlx
 	if err := mm.st.DB().GetContext(ctx, us, "SELECT * FROM users WHERE id = $1", id); err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err, errs.UserTwo, id.String())
 	}
 
 	// boiler

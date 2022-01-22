@@ -27,7 +27,7 @@ func LoggerInterceptor() grpc.UnaryServerInterceptor {
 				ctx = context.WithValue(ctx, response.CtxTraceID, md.Get(response.LogTraceID)[0])
 			}
 		} else {
-			requestID := typ.UUIDNew().String()
+			requestID := typ.UUIDNew().StringShort()
 			lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
 			ctx = logger.WithLogger(ctx, lg)
 			ctx = boil.WithDebugWriter(ctx, lg.Writer())

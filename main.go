@@ -65,7 +65,6 @@ func main() {
 		log.Fatal(errs.NewBadRequest(err))
 	}
 	lg := logger.Init(&cfg.Lg)
-	errs.SetTraceAllow(cfg.App.DirWork)
 
 	// ConnectDB postgres
 	if err = stpg.InitConnect(&cfg.Postgresql); err != nil {
@@ -151,7 +150,6 @@ func initDomain(cfg *app.Config) *chi.Mux {
 
 	// domains
 	router.Group(func(router chi.Router) {
-		router.Use(mid.Logger())
 		router.Use(mid.Observation())
 		chat.InitDomain(router)
 		data.InitDomain(router)

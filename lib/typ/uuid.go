@@ -2,6 +2,7 @@ package typ
 
 import (
 	"database/sql/driver"
+	"encoding/hex"
 
 	"github.com/gofrs/uuid"
 )
@@ -22,7 +23,6 @@ func UUIDParse(s string) (UUID, error) {
 	return UUID{u}, nil
 }
 
-// return UUID{uuid.MustParse(s)}
 func UUIDMustParse(s string) UUID {
 	u, err := uuid.FromString(s)
 	if err != nil {
@@ -40,6 +40,12 @@ func (u UUID) Value() (driver.Value, error) {
 
 func (u UUID) Bytes() []byte {
 	return u.UUID[:]
+}
+
+func (u UUID) StringShort() string {
+	buf := make([]byte, 32)
+	hex.Encode(buf, u.UUID[:])
+	return string(buf)
 }
 
 func (u UUID) IsNull() bool {

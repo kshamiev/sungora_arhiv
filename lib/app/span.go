@@ -12,16 +12,17 @@ type Span struct {
 
 func NewSpan(ctx context.Context) *Span {
 	s := &Span{}
-	kind, _, fun, _ := TraceDetail(2)
+	t, _, fun, _ := Trace(2)
 	_, s.Span = trace.StartSpan(ctx, fun)
-	s.StringAttribute("location", kind)
+	s.StringAttribute("location", t)
 	return s
 }
 
 func NewSpanName(ctx context.Context, name string) *Span {
 	s := &Span{}
 	_, s.Span = trace.StartSpan(ctx, name)
-	s.StringAttribute("location", Trace(2))
+	t, _, _, _ := Trace(2)
+	s.StringAttribute("location", t)
 	return s
 }
 

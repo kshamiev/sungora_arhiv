@@ -3,7 +3,10 @@ package errs
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
+
+	"sungora/lib/app"
 )
 
 // NewUnauthorized new error type
@@ -11,10 +14,11 @@ func NewUnauthorized(err error, args ...interface{}) *Errs {
 	if err == nil {
 		err = errors.New(http.StatusText(http.StatusUnauthorized))
 	}
+	t, _, _, _ := app.Trace(2)
 	return &Errs{
 		codeHTTP: http.StatusUnauthorized,
 		err:      err,
-		kind:     trace(2),
+		kind:     t,
 		message:  getMessage(args),
 	}
 }
@@ -24,10 +28,11 @@ func NewNotFound(err error, args ...interface{}) *Errs {
 	if err == nil {
 		err = errors.New(http.StatusText(http.StatusNotFound))
 	}
+	t, _, _, _ := app.Trace(2)
 	return &Errs{
 		codeHTTP: http.StatusNotFound,
 		err:      err,
-		kind:     trace(2),
+		kind:     t,
 		message:  getMessage(args),
 	}
 }
@@ -37,11 +42,11 @@ func NewForbidden(err error, args ...interface{}) *Errs {
 	if err == nil {
 		err = errors.New(http.StatusText(http.StatusForbidden))
 	}
-
+	t, _, _, _ := app.Trace(2)
 	return &Errs{
 		codeHTTP: http.StatusForbidden,
 		err:      err,
-		kind:     trace(2),
+		kind:     t,
 		message:  getMessage(args),
 	}
 }
@@ -55,13 +60,32 @@ func NewBadRequest(err error, args ...interface{}) *Errs {
 	if sql.ErrNoRows == err {
 		codeHTTP = http.StatusNotFound
 	}
-
+	t, _, _, _ := app.Trace(2)
 	return &Errs{
 		codeHTTP: codeHTTP,
 		err:      err,
-		kind:     trace(2),
+		kind:     t,
 		message:  getMessage(args),
-		trace:    Traces(),
+		trace:    app.Traces(),
+	}
+}
+
+// New custom error application
+func New(err error, msg Message, args ...interface{}) *Errs {
+	if err == nil {
+		err = msg.Error(args...)
+	}
+	codeHTTP := http.StatusBadRequest
+	if sql.ErrNoRows == err {
+		codeHTTP = http.StatusNotFound
+	}
+	t, _, _, _ := app.Trace(2)
+	return &Errs{
+		codeHTTP: codeHTTP,
+		err:      err,
+		kind:     t,
+		message:  msg.String(args...),
+		trace:    app.Traces(),
 	}
 }
 
@@ -100,4 +124,15 @@ func (e *Errs) Response() string {
 
 func (e *Errs) Trace() []string {
 	return e.trace
+}
+
+func getMessage(args []interface{}) string {
+	switch len(args) {
+	case 0:
+		return ""
+	case 1:
+		return args[0].(string)
+	default:
+		return fmt.Sprintf(args[0].(string), args[1:]...)
+	}
 }

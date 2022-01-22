@@ -6,7 +6,6 @@ import (
 	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
-	"sungora/lib/response"
 	"sungora/lib/web"
 	"sungora/services/pbsungora"
 
@@ -32,9 +31,7 @@ func (ser SungoraServer) Ping(ctx context.Context, empty *emptypb.Empty) (*pbsun
 	s.StringAttribute("description", "qwerty qwerty qwerty")
 	defer s.End()
 	lg := logger.Gist(ctx)
-	trid := ctx.Value(response.CtxTraceID).(string)
-	lg.Info("SungoraServer.Ping: " + trid)
-	lg.Info(s.Span.SpanContext().TraceID.String())
+	lg.Info("SungoraServer.Ping")
 	return &pbsungora.Test{
 		Text: "Funtik",
 	}, nil

@@ -121,7 +121,7 @@ func runScheduler(task Task, ch chan bool) {
 
 // action выполнение задачи
 func action(task Task) {
-	requestID := typ.UUIDNew().String()
+	requestID := typ.UUIDNew().StringShort()
 	ctx := context.Background()
 	lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
 

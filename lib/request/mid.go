@@ -149,7 +149,7 @@ func (mid *Mid) VerifyToken(token string) (*response.User, error) {
 func (mid *Mid) Logger() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			requestID := typ.UUIDNew().String()
+			requestID := typ.UUIDNew().StringShort()
 			ctx := r.Context()
 
 			lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
@@ -158,6 +158,7 @@ func (mid *Mid) Logger() func(next http.Handler) http.Handler {
 			ctx = context.WithValue(ctx, response.CtxTraceID, requestID)
 			ctx = metadata.AppendToOutgoingContext(ctx, response.LogTraceID, requestID)
 
+			w.Header().Add(response.LogTraceID, requestID)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
@@ -173,15 +174,19 @@ func (mid *Mid) Observation() func(next http.Handler) http.Handler {
 				nc := chi.Context{}
 				rctx.Routes.Match(&nc, req.Method, req.RequestURI)
 
+				httpPath := strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/")
 				span := trace.FromContext(ctx)
-				span.AddAttributes(trace.StringAttribute(
-					ochttp.PathAttribute,
-					strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/"),
-				))
+				span.AddAttributes(trace.StringAttribute(ochttp.PathAttribute, httpPath))
+				ochttp.SetRoute(ctx, httpPath)
 
-				w.Header().Add(response.LogTraceID, span.SpanContext().TraceID.String())
+				requestID := span.SpanContext().TraceID.String()
+				lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
+				ctx = logger.WithLogger(ctx, lg)
+				ctx = boil.WithDebugWriter(ctx, lg.Writer())
+				ctx = context.WithValue(ctx, response.CtxTraceID, requestID)
+				ctx = metadata.AppendToOutgoingContext(ctx, response.LogTraceID, requestID)
 
-				ochttp.SetRoute(ctx, path.Join(nc.RoutePatterns...))
+				w.Header().Add(response.LogTraceID, requestID)
 				next.ServeHTTP(w, req.WithContext(ctx))
 			}),
 			FormatSpanName: func(req *http.Request) string {
