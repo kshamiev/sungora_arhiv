@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"path"
+	"strings"
 	"time"
 
 	"sungora/lib/enum"
@@ -173,7 +174,10 @@ func (mid *Mid) Observation() func(next http.Handler) http.Handler {
 				rctx.Routes.Match(&nc, req.Method, req.RequestURI)
 
 				span := trace.FromContext(ctx)
-				span.AddAttributes(trace.StringAttribute(ochttp.PathAttribute, path.Join(nc.RoutePatterns...)))
+				span.AddAttributes(trace.StringAttribute(
+					ochttp.PathAttribute,
+					strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/"),
+				))
 
 				w.Header().Add(response.LogTraceID, span.SpanContext().TraceID.String())
 
