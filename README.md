@@ -31,6 +31,22 @@
 
 ### DOCKER
 
+#### Graylog
+
+```dockerfile
+docker run --name graylog --link mongo --link elasticsearch \
+    -p 9000:9000 -p 12201:12201 -p 1514:1514 \
+    -e GRAYLOG_HTTP_EXTERNAL_URI="http://127.0.0.1:9000/" \
+    -e GRAYLOG_PASSWORD_SECRET="yESMn44eQlUXTqN2RyXqJzbxatiHZwGZwWJu9pUHNOQAQQm1NmKiQwtk7l5u6pC0m7ub6ilyFh0YqepA9" \
+    -e GRAYLOG_ROOT_PASSWORD_SHA2="65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5" \
+    -d graylog/graylog:4.2
+```
+
+http://127.0.0.1:9000/
+
+    admin
+    qwerty
+
 #### Jaeger
 
 https://www.jaegertracing.io/docs/1.20/getting-started/
