@@ -67,7 +67,7 @@ type Message struct {
 	Extra    map[string]interface{} `json:"-"`
 }
 
-type innerMessage Message //against circular (Un)MarshalJSON
+type innerMessage Message // against circular (Un)MarshalJSON
 
 // Used to control GELF chunking.  Should be less than (MTU - len(UDP
 // header)).
@@ -162,7 +162,7 @@ func (w *UDPWriter) writeChunked(zBytes []byte) (err error) {
 		// manually write header.  Don't care about
 		// host/network byte order, because the spec only
 		// deals in individual bytes.
-		buf.Write(magicChunked) //magic
+		buf.Write(magicChunked) // magic
 		buf.Write(msgId)
 		buf.WriteByte(i)
 		buf.WriteByte(nChunks)
@@ -294,7 +294,6 @@ func (w *Writer) Warning(m string) (err error)
 // Write encodes the given string in a GELF message and sends it to
 // the server specified in NewWriter().
 func (w *UDPWriter) Write(p []byte) (n int, err error) {
-
 	// remove trailing and leading whitespace
 	p = bytes.TrimSpace(p)
 
@@ -320,7 +319,7 @@ func (w *UDPWriter) Write(p []byte) (n int, err error) {
 		Extra:    map[string]interface{}{},
 	}
 
-	if err = w.WriteMessage(&m); err != nil {
+	if err := w.WriteMessage(&m); err != nil {
 		return 0, err
 	}
 
@@ -348,7 +347,7 @@ func (m *Message) MarshalJSON() ([]byte, error) {
 
 	// merge serialized message + serialized extra map
 	b[len(b)-1] = ','
-	return append(b, eb[1:len(eb)]...), nil
+	return append(b, eb[1:]...), nil
 }
 
 func (m *Message) UnmarshalJSON(data []byte) error {

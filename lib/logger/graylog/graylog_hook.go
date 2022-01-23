@@ -12,6 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const localhost = "localhost"
 const StackTraceKey = "_stacktrace"
 
 // Set graylog.BufSize = <value> _before_ calling NewGraylogHook
@@ -48,7 +49,7 @@ func NewGraylogHook(addr string, extra map[string]interface{}) *GraylogHook {
 
 	host, err := os.Hostname()
 	if err != nil {
-		host = "localhost"
+		host = localhost
 	}
 
 	hook := &GraylogHook{

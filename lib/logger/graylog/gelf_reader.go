@@ -9,11 +9,9 @@ import (
 	"io"
 	"net"
 	"strings"
-	"sync"
 )
 
 type Reader struct {
-	mu   sync.Mutex
 	conn net.Conn
 }
 
@@ -77,7 +75,6 @@ func (r *Reader) ReadMessage() (*Message, error) {
 		cHead, cBuf = cBuf[:2], cBuf[:n]
 
 		if bytes.Equal(cHead, magicChunked) {
-			//fmt.Printf("chunked %v\n", cBuf[:14])
 			cid, seq, total = cBuf[2:2+8], cBuf[2+8], cBuf[2+8+1]
 			if ocid != nil && !bytes.Equal(cid, ocid) {
 				return nil, fmt.Errorf("out-of-band message %v (awaited %v)", cid, ocid)
@@ -86,17 +83,15 @@ func (r *Reader) ReadMessage() (*Message, error) {
 				chunks = make([][]byte, total)
 			}
 			n = len(cBuf) - chunkedHeaderLen
-			//fmt.Printf("setting chunks[%d]: %d\n", seq, n)
 			chunks[seq] = append(make([]byte, 0, n), cBuf[chunkedHeaderLen:]...)
 			length += n
-		} else { //not chunked
+		} else { // not chunked
 			if total > 0 {
 				return nil, fmt.Errorf("out-of-band message (not chunked)")
 			}
 			break
 		}
 	}
-	//fmt.Printf("\nchunks: %v\n", chunks)
 
 	if length > 0 {
 		if cap(cBuf) < length {
@@ -104,20 +99,19 @@ func (r *Reader) ReadMessage() (*Message, error) {
 		}
 		cBuf = cBuf[:0]
 		for i := range chunks {
-			//fmt.Printf("appending %d %v\n", i, chunks[i])
 			cBuf = append(cBuf, chunks[i]...)
 		}
 		cHead = cBuf[:2]
 	}
 
 	// the data we get from the wire is compressed
-	if bytes.Equal(cHead, magicGzip) {
+	switch {
+	case bytes.Equal(cHead, magicGzip):
 		cReader, err = gzip.NewReader(bytes.NewReader(cBuf))
-	} else if cHead[0] == magicZlib[0] &&
-		(int(cHead[0])*256+int(cHead[1]))%31 == 0 {
+	case cHead[0] == magicZlib[0] && (int(cHead[0])*256+int(cHead[1]))%31 == 0:
 		// zlib is slightly more complicated, but correct
 		cReader, err = zlib.NewReader(bytes.NewReader(cBuf))
-	} else {
+	default:
 		return nil, fmt.Errorf("unknown magic: %x %v", cHead, cHead)
 	}
 
@@ -125,6 +119,7 @@ func (r *Reader) ReadMessage() (*Message, error) {
 		return nil, fmt.Errorf("NewReader: %s", err)
 	}
 
+	// nolint gosec
 	if _, err = io.Copy(&buf, cReader); err != nil {
 		return nil, fmt.Errorf("io.Copy: %s", err)
 	}

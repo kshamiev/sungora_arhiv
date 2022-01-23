@@ -51,12 +51,12 @@ func Init(config *Config) Logger {
 
 	if config.Hooks.Graylog.DSN != "" {
 		hook := graylog.NewGraylogHook(config.Hooks.Graylog.DSN, nil)
-		hook.Host = "testing.local"
-		hook.Blacklist([]string{})
+		if config.Hooks.Graylog.Host != "" {
+			hook.Host = config.Hooks.Graylog.Host
+		}
+		hook.Blacklist(config.Hooks.Graylog.Blacklist)
 		inst.AddHook(hook)
 	}
-
-	inst.WithField("param2", "fsdfdsgf").Warning("pupsik 1")
 
 	instance = inst
 	return instance
