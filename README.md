@@ -24,10 +24,31 @@
 
 ### profile
 
-    go tool pprof http://localhost:8080/debug/pprof/profile?seconds=30
-    go tool pprof http://localhost:8080/debug/pprof/allocs
-    go tool pprof http://localhost:8080/debug/pprof/heap
-    go tool pprof http://localhost:8080/debug/pprof/goroutine
+    // test
+    go build -gcflags=-m
+    go test -bench=. -benchmem
+    go test -bench=. -cpuprofile cpu.out -memprofile mem.out
+    go tool pprof ... cpu.out || mem.out
+
+    // service
+    http://localhost:8080/api/sun/debug/pprof/index
+
+    ab -n 100000 -c 10 http://localhost:8080/api/sun/user-test/d9f982ee-0bf3-4a2e-9b7f-0c571ac7d253
+
+    curl http://localhost:8080/api/sun/debug/pprof/trace?seconds=10 -o trace.out
+    go tool trace -http "0.0.0.0:8080" ./tracetest trace.out
+
+    go tool pprof http://localhost:8080/api/sun/debug/pprof/profile?seconds=10
+    go tool pprof http://localhost:8080/api/sun/debug/pprof/allocs
+    go tool pprof -alloc_objects http://localhost:8080/api/sun/debug/pprof/allocs
+    go tool pprof http://localhost:8080/api/sun/debug/pprof/heap
+    go tool pprof -inuse_objects http://localhost:8080/api/sun/debug/pprof/heap
+    go tool pprof http://localhost:8080/api/sun/debug/pprof/goroutine
+
+    -alloc_objects просмотр количества выделенных объектов на протяжении всего жизненного цикла приложения.
+    -alloc_space размер выделенной памяти на протяжении всего жизненного цикла приложения.
+    -inuse_objects просмотр количества объектов, используемых во время профилирования
+    -inuse_space просмотр объема памяти, используемой во время профилирования
 
 ### DOCKER
 

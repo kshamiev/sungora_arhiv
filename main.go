@@ -135,18 +135,17 @@ func initDomain(cfg *app.Config) *chi.Mux {
 	router.Handle("/assets/*", http.FileServer(http.Dir(cfg.DirWww)))
 
 	// pprof
-	router.Get("/api/sun/debug/pprof/trace", func(w http.ResponseWriter, r *http.Request) {
-		pprof.Trace(w, r)
-	})
-	router.Get("/api/sun/debug/pprof/profile", func(w http.ResponseWriter, r *http.Request) {
-		pprof.Profile(w, r)
-	})
-	router.Get("/api/sun/debug/pprof/symbol", func(w http.ResponseWriter, r *http.Request) {
-		pprof.Symbol(w, r)
-	})
+	router.Get("/api/sun/debug/pprof/index", pprof.Index)
+	router.Get("/api/sun/debug/pprof/cmdline", pprof.Cmdline)
+	router.Get("/api/sun/debug/pprof/profile", pprof.Profile)
+	router.Get("/api/sun/debug/pprof/symbol", pprof.Symbol)
+	router.Get("/api/sun/debug/pprof/trace", pprof.Trace)
 	router.Get("/api/sun/debug/pprof/allocs", pprof.Handler("allocs").ServeHTTP)
 	router.Get("/api/sun/debug/pprof/heap", pprof.Handler("heap").ServeHTTP)
 	router.Get("/api/sun/debug/pprof/goroutine", pprof.Handler("goroutine").ServeHTTP)
+	router.Get("/api/sun/debug/pprof/threadcreate", pprof.Handler("threadcreate").ServeHTTP)
+	router.Get("/api/sun/debug/pprof/block", pprof.Handler("block").ServeHTTP)
+	router.Get("/api/sun/debug/pprof/mutex", pprof.Handler("mutex").ServeHTTP)
 
 	// domains
 	router.Group(func(router chi.Router) {
