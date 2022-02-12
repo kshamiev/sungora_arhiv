@@ -37,7 +37,7 @@ func (hh *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
 
 	data, dataName, err := rw.UploadBuffer()
 	if err != nil {
-		rw.JSONError(err)
+		rw.JSON(err)
 		return
 	}
 	lg := logger.Gist(r.Context())
@@ -59,7 +59,7 @@ func (hh *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 	stM := NewModel(stpg.Gist(), "")
 	res, err := stM.UploadRequest(rw, "test", typ.UUIDNew())
 	if err != nil {
-		rw.JSONError(err)
+		rw.JSON(err)
 		return
 	}
 
@@ -79,13 +79,13 @@ func (hh *Handler) Download(w http.ResponseWriter, r *http.Request) {
 
 	st, err := mdsungora.FindMinio(r.Context(), hh.st.DB(), id)
 	if err != nil {
-		rw.JSONError(err)
+		rw.JSON(err)
 		return
 	}
 
 	res, err := minio.GetFile(r.Context(), st.Bucket, st.ObjectID.String())
 	if err != nil {
-		rw.JSONError(err)
+		rw.JSON(err)
 		return
 	}
 

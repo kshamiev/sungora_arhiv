@@ -104,28 +104,6 @@ func JSONBodyDecode(r *http.Request, object interface{}) error {
 	return nil
 }
 
-// JSONError ответ об ошибке в формате json
-func (rw *Response) JSONError(err error) {
-	if e, ok := err.(Error); ok {
-		rw.lg.Error(e.Error())
-		for _, t := range e.Trace() {
-			rw.lg.Trace(t)
-		}
-		response := &Data{
-			Code:    rw.Request.Context().Value(CtxTraceID).(string),
-			Message: e.Response(),
-		}
-		rw.json(response, e.HTTPCode())
-	} else {
-		rw.lg.Error(err.Error())
-		response := &Data{
-			Code:    rw.Request.Context().Value(CtxTraceID).(string),
-			Message: err.Error(),
-		}
-		rw.json(response, http.StatusBadRequest)
-	}
-}
-
 // JSON ответ в формате json
 func (rw *Response) JSON(object interface{}) {
 	var data []byte

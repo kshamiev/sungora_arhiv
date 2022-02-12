@@ -44,14 +44,14 @@ func (mid *Mid) Authentication(next http.Handler) http.Handler {
 		// получаем токен
 		token := rw.CookieGet(mid.token)
 		if token == "" {
-			rw.JSONError(errs.NewUnauthorized(nil, "token is empty"))
+			rw.JSON(errs.NewUnauthorized(nil, "token is empty"))
 			return
 		}
 
 		// анализируем токен
 		us, err := mid.VerifyToken(token)
 		if err != nil {
-			rw.JSONError(errs.NewForbidden(err, "token is invalid"))
+			rw.JSON(errs.NewForbidden(err, "token is invalid"))
 			return
 		}
 

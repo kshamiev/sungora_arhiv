@@ -40,7 +40,7 @@ func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 		qm.Offset(0), qm.Limit(20),
 	).All(r.Context(), hh.st.DB())
 	if err != nil {
-		rw.JSONError(errs.NewBadRequest(err))
+		rw.JSON(errs.NewBadRequest(err))
 		return
 	}
 
@@ -58,7 +58,7 @@ func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 
 	obj, err := mdsungora.FindUser(r.Context(), hh.st.DB(), typ.UUIDMustParse(chi.URLParam(r, "id")))
 	if err != nil {
-		rw.JSONError(errs.NewBadRequest(err))
+		rw.JSON(errs.NewBadRequest(err))
 		return
 	}
 
@@ -76,12 +76,12 @@ func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 
 	obj := &mdsungora.User{}
 	if err := rw.JSONBodyDecode(obj); err != nil {
-		rw.JSONError(err)
+		rw.JSON(err)
 		return
 	}
 
 	if err := obj.Insert(r.Context(), hh.st.DB(), boil.Infer()); err != nil {
-		rw.JSONError(errs.NewBadRequest(err))
+		rw.JSON(errs.NewBadRequest(err))
 		return
 	}
 
@@ -100,12 +100,12 @@ func (hh *Handler) Put(w http.ResponseWriter, r *http.Request) {
 
 	obj := &mdsungora.User{}
 	if err := rw.JSONBodyDecode(obj); err != nil {
-		rw.JSONError(err)
+		rw.JSON(err)
 		return
 	}
 
 	if _, err := obj.Update(r.Context(), hh.st.DB(), boil.Infer()); err != nil {
-		rw.JSONError(errs.NewBadRequest(err))
+		rw.JSON(errs.NewBadRequest(err))
 		return
 	}
 
@@ -124,7 +124,7 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	obj := &mdsungora.User{ID: typ.UUIDMustParse(chi.URLParam(r, "id"))}
 
 	if _, err := obj.Delete(r.Context(), hh.st.DB()); err != nil {
-		rw.JSONError(errs.NewBadRequest(err))
+		rw.JSON(errs.NewBadRequest(err))
 		return
 	}
 
@@ -150,7 +150,7 @@ func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	usM := NewModel(hh.st)
 	us, err := usM.Load(r.Context(), typ.UUIDMustParse(chi.URLParam(r, "id")))
 	if err != nil {
-		rw.JSONError(err)
+		rw.JSON(err)
 		return
 	}
 
@@ -159,7 +159,7 @@ func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 
 	cli := client.GistSungoraGRPC()
 	if _, err := cli.Ping(r.Context(), &empty.Empty{}); err != nil {
-		rw.JSONError(err)
+		rw.JSON(err)
 		return
 	}
 

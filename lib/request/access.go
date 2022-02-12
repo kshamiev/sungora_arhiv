@@ -15,7 +15,7 @@ func AccessMethod(roles map[enum.Role][]string) func(next http.Handler) http.Han
 			rw := response.New(r, w)
 			us, err := rw.GetUser()
 			if err != nil {
-				rw.JSONError(err)
+				rw.JSON(err)
 				return
 			}
 			for i := range us.Roles {
@@ -28,7 +28,7 @@ func AccessMethod(roles map[enum.Role][]string) func(next http.Handler) http.Han
 					}
 				}
 			}
-			rw.JSONError(errs.NewForbidden(nil))
+			rw.JSON(errs.NewForbidden(nil))
 		})
 	}
 }
@@ -40,7 +40,7 @@ func Access(roles ...enum.Role) func(next http.Handler) http.Handler {
 			rw := response.New(r, w)
 			us, err := rw.GetUser()
 			if err != nil {
-				rw.JSONError(err)
+				rw.JSON(err)
 				return
 			}
 			for i := range us.Roles {
@@ -51,7 +51,7 @@ func Access(roles ...enum.Role) func(next http.Handler) http.Handler {
 					}
 				}
 			}
-			rw.JSONError(errs.NewForbidden(nil))
+			rw.JSON(errs.NewForbidden(nil))
 		})
 	}
 }
