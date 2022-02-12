@@ -60,7 +60,7 @@ func (qu *query) QueryMap(query string, arg ...interface{}) (map[string]map[stri
 }
 
 func (qu *query) PrepareQuery(query string, arg ...interface{}) (stmt *sqlx.Stmt, args []interface{}, err error) {
-	if len(arg) > 1 || arg[0] != nil {
+	if len(arg) > 0 {
 		if query, args, err = sqlIn(query, arg...); err != nil {
 			return
 		}

@@ -9,6 +9,12 @@ import (
 
 // language=sql
 const (
+	SQL_USER_LIMIT = `
+	SELECT
+		id, created_at, login, description
+	FROM public.users
+	LIMIT 100
+	`
 	SQL_USER = `
 	SELECT
 		id, created_at, login, description
@@ -48,7 +54,7 @@ func TestQuery(t *testing.T) {
 	st := Gist()
 
 	for i := range pgQueries {
-		if _, _, err := st.Query(context.Background()).PrepareQuery(pgQueries[i], nil); err != nil {
+		if _, _, err := st.Query(context.Background()).PrepareQuery(pgQueries[i]); err != nil {
 			t.Log(pgQueries[i])
 			t.Fatal(err)
 		}

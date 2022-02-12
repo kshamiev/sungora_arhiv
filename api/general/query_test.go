@@ -20,7 +20,7 @@ func TestQuery(t *testing.T) {
 	st := stpg.Gist()
 
 	for _, q := range GetQueries() {
-		if _, _, err := st.Query(context.Background()).PrepareQuery(q, nil); err != nil {
+		if _, _, err := st.Query(context.Background()).PrepareQuery(q); err != nil {
 			t.Log(q)
 			t.Fatal(err)
 		}

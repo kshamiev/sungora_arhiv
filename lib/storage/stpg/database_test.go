@@ -127,6 +127,12 @@ func TestPGQuery(t *testing.T) {
 	st := Gist()
 
 	// GET Object SLICE
+	var resListLimit []User
+	if err := st.Query(context.TODO()).Select(&resListLimit, SQL_USER_LIMIT); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(len(resListLimit))
+
 	var resList []User
 	if err := st.Query(context.TODO()).Select(&resList, SQL_USER, "testLogin"); err != nil {
 		t.Fatal(err)

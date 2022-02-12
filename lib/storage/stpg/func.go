@@ -17,7 +17,7 @@ const sqlTempSeparator = "@@@"
 
 func sqlIn(query string, args ...interface{}) (queryNew string, argsNew []interface{}, err error) {
 	queryArgs := sqlArgsSearch.FindAllString(query, -1)
-	checkCountArgs := make(map[string]bool)
+	checkCountArgs := make(map[string]bool, len(queryArgs))
 	for i := range queryArgs {
 		if _, ok := checkCountArgs[queryArgs[i]]; !ok {
 			checkCountArgs[queryArgs[i]] = true
@@ -28,7 +28,7 @@ func sqlIn(query string, args ...interface{}) (queryNew string, argsNew []interf
 	}
 
 	var index, indexShift, num int
-	var replace = make(map[string]string)
+	var replace = make(map[string]string, len(args))
 	var argsRes = make([]interface{}, 0, len(args))
 	var qu []string
 	var ar []interface{}
