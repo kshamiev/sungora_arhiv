@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -115,34 +115,59 @@ func (rw *Response) JSONError(err error) {
 			Code:    rw.Request.Context().Value(CtxTraceID).(string),
 			Message: e.Response(),
 		}
-		rw.JSON(response, e.HTTPCode())
+		rw.json(response, e.HTTPCode())
 	} else {
 		rw.lg.Error(err.Error())
 		response := &Data{
 			Code:    rw.Request.Context().Value(CtxTraceID).(string),
 			Message: err.Error(),
 		}
-		rw.JSON(response, http.StatusBadRequest)
+		rw.json(response, http.StatusBadRequest)
 	}
 }
 
 // JSON ответ в формате json
-func (rw *Response) JSON(object interface{}, status ...int) {
-	data, err := json.Marshal(object)
-	if err != nil {
-		e := errs.NewBadRequest(err)
-		rw.lg.Error(e.Error())
-		for _, t := range e.Trace() {
+func (rw *Response) JSON(object interface{}) {
+	var data []byte
+	status := http.StatusOK
+	switch tt := object.(type) {
+	default:
+		var err error
+		data, err = json.Marshal(object)
+		if err != nil {
+			data = []byte(err.Error())
+			status = http.StatusBadRequest
+		}
+	case []byte:
+	case string:
+		data = []byte(tt)
+	case int:
+		data = []byte(strconv.Itoa(tt))
+	case int8, int16, int32, int64:
+		data = []byte(strconv.Itoa(tt.(int)))
+	case Error:
+		rw.lg.Error(tt.Error())
+		for _, t := range tt.Trace() {
 			rw.lg.Trace(t)
 		}
-		rw.generalHeaderSet("error.json", len(data), http.StatusBadRequest)
-		_, _ = rw.response.Write([]byte(e.Response()))
-		return
+		object = Data{
+			Code:    rw.Request.Context().Value(CtxTraceID).(string),
+			Message: tt.Response(),
+		}
+		data, _ = json.Marshal(object)
+		status = tt.HTTPCode()
+	case error:
+		rw.lg.Error(tt.Error())
+		object = Data{
+			Code:    rw.Request.Context().Value(CtxTraceID).(string),
+			Message: tt.Error(),
+		}
+		data, _ = json.Marshal(object)
+		status = http.StatusBadRequest
 	}
-	if len(status) == 0 {
-		status = append(status, http.StatusOK)
-	}
-	rw.generalHeaderSet("data.json", len(data), status[0])
+	rw.response.Header().Set("Content-Length", strconv.Itoa(len(data)))
+	rw.response.Header().Set("Content-Type", "application/json")
+	rw.response.WriteHeader(status)
 	_, _ = rw.response.Write(data)
 }
 
@@ -207,15 +232,9 @@ func (rw *Response) Redirect302(redirectURL string) {
 
 // generalHeaderSet общие заголовки любого ответа
 func (rw *Response) generalHeaderSet(fileName string, l, status int) {
-	t := time.Now()
-	// запрет кеширования
-	rw.response.Header().Set("Cache-Control", "no-cache, must-revalidate")
-	rw.response.Header().Set("Pragma", "no-cache")
-	rw.response.Header().Set("Date", t.Format(time.RFC3339))
-	rw.response.Header().Set("Last-Modified", t.Format(time.RFC3339))
 	// размер и тип контента
 	if l > 0 {
-		rw.response.Header().Set("Content-Length", fmt.Sprintf("%d", l))
+		rw.response.Header().Set("Content-Length", strconv.Itoa(l))
 	}
 	tp := `application/octet-stream`
 	ext := strings.Split(fileName, ".")
@@ -226,6 +245,7 @@ func (rw *Response) generalHeaderSet(fileName string, l, status int) {
 	//
 	if !strings.Contains(tp, `image`) &&
 		!strings.Contains(tp, `text`) &&
+		!strings.Contains(tp, `xml`) &&
 		!strings.Contains(tp, `json`) {
 		rw.response.Header().Set("Content-Disposition", "attachment; filename = "+filepath.Base(fileName))
 	}

@@ -34,6 +34,7 @@
     http://localhost:8080/api/sun/debug/pprof/index
 
     ab -n 100000 -c 10 http://localhost:8080/api/sun/user-test/d9f982ee-0bf3-4a2e-9b7f-0c571ac7d253
+    ab -k -n 100000 -c 8 http://localhost:8080/api/sun/general/ping
 
     curl http://localhost:8080/api/sun/debug/pprof/trace?seconds=10 -o trace.out
     go tool trace -http "0.0.0.0:8080" ./tracetest trace.out
