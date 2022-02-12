@@ -17,7 +17,6 @@ import (
 
 type User struct {
 	ID          typ.UUID    `db:"id" json:"id"`
-	ParentID    typ.UUID    `db:"parent_id" json:"parent_id"`
 	CreatedAt   time.Time   `db:"created_at" json:"created_at"`
 	Login       string      `db:"login" json:"login"`
 	Description null.String `db:"description" json:"description"`
@@ -125,6 +124,13 @@ func TestPGQuery(t *testing.T) {
 		t.Fatal(err)
 	}
 	st := Gist()
+
+	var resListRaw []User
+	login := []string{"zLVtPW2i", "gpscdIEk", "rV4VGiR9"}
+	if err := st.Query(context.TODO()).Select(&resListRaw, SQL_USER_IN, "JaJOTZvl", login, "v3iwypkK"); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(len(resListRaw))
 
 	// GET Object SLICE
 	var resListLimit []User

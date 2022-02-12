@@ -9,6 +9,7 @@ import (
 
 // language=sql
 const (
+	SQL_USER_IN    = "SELECT * FROM users WHERE login = $1 OR login IN ($2) OR login = $3"
 	SQL_USER_LIMIT = `
 	SELECT
 		id, created_at, login, description
@@ -35,6 +36,8 @@ const (
 )
 
 var pgQueries = []string{
+	SQL_USER_IN,
+	SQL_USER_LIMIT,
 	SQL_USER,
 	SQL_USER_INSERT,
 	SQL_USER_UPDATE,
