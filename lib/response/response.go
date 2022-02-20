@@ -116,13 +116,10 @@ func (rw *Response) JSON(object interface{}) {
 			data = []byte(err.Error())
 			status = http.StatusBadRequest
 		}
-	case []byte:
 	case string:
-		data = []byte(tt)
-	case int:
-		data = []byte(strconv.Itoa(tt))
-	case int8, int16, int32, int64:
-		data = []byte(strconv.Itoa(tt.(int)))
+		data = []byte(`"` + tt + `"`)
+	case int, int8, int16, int32, int64:
+		data = []byte(`"` + strconv.Itoa(tt.(int)) + `"`)
 	case Error:
 		rw.lg.Error(tt.Error())
 		for _, t := range tt.Trace() {
