@@ -6,8 +6,8 @@ import (
 )
 
 func Generate1(dir, md, pb string) {
-	_ = os.Mkdir(dir+"/"+md, 0700)
-	_ = os.Mkdir(dir+"/"+pb, 0700)
+	_ = os.Mkdir(dir+"/"+md, 0o700)
+	_ = os.Mkdir(dir+"/"+pb, 0o700)
 
 	for i := range FileListCustom {
 		_ = os.Remove(dir + "/" + FileListCustom[i])

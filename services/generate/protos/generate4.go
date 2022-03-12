@@ -18,7 +18,6 @@ package protos
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
@@ -44,24 +43,24 @@ func Generate4(dir, md, pb string) {
 		tplMFull += tplM
 	}
 	// type proto (описание прототипов)
-	if err = ioutil.WriteFile(dir+"/"+pb+"/types.proto", []byte(tplPFull), 0600); err != nil {
+	if err = os.WriteFile(dir+"/"+pb+"/types.proto", []byte(tplPFull), 0o600); err != nil {
 		log.Fatal(err)
 	}
 	// service proto (описание сервиса)
-	if err = ioutil.WriteFile(dir+"/"+pb+"/service.proto", []byte(tplSFull), 0600); err != nil {
+	if err = os.WriteFile(dir+"/"+pb+"/service.proto", []byte(tplSFull), 0o600); err != nil {
 		log.Fatal(err)
 	}
 	// golang методы конвертации
-	if err = ioutil.WriteFile(dir+"/"+md+"/protom.go", []byte(tplMFull), 0600); err != nil {
+	if err = os.WriteFile(dir+"/"+md+"/protom.go", []byte(tplMFull), 0o600); err != nil {
 		log.Fatal(err)
 	}
 	// вспомогательные функции реализующие уникальную обработку свойств для определяемых рабочих типов
-	d, err := ioutil.ReadFile(dir + "/generate/data/protof.go")
+	d, err := os.ReadFile(dir + "/generate/data/protof.go")
 	if err != nil {
 		log.Fatal(err)
 	}
 	d = []byte(strings.ReplaceAll(string(d), "package data", "package "+md))
-	if err := ioutil.WriteFile(dir+"/"+md+"/protof.go", d, 0600); err != nil {
+	if err := os.WriteFile(dir+"/"+md+"/protof.go", d, 0o600); err != nil {
 		log.Fatal(err)
 	}
 	//

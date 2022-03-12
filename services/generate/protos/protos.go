@@ -2,8 +2,8 @@ package protos
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -218,12 +218,12 @@ func ConvFP(fieldTag string) string {
 
 // CreateProtoMessageFile инициализация файла с описанием прототипов
 func CreateProtoMessageFile(d, pkgProto string) (proto string) {
-	if data, err := ioutil.ReadFile(d + "/" + pkgProto + "/types.proto"); err == nil {
+	if data, err := os.ReadFile(d + "/" + pkgProto + "/types.proto"); err == nil {
 		proto = string(data)
 		list := strings.Split(proto, Separator)
 		proto = list[0] + Separator + "\n"
 	} else {
-		if data, err = ioutil.ReadFile(d + "/generate/data/types.proto"); err != nil {
+		if data, err = os.ReadFile(d + "/generate/data/types.proto"); err != nil {
 			log.Fatal(err)
 		}
 		proto = string(data)
@@ -234,10 +234,10 @@ func CreateProtoMessageFile(d, pkgProto string) (proto string) {
 
 // CreateProtoServiceFile инициализация файла с описанием сервиса
 func CreateProtoServiceFile(d, pkgProto string) (proto string) {
-	if data, err := ioutil.ReadFile(d + "/" + pkgProto + "/service.proto"); err == nil {
+	if data, err := os.ReadFile(d + "/" + pkgProto + "/service.proto"); err == nil {
 		proto = string(data)
 	} else {
-		if data, err = ioutil.ReadFile(d + "/generate/data/service.proto"); err != nil {
+		if data, err = os.ReadFile(d + "/generate/data/service.proto"); err != nil {
 			log.Fatal(err)
 		}
 		proto = string(data)

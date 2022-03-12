@@ -2,7 +2,6 @@ package tpl
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -48,7 +47,7 @@ func (task *TaskTemplateParse) Action(ctx context.Context) error {
 
 // parseFiles компиляция html шаблонов
 func (task *TaskTemplateParse) parseFiles(dir, path string) error {
-	data, err := ioutil.ReadFile(path)
+	data, err := os.ReadFile(path)
 	if err != nil {
 		return errs.NewBadRequest(err)
 	}

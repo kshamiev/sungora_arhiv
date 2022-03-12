@@ -177,7 +177,7 @@ github.com/swaggo/files
 # github.com/swaggo/http-swagger v1.1.2
 ## explicit; go 1.13
 github.com/swaggo/http-swagger
-# github.com/swaggo/swag v1.7.8
+# github.com/swaggo/swag v1.8.0
 ## explicit; go 1.17
 github.com/swaggo/swag
 # github.com/uber/jaeger-client-go v2.25.0+incompatible

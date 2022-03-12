@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 )
@@ -115,7 +115,7 @@ func (r *Request) request(method, uri string, requestBody, responseBody interfac
 		_ = response.Body.Close()
 	}()
 
-	if r.ResponseBody, err = ioutil.ReadAll(response.Body); err != nil {
+	if r.ResponseBody, err = io.ReadAll(response.Body); err != nil {
 		return nil, err
 	}
 

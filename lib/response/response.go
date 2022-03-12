@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"io/ioutil"
 	"mime"
 	"net/http"
 	"os"
@@ -90,7 +89,7 @@ func (rw *Response) JSONBodyDecode(object interface{}) error {
 
 // JSONBodyDecode декодирование полученного тела запроса в формате json в объект
 func JSONBodyDecode(r *http.Request, object interface{}) error {
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		return errs.NewBadRequest(err)
 	}
@@ -172,7 +171,7 @@ func (rw *Response) Static(fileName string) {
 	}
 
 	// content
-	data, err := ioutil.ReadFile(fileName)
+	data, err := os.ReadFile(fileName)
 	if err != nil {
 		data = []byte(http.StatusText(http.StatusBadRequest) + ": " + filepath.Base(fileName))
 		rw.response.WriteHeader(http.StatusBadRequest)
@@ -231,7 +230,7 @@ func (rw *Response) generalHeaderSet(fileName string, l, status int) {
 // UploadFiles загрузка файлов на сервер
 // dir папка куда будут загружены все переданные в запросе файлы
 func (rw *Response) UploadFiles(dir string) ([]string, error) {
-	if err := os.MkdirAll(dir, 0777); err != nil {
+	if err := os.MkdirAll(dir, 0o777); err != nil {
 		return nil, errs.NewBadRequest(err, "ошибка создания хранилища")
 	}
 

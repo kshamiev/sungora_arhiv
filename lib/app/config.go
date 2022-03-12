@@ -1,7 +1,6 @@
 package app
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -25,7 +24,7 @@ func LoadConfig(fileConf string, cfg interface{}) error {
 	_, currentFile, _, _ := runtime.Caller(0)
 	dir := filepath.Dir(filepath.Dir(filepath.Dir(currentFile)))
 	_ = os.Chdir(dir)
-	data, err := ioutil.ReadFile(dir + "/" + fileConf)
+	data, err := os.ReadFile(dir + "/" + fileConf)
 	if err != nil {
 		return err
 	}

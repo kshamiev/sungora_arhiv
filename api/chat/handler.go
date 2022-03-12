@@ -2,8 +2,8 @@ package chat
 
 import (
 	"context"
-	"io/ioutil"
 	"net/http"
+	"os"
 
 	"sungora/lib/errs"
 	"sungora/lib/logger"
@@ -90,7 +90,7 @@ func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
 	msg.Author += " - WS OK"
 	lg.Info("WS hook GetMessage")
 	if msg.FileSize > 0 {
-		if err := ioutil.WriteFile(msg.FileName, msg.FileData, 0600); err != nil {
+		if err := os.WriteFile(msg.FileName, msg.FileData, 0o600); err != nil {
 			return nil, err
 		}
 	}

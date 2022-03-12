@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 
 	"sungora/lib/logger/graylog"
@@ -34,13 +34,13 @@ func Init(config *Config) Logger {
 
 	switch config.Output {
 	case "", outEmpty:
-		inst.SetOutput(ioutil.Discard)
+		inst.SetOutput(io.Discard)
 	case outStdout:
 		inst.SetOutput(os.Stdout)
 	case outStderr:
 		inst.SetOutput(os.Stderr)
 	default:
-		fp, err := os.OpenFile(config.Output, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+		fp, err := os.OpenFile(config.Output, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)
 		if err != nil {
 			inst.SetOutput(os.Stdout)
 			inst.Fatal(err)

@@ -20,7 +20,7 @@ require (
 	github.com/shopspring/decimal v1.3.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/swaggo/http-swagger v1.1.2
-	github.com/swaggo/swag v1.7.8
+	github.com/swaggo/swag v1.8.0
 	github.com/volatiletech/null/v8 v8.1.2
 	github.com/volatiletech/sqlboiler/v4 v4.8.3
 	github.com/volatiletech/strmangle v0.0.1

@@ -1,8 +1,8 @@
 package protos
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -14,7 +14,7 @@ func Generate3(dir, md string) {
 var typList []string
 
 func Tag(dir, pkgName string) {
-	fileList, err := ioutil.ReadDir(dir + "/" + pkgName)
+	fileList, err := os.ReadDir(dir + "/" + pkgName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func Tag(dir, pkgName string) {
 	}
 	tpl := strings.ReplaceAll(tplConf, "PKGNAME", pkgName)
 	tpl = strings.ReplaceAll(tpl, "PKGTYPES", strings.Join(data, ""))
-	if err := ioutil.WriteFile(dir+"/generate/protos/config_work.go", []byte(tpl), 0600); err != nil {
+	if err := os.WriteFile(dir+"/generate/protos/config_work.go", []byte(tpl), 0o600); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -40,7 +40,7 @@ func Tag(dir, pkgName string) {
 var patternType = regexp.MustCompile("type (.+?) struct {")
 
 func tagFile(filePath string) {
-	d, err := ioutil.ReadFile(filePath)
+	d, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -62,7 +62,7 @@ func tagFile(filePath string) {
 			data[i] = tagType(data[i])
 		}
 	}
-	if err := ioutil.WriteFile(filePath, []byte(strings.Join(data, "\n")), 0600); err != nil {
+	if err := os.WriteFile(filePath, []byte(strings.Join(data, "\n")), 0o600); err != nil {
 		log.Fatal(err)
 	}
 }

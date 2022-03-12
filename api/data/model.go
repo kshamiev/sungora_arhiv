@@ -82,7 +82,7 @@ func (mm *Model) Confirm(ctx context.Context, obj *mdsungora.Minio) error {
 }
 
 func (mm *Model) SaveFS(ctx context.Context, obj *mdsungora.Minio) error {
-	if err := os.MkdirAll(mm.dir, 0777); err != nil {
+	if err := os.MkdirAll(mm.dir, 0o777); err != nil {
 		return errs.NewBadRequest(err, "ошибка создания хранилища")
 	}
 	data, err := minio.GetFile(ctx, obj.Bucket, obj.ObjectID.String())

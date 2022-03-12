@@ -391,6 +391,8 @@ var regexAttributes = map[string]*regexp.Regexp{
 	extensionsTag: regexp.MustCompile(`(?i)\s+extensions\(.*\)`),
 	// for collectionFormat(csv)
 	collectionFormatTag: regexp.MustCompile(`(?i)\s+collectionFormat\(.*\)`),
+	// example(0)
+	exampleTag: regexp.MustCompile(`(?i)\s+example\(.*\)`),
 }
 
 func (operation *Operation) parseAndExtractionParamAttribute(commentLine, objectType, schemaType string, param *spec.Parameter) error {
@@ -411,6 +413,8 @@ func (operation *Operation) parseAndExtractionParamAttribute(commentLine, object
 			err = setStringParam(param, attrKey, schemaType, attr, commentLine)
 		case formatTag:
 			param.Format = attr
+		case exampleTag:
+			err = setExample(param, schemaType, attr)
 		case extensionsTag:
 			_ = setExtensionParam(param, attr)
 		case collectionFormatTag:
@@ -496,7 +500,7 @@ func setEnumParam(param *spec.Parameter, attr, objectType, schemaType string) er
 
 func setExtensionParam(param *spec.Parameter, attr string) error {
 	param.Extensions = map[string]interface{}{}
-	for _, val := range strings.Split(attr, ",") {
+	for _, val := range splitNotWrapped(attr, ',') {
 		parts := strings.SplitN(val, "=", 2)
 		if len(parts) == 2 {
 			param.Extensions.Add(parts[0], parts[1])
@@ -523,6 +527,15 @@ func setDefault(param *spec.Parameter, schemaType string, value string) error {
 		return nil // Don't set a default value if it's not valid
 	}
 	param.Default = val
+	return nil
+}
+
+func setExample(param *spec.Parameter, schemaType string, value string) error {
+	val, err := defineType(schemaType, value)
+	if err != nil {
+		return nil // Don't set a example value if it's not valid
+	}
+	param.Example = val
 	return nil
 }
 
