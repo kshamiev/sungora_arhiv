@@ -10,7 +10,6 @@ import (
 	"sungora/services/pbsungora"
 
 	"google.golang.org/grpc"
-	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 type SungoraServer struct {
@@ -26,12 +25,12 @@ func NewSampleServer(cfg *web.GRPCConfig, opts ...grpc.ServerOption) (*web.GRPCS
 	return grpcServer, nil
 }
 
-func (ser SungoraServer) Ping(ctx context.Context, empty *emptypb.Empty) (*pbsungora.Test, error) {
+func (ser SungoraServer) Ping(ctx context.Context, tt *pbsungora.Test) (*pbsungora.Test, error) {
 	s := app.NewSpan(ctx)
 	s.StringAttribute("description", "qwerty qwerty qwerty")
 	defer s.End()
 	lg := logger.Gist(ctx)
-	lg.Info("SungoraServer.Ping")
+	lg.Info("SungoraServer.Ping: " + tt.Text)
 	return &pbsungora.Test{
 		Text: "Funtik",
 	}, nil

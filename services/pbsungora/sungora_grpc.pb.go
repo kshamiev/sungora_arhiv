@@ -8,7 +8,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -20,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SungoraClient interface {
-	Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Test, error)
+	Ping(ctx context.Context, in *Test, opts ...grpc.CallOption) (*Test, error)
 }
 
 type sungoraClient struct {
@@ -31,7 +30,7 @@ func NewSungoraClient(cc grpc.ClientConnInterface) SungoraClient {
 	return &sungoraClient{cc}
 }
 
-func (c *sungoraClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*Test, error) {
+func (c *sungoraClient) Ping(ctx context.Context, in *Test, opts ...grpc.CallOption) (*Test, error) {
 	out := new(Test)
 	err := c.cc.Invoke(ctx, "/pbsungora.Sungora/Ping", in, out, opts...)
 	if err != nil {
@@ -44,7 +43,7 @@ func (c *sungoraClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grp
 // All implementations must embed UnimplementedSungoraServer
 // for forward compatibility
 type SungoraServer interface {
-	Ping(context.Context, *emptypb.Empty) (*Test, error)
+	Ping(context.Context, *Test) (*Test, error)
 	mustEmbedUnimplementedSungoraServer()
 }
 
@@ -52,7 +51,7 @@ type SungoraServer interface {
 type UnimplementedSungoraServer struct {
 }
 
-func (UnimplementedSungoraServer) Ping(context.Context, *emptypb.Empty) (*Test, error) {
+func (UnimplementedSungoraServer) Ping(context.Context, *Test) (*Test, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
 }
 func (UnimplementedSungoraServer) mustEmbedUnimplementedSungoraServer() {}
@@ -69,7 +68,7 @@ func RegisterSungoraServer(s grpc.ServiceRegistrar, srv SungoraServer) {
 }
 
 func _Sungora_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(Test)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -81,7 +80,7 @@ func _Sungora_Ping_Handler(srv interface{}, ctx context.Context, dec func(interf
 		FullMethod: "/pbsungora.Sungora/Ping",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SungoraServer).Ping(ctx, req.(*emptypb.Empty))
+		return srv.(SungoraServer).Ping(ctx, req.(*Test))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -99,5 +98,5 @@ var Sungora_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "services/pbsungora/service.proto",
+	Metadata: "pbsungora/sungora.proto",
 }

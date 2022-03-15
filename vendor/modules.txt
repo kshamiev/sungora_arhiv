@@ -75,7 +75,6 @@ github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
-github.com/golang/protobuf/ptypes/empty
 github.com/golang/protobuf/ptypes/timestamp
 # github.com/gorilla/websocket v1.4.2
 ## explicit; go 1.12
@@ -287,6 +286,7 @@ golang.org/x/xerrors/internal
 google.golang.org/api/support/bundler
 # google.golang.org/genproto v0.0.0-20211203200212-54befc351ae9
 ## explicit; go 1.11
+google.golang.org/genproto/googleapis/api/annotations
 google.golang.org/genproto/googleapis/rpc/status
 # google.golang.org/grpc v1.42.0
 ## explicit; go 1.14

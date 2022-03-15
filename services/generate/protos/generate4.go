@@ -27,12 +27,11 @@ import (
 
 func Generate4(dir, md, pb string) {
 	var err error
-	var tplSFull, tplPFull, tplMFull, tplP, tplM string
+	var tplPFull, tplMFull, tplP, tplM string
 	gen := Generate{
 		controlType: map[string]bool{},
 	}
 
-	tplSFull = CreateProtoServiceFile(dir, pb)
 	tplPFull = CreateProtoMessageFile(dir, pb)
 	tplMFull = CreateMethodTypeFile(md)
 	for _, t := range GenerateConfig[md] {
@@ -42,12 +41,8 @@ func Generate4(dir, md, pb string) {
 		tplPFull += tplP
 		tplMFull += tplM
 	}
-	// type proto (описание прототипов)
-	if err = os.WriteFile(dir+"/"+pb+"/types.proto", []byte(tplPFull), 0o600); err != nil {
-		log.Fatal(err)
-	}
 	// service proto (описание сервиса)
-	if err = os.WriteFile(dir+"/"+pb+"/service.proto", []byte(tplSFull), 0o600); err != nil {
+	if err = os.WriteFile(dir+"/"+pb+"/"+serviceName+".proto", []byte(tplPFull), 0o600); err != nil {
 		log.Fatal(err)
 	}
 	// golang методы конвертации

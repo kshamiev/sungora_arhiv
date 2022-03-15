@@ -100,11 +100,9 @@ ser-sungora:
 	@go run services/generate/main.go -step $(SERVICE1)-3
 	@cd $(DIR)/services && goimports -w .
 	@go run services/generate/main.go -step $(SERVICE1)-4
-	@protoc -I=services/generate --proto_path=./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative services/pb$(SERVICE1)/*.proto;
+	@cd $(DIR)/services && protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative pb$(SERVICE1)/*.proto;
 	@cd $(DIR)/services && go fmt ./... && goimports -w .
 .PHONY: ser-sungora
-
-#@protoc -I=thirdparty --proto_path=./ --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative models/pbcar/*.proto;
 
 # Help
 h:

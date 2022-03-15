@@ -2,6 +2,7 @@ package user
 
 import (
 	"net/http"
+	"sungora/services/pbsungora"
 
 	"sungora/app/client"
 	"sungora/lib/errs"
@@ -12,7 +13,6 @@ import (
 	"sungora/services/mdsungora"
 
 	"github.com/go-chi/chi"
-	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
@@ -158,7 +158,7 @@ func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	lg.Info("General.Test")
 
 	cli := client.GistSungoraGRPC()
-	if _, err := cli.Ping(r.Context(), &empty.Empty{}); err != nil {
+	if _, err := cli.Ping(r.Context(), &pbsungora.Test{Text: "Fantik"}); err != nil {
 		rw.JSON(err)
 		return
 	}
