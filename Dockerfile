@@ -14,6 +14,10 @@ WORKDIR /home/app
 
 COPY --from=build1 /home/app/bin bin
 COPY --from=build1 /home/app/conf conf
+COPY --from=build1 /home/app/www_test www_test
+
+RUN mkdir www
+VOLUME www
 
 EXPOSE 8080:8080
 

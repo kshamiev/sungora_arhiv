@@ -111,11 +111,11 @@ http://localhost:9001
 #### Сборка и запуск приложения
 
 ```dockerfile
-docker build --no-cache --rm -t kshamiev/sungora .
+docker build --no-cache -t kshamiev/sungora .
 
 docker run --rm -d --name sungora --net sun\
     -p 127.0.0.1:8080:8080 \
-    --mount type=bind,source=/home/domains/sungora.local/www,target=/home/app/www \
+    --mount type=bind,src=/home/domains/sungora.local/www,dst=/home/app/www \
     kshamiev/sungora
 ```
 
