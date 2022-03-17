@@ -18,6 +18,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/shopspring/decimal v1.3.1
 	github.com/sirupsen/logrus v1.8.1
+	github.com/streadway/amqp v1.0.0
 	github.com/swaggo/http-swagger v1.1.2
 	github.com/swaggo/swag v1.8.0
 	github.com/volatiletech/null/v8 v8.1.2
