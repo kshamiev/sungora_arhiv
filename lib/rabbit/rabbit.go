@@ -11,6 +11,7 @@ type Config struct {
 }
 
 type Rabbit struct {
+	cfg     *Config
 	conn    *amqp.Connection
 	channel *amqp.Channel
 	wg      sync.WaitGroup
@@ -19,7 +20,7 @@ type Rabbit struct {
 var instance *Rabbit
 
 func Init(cfg *Config) (err error) {
-	instance = &Rabbit{}
+	instance = &Rabbit{cfg: cfg}
 	if instance.conn, err = amqp.Dial(cfg.Uri); err != nil {
 		return
 	}

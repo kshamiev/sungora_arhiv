@@ -1,14 +1,14 @@
 package rabbit
 
 import (
-	"sungora/lib/rabbit/rbr"
+	"context"
+	"log"
 	"testing"
 )
 
 func TestQueueProducer(t *testing.T) {
 	err := Init(&Config{
-		Uri:      "amqp://guest:guest@localhost:5672/",
-		Exchange: rbr.Exchange1.String(),
+		Uri: "amqp://guest:guest@localhost:5672/",
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -18,9 +18,12 @@ func TestQueueProducer(t *testing.T) {
 		"one",
 		"two",
 		"three",
+		"popcorn",
+		"Tutorials",
+		"RabbitMQ",
 	}
 
-	pub := NewProducer("", true)
+	pub := NewProducer(context.Background(), "", true)
 	err = pub.Queue("funtik", data...)
 	if err != nil {
 		t.Fatal(err)
@@ -31,18 +34,24 @@ func TestQueueProducer(t *testing.T) {
 
 func TestQueueConsumer(t *testing.T) {
 	err := Init(&Config{
-		Uri:      "amqp://guest:guest@localhost:5672/",
-		Exchange: rbr.Exchange1.String(),
+		Uri: "amqp://guest:guest@localhost:5672/",
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	var h ConsumerHandlerFunc = func(data []byte) {
-		t.Log(string(data))
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "key", "value")
+
+	var h ConsumerHandlerFunc = func(ctx context.Context, data []byte) {
+		if "valgue" != ctx.Value("key").(string) {
+			//panic("context no delivery")
+			log.Fatal("context no delivery")
+		}
+		log.Println(string(data))
 	}
 
-	cons := NewConsumer("", "sample2221")
+	cons := NewConsumer(ctx, "", "sample")
 	err = cons.Queue("funtik", h)
 	if err != nil {
 		t.Fatal(err)

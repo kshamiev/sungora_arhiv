@@ -1,39 +1,50 @@
 package rabbit
 
+import (
+	"context"
+	"sync"
+)
+
 type ConsumerHandler interface {
-	Handler(data []byte)
+	Handler(ctx context.Context, data []byte)
 }
 
-type ConsumerHandlerFunc func(data []byte)
+type ConsumerHandlerFunc func(ctx context.Context, data []byte)
 
-func (f ConsumerHandlerFunc) Handler(data []byte) {
-	f(data)
+func (f ConsumerHandlerFunc) Handler(ctx context.Context, data []byte) {
+	f(ctx, data)
 }
 
 // ////
 
 type Consumer struct {
-	Exchange string
-	Tag      string
+	exchange string
+	tag      string
+	ctx      context.Context
+	cnt      int
+	wg       sync.WaitGroup
 }
 
-func NewConsumer(exchange string, tag string) *Consumer {
+func NewConsumer(ctx context.Context, exchange string, tag string) *Consumer {
 	return &Consumer{
-		Exchange: exchange,
-		Tag:      tag,
+		exchange: exchange,
+		tag:      tag,
+		ctx:      ctx,
 	}
 }
 
 // ////
 
 type Producer struct {
-	Exchange  string
-	IsConfirm bool
+	exchange  string
+	isConfirm bool
+	ctx       context.Context
 }
 
-func NewProducer(exchange string, isConfirm bool) *Producer {
+func NewProducer(ctx context.Context, exchange string, isConfirm bool) *Producer {
 	return &Producer{
-		Exchange:  exchange,
-		IsConfirm: isConfirm,
+		exchange:  exchange,
+		isConfirm: isConfirm,
+		ctx:       ctx,
 	}
 }

@@ -1,13 +1,16 @@
 package rabbit
 
 import (
+	"fmt"
 	"github.com/streadway/amqp"
 	"log"
 	"sungora/lib/errs"
+	"sungora/lib/logger"
+	"sync"
 )
 
 func (con *Consumer) Queue(queueName string, h ConsumerHandler) error {
-	_, err := instance.channel.QueueDeclare(
+	q, err := instance.channel.QueueDeclare(
 		queueName, // name of the queue
 		true,      // durable
 		false,     // delete when unused
@@ -20,7 +23,7 @@ func (con *Consumer) Queue(queueName string, h ConsumerHandler) error {
 	}
 	deliveries, err := instance.channel.Consume(
 		queueName, // name
-		con.Tag,   // consumerTag,
+		con.tag,   // consumerTag,
 		false,     // noAck
 		false,     // exclusive
 		false,     // noLocal
@@ -30,24 +33,39 @@ func (con *Consumer) Queue(queueName string, h ConsumerHandler) error {
 	if err != nil {
 		return errs.NewBadRequest(err)
 	}
+	con.cnt = q.Messages
+	con.wg = sync.WaitGroup{}
+	con.wg.Add(q.Messages)
 	instance.wg.Add(1)
 	go con.handle(deliveries, h)
 	return nil
 }
 
 func (con *Consumer) Cancel() error {
-	if err := instance.channel.Cancel(con.Tag, true); err != nil {
+	con.wg.Wait()
+	instance.wg.Done()
+	if err := instance.channel.Cancel(con.tag, true); err != nil {
 		return errs.NewBadRequest(err)
 	}
 	return nil
 }
 
 func (con *Consumer) handle(deliveries <-chan amqp.Delivery, h ConsumerHandler) {
+	defer func() {
+		if rvr := recover(); rvr != nil {
+			logger.Gist(con.ctx).Error(errs.NewBadRequest(fmt.Errorf("%+v", rvr)))
+			for 0 < con.cnt {
+				con.wg.Done()
+				con.cnt--
+			}
+		}
+	}()
 	for d := range deliveries {
+		h.Handler(con.ctx, d.Body)
 		_ = d.Ack(false)
-		h.Handler(d.Body)
+		con.cnt--
+		con.wg.Done()
 	}
-	instance.wg.Done()
 }
 
 // ////
@@ -65,7 +83,7 @@ func (pro *Producer) Queue(queueName string, data ...string) error {
 		return errs.NewBadRequest(err)
 	}
 
-	if pro.IsConfirm {
+	if pro.isConfirm {
 		if err := instance.channel.Confirm(false); err != nil {
 			return errs.NewBadRequest(err)
 		}
@@ -85,7 +103,7 @@ func (pro *Producer) Queue(queueName string, data ...string) error {
 
 	for i := range data {
 		if err = instance.channel.Publish(
-			pro.Exchange, // publish to an exchange
+			pro.exchange, // publish to an exchange
 			queueName,    // routing to 0 or more queues
 			false,        // mandatory
 			false,        // immediate
