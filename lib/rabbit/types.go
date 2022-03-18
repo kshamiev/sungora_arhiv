@@ -6,12 +6,12 @@ import (
 )
 
 type ConsumerHandler interface {
-	Handler(ctx context.Context, data []byte)
+	RBCHandler(ctx context.Context, data []byte)
 }
 
 type ConsumerHandlerFunc func(ctx context.Context, data []byte)
 
-func (f ConsumerHandlerFunc) Handler(ctx context.Context, data []byte) {
+func (f ConsumerHandlerFunc) RBCHandler(ctx context.Context, data []byte) {
 	f(ctx, data)
 }
 

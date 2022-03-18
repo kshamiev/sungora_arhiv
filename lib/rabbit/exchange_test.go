@@ -13,7 +13,7 @@ func TestExchangeProducer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	data := []string{
+	data := []interface{}{
 		"one",
 		"two",
 		"three",
@@ -23,7 +23,7 @@ func TestExchangeProducer(t *testing.T) {
 	}
 
 	pub := NewProducer(context.Background(), "test-exchange", true)
-	err = pub.Exchange("test-key-one", "test-queue-one", data...)
+	err = pub.Exchange("test-key-one", "test-queue-one", data)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,13 +40,13 @@ func TestExchangeConsumer(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, "key", "value")
+	ctx = context.WithValue(ctx, "key", "ctxValue")
 
 	var h ConsumerHandlerFunc = func(ctx context.Context, data []byte) {
-		if key, ok := ctx.Value("key").(string); !ok || key != "value" {
+		if key, ok := ctx.Value("key").(string); !ok || key != "ctxValue" {
 			panic("context no delivery")
 		} else {
-			t.Log(key, len(data))
+			t.Log(key, string(data))
 		}
 	}
 
@@ -62,3 +62,11 @@ func TestExchangeConsumer(t *testing.T) {
 
 	CloseWait()
 }
+
+//func Handle(ctx context.Context, data []byte) {
+//	if key, ok := ctx.Value("key").(string); !ok || key != "value" {
+//		panic("context no delivery")
+//	} else {
+//		logger.Gist(ctx).Infoln(key, string(data))
+//	}
+//}

@@ -1,12 +1,13 @@
 package rabbit
 
 import (
+	"encoding/json"
 	"github.com/streadway/amqp"
 	"log"
 	"sungora/lib/errs"
 )
 
-func (pro *Producer) Queue(queueName string, data ...string) error {
+func (pro *Producer) Queue(queueName string, data []interface{}) error {
 	_, err := instance.channel.QueueDeclare(
 		queueName, // name of the queue
 		true,      // durable
@@ -38,16 +39,21 @@ func (pro *Producer) Queue(queueName string, data ...string) error {
 	}
 
 	for i := range data {
+		d, err := json.Marshal(data[i])
+		if err != nil {
+			return errs.NewBadRequest(err)
+		}
 		if err = instance.channel.Publish(
 			pro.exchange, // publish to an exchange
 			queueName,    // routing to 0 or more queues
 			false,        // mandatory
 			false,        // immediate
 			amqp.Publishing{
-				Headers:         amqp.Table{},
-				ContentType:     "text/plain",
+				Headers: amqp.Table{},
+				//ContentType:     "text/plain",
+				ContentType:     "application/json; charset=UTF-8",
 				ContentEncoding: "",
-				Body:            []byte(data[i]),
+				Body:            d,
 				DeliveryMode:    amqp.Transient, // 1=non-persistent, 2=persistent
 				Priority:        0,              // 0-9
 				// a bunch of application/implementation-specific fields
@@ -59,7 +65,7 @@ func (pro *Producer) Queue(queueName string, data ...string) error {
 	return nil
 }
 
-func (pro *Producer) Exchange(routeKey, queueName string, data ...string) error {
+func (pro *Producer) Exchange(routeKey, queueName string, data []interface{}) error {
 	if err := instance.channel.ExchangeDeclare(
 		pro.exchange, // name
 		"direct",     // type TODO develop feature
@@ -113,16 +119,21 @@ func (pro *Producer) Exchange(routeKey, queueName string, data ...string) error 
 	}
 
 	for i := range data {
+		d, err := json.Marshal(data[i])
+		if err != nil {
+			return errs.NewBadRequest(err)
+		}
 		if err = instance.channel.Publish(
 			pro.exchange, // publish to an exchange
 			routeKey,     // routing to 0 or more queues
 			false,        // mandatory
 			false,        // immediate
 			amqp.Publishing{
-				Headers:         amqp.Table{},
-				ContentType:     "text/plain",
+				Headers: amqp.Table{},
+				//ContentType:     "text/plain",
+				ContentType:     "application/json; charset=UTF-8",
 				ContentEncoding: "",
-				Body:            []byte(data[i]),
+				Body:            d,
 				DeliveryMode:    amqp.Transient, // 1=non-persistent, 2=persistent
 				Priority:        0,              // 0-9
 				// a bunch of application/implementation-specific fields

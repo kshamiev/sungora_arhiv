@@ -112,7 +112,7 @@ func (con *Consumer) handle(deliveries <-chan amqp.Delivery, h ConsumerHandler) 
 		}
 	}()
 	for d := range deliveries {
-		h.Handler(con.ctx, d.Body)
+		h.RBCHandler(con.ctx, d.Body)
 		_ = d.Ack(false)
 		con.wg.Done()
 		con.cnt--
