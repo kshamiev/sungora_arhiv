@@ -6,7 +6,6 @@ import (
 	"log"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
-	"sync"
 )
 
 func (con *Consumer) Queue(queueName string, h ConsumerHandler) error {
@@ -34,7 +33,6 @@ func (con *Consumer) Queue(queueName string, h ConsumerHandler) error {
 		return errs.NewBadRequest(err)
 	}
 	con.cnt = q.Messages
-	con.wg = sync.WaitGroup{}
 	con.wg.Add(q.Messages)
 	instance.wg.Add(1)
 	go con.handle(deliveries, h)
@@ -63,8 +61,8 @@ func (con *Consumer) handle(deliveries <-chan amqp.Delivery, h ConsumerHandler) 
 	for d := range deliveries {
 		h.Handler(con.ctx, d.Body)
 		_ = d.Ack(false)
-		con.cnt--
 		con.wg.Done()
+		con.cnt--
 	}
 }
 

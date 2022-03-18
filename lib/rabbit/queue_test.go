@@ -2,7 +2,6 @@ package rabbit
 
 import (
 	"context"
-	"log"
 	"testing"
 )
 
@@ -44,11 +43,11 @@ func TestQueueConsumer(t *testing.T) {
 	ctx = context.WithValue(ctx, "key", "value")
 
 	var h ConsumerHandlerFunc = func(ctx context.Context, data []byte) {
-		if "valgue" != ctx.Value("key").(string) {
-			//panic("context no delivery")
-			log.Fatal("context no delivery")
+		if key, ok := ctx.Value("key").(string); !ok || key != "value" {
+			panic("context no delivery")
+		} else {
+			t.Log(key, len(data))
 		}
-		log.Println(string(data))
 	}
 
 	cons := NewConsumer(ctx, "", "sample")
