@@ -72,7 +72,7 @@ docker run --name graylog --link mongo --link elasticsearch \
     -d graylog/graylog:4.2
 ```
 
-http://127.0.0.1:9000/
+http://localhost:9000/
 
     admin
     qwerty
@@ -83,13 +83,7 @@ https://www.jaegertracing.io/docs/1.20/getting-started/
 
 ```dockerfile
 docker run -d --rm --name sungora-jaeger --net sun \
-    -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 \
-    -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp \
-    -p 5778:5778 -p 16686:16686 -p 14268:14268 -p 14250:14250 -p 9411:9411 \
-    jaegertracing/all-in-one:1.20
-
-docker run -d --rm --name sungora-jaeger --net sun \
-    -p 127.0.0.1:16686:16686 -p 127.0.0.1:14268:14268 \
+    -p 16686:16686 -p 14268:14268 \
     jaegertracing/all-in-one:1.20
 ```
 
@@ -99,14 +93,25 @@ http://localhost:16686
 
 ```dockerfile
 docker run -d --rm --name sungora-minio --net sun \
-    -p 127.0.0.1:9000:9000 -p 127.0.0.1:9001:9001 \
+    -p 9020:9000 -p 9010:9001 \
     -e MINIO_ROOT_USER="admin" -e MINIO_ROOT_PASSWORD="xxx-xxx-xxx" \
     -v /mnt/data/sungora:/data \
     minio/minio \
-    server /data --address ":9000" --console-address ":9001"
+    server /data --address ":9020" --console-address ":9010"
 ```
 
-http://localhost:9001
+http://localhost:9010
+
+    guest
+    guest
+
+#### RabbitMQ
+
+```dockerfile
+docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
+```
+
+http://localhost:15672/#/
 
 #### Сборка и запуск приложения
 
@@ -114,7 +119,7 @@ http://localhost:9001
 docker build --no-cache -t kshamiev/sungora .
 
 docker run --rm -d --name sungora --net sun\
-    -p 127.0.0.1:8080:8080 \
+    -p 8080:8080 \
     --mount type=bind,src=/home/domains/sungora.local/www,dst=/home/app/www \
     kshamiev/sungora
 ```
