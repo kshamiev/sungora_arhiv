@@ -1,8 +1,10 @@
 package rabbit
 
 import (
-	"github.com/streadway/amqp"
+	"sungora/lib/errs"
 	"sync"
+
+	"github.com/streadway/amqp"
 )
 
 type Config struct {
@@ -22,10 +24,10 @@ var instance *Rabbit
 func Init(cfg *Config) (err error) {
 	instance = &Rabbit{cfg: cfg}
 	if instance.conn, err = amqp.Dial(cfg.Uri); err != nil {
-		return
+		return errs.NewBadRequest(err)
 	}
 	if instance.channel, err = instance.conn.Channel(); err != nil {
-		return
+		return errs.NewBadRequest(err)
 	}
 	return
 }

@@ -1,56 +1,94 @@
 package rabbit
 
 import (
+	"context"
 	"fmt"
-	"github.com/streadway/amqp"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
+	"sungora/lib/typ"
+
+	"github.com/streadway/amqp"
 )
 
-func (con *Consumer) Queue(queueName string, h ConsumerHandler) error {
-	q, err := instance.channel.QueueDeclare(
-		queueName, // name of the queue
-		true,      // durable
-		false,     // delete when unused
-		false,     // exclusive
-		false,     // noWait
-		nil,       // arguments
-	)
-	if err != nil {
-		return errs.NewBadRequest(err)
-	}
-	deliveries, err := instance.channel.Consume(
-		queueName, // name
-		con.tag,   // consumerTag,
-		false,     // noAck
-		false,     // exclusive
-		false,     // noLocal
-		false,     // noWait
-		nil,       // arguments
-	)
-	if err != nil {
-		return errs.NewBadRequest(err)
-	}
-	con.cnt = q.Messages
-	con.wg.Add(q.Messages)
-	instance.wg.Add(1)
-	go con.handle(deliveries, h)
-	return nil
+type Consumer struct {
+	queue       string
+	consumer    string
+	isExclusive bool
 }
 
-func (con *Consumer) Exchange(routeKey, queueName string, h ConsumerHandler) error {
+func NewConsumerTopic(exchange, queueName string, routeKey []string) (*Consumer, error) {
 	if err := instance.channel.ExchangeDeclare(
-		con.exchange, // name
-		"direct",     // type TODO develop feature
-		true,         // durable
-		false,        // auto-deleted
-		false,        // internal
-		false,        // noWait
-		nil,          // arguments
+		exchange, // name
+		"topic",  // type
+		true,     // durable
+		false,    // auto-deleted
+		false,    // internal
+		false,    // noWait
+		nil,      // arguments
 	); err != nil {
+		return nil, errs.NewBadRequest(err)
+	}
+
+	isDurable := true
+	isExclusive := false
+	if queueName == "" {
+		isDurable = false
+		isExclusive = true
+	}
+
+	q, err := instance.channel.QueueDeclare(
+		queueName,   // name of the queue
+		isDurable,   // durable
+		false,       // delete when unused
+		isExclusive, // exclusive
+		false,       // noWait
+		nil,         // arguments
+	)
+	if err != nil {
+		return nil, errs.NewBadRequest(err)
+	}
+
+	for i := range routeKey {
+		if err = instance.channel.QueueBind(
+			q.Name,      // name of the queue
+			routeKey[i], // bindingKey
+			exchange,    // sourceExchange
+			false,       // noWait
+			nil,         // arguments
+		); err != nil {
+			return nil, errs.NewBadRequest(err)
+		}
+	}
+
+	return &Consumer{
+		queue:       q.Name,
+		consumer:    typ.UUIDNew().String(),
+		isExclusive: isExclusive,
+	}, nil
+}
+
+func (con *Consumer) Topic(ctx context.Context, h func(ctx context.Context, data []byte)) error {
+	deliveries, err := instance.channel.Consume(
+		con.queue,       // name
+		con.consumer,    // consumerTag,
+		con.isExclusive, // noAck
+		false,           // exclusive
+		false,           // noLocal
+		false,           // noWait
+		nil,             // arguments
+	)
+	if err != nil {
 		return errs.NewBadRequest(err)
 	}
 
+	instance.wg.Add(1)
+	go con.handle(ctx, deliveries, h)
+	return nil
+}
+
+// ////
+
+func NewConsumerQueue(queueName string) (*Consumer, error) {
 	q, err := instance.channel.QueueDeclare(
 		queueName, // name of the queue
 		true,      // durable
@@ -60,61 +98,56 @@ func (con *Consumer) Exchange(routeKey, queueName string, h ConsumerHandler) err
 		nil,       // arguments
 	)
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return nil, errs.NewBadRequest(err)
 	}
 
-	if err = instance.channel.QueueBind(
-		queueName,    // name of the queue
-		routeKey,     // bindingKey
-		con.exchange, // sourceExchange
+	return &Consumer{
+		queue:    q.Name,
+		consumer: typ.UUIDNew().String(),
+	}, nil
+}
+
+func (con *Consumer) Queue(ctx context.Context, h func(ctx context.Context, data []byte)) error {
+	deliveries, err := instance.channel.Consume(
+		con.queue,    // name
+		con.consumer, // consumerTag,
+		false,        // noAck
+		false,        // exclusive
+		false,        // noLocal
 		false,        // noWait
 		nil,          // arguments
-	); err != nil {
-		return errs.NewBadRequest(err)
-	}
-
-	deliveries, err := instance.channel.Consume(
-		queueName, // name
-		con.tag,   // consumerTag,
-		false,     // noAck
-		false,     // exclusive
-		false,     // noLocal
-		false,     // noWait
-		nil,       // arguments
 	)
 	if err != nil {
 		return errs.NewBadRequest(err)
 	}
-	con.cnt = q.Messages
-	con.wg.Add(q.Messages)
+
 	instance.wg.Add(1)
-	go con.handle(deliveries, h)
+	go con.handle(ctx, deliveries, h)
 	return nil
 }
+
+// ////
 
 func (con *Consumer) Cancel() error {
-	con.wg.Wait()
-	instance.wg.Done()
-	if err := instance.channel.Cancel(con.tag, true); err != nil {
+	if err := instance.channel.Cancel(con.consumer, false); err != nil {
 		return errs.NewBadRequest(err)
 	}
+	instance.wg.Done()
 	return nil
 }
 
-func (con *Consumer) handle(deliveries <-chan amqp.Delivery, h ConsumerHandler) {
+func (con *Consumer) handle(
+	ctx context.Context,
+	deliveries <-chan amqp.Delivery,
+	h func(ctx context.Context, data []byte),
+) {
 	defer func() {
 		if rvr := recover(); rvr != nil {
-			logger.Gist(con.ctx).Error(errs.NewBadRequest(fmt.Errorf("%+v", rvr)))
-			for 0 < con.cnt {
-				con.wg.Done()
-				con.cnt--
-			}
+			logger.Gist(ctx).Error(errs.NewBadRequest(fmt.Errorf("%+v", rvr)))
 		}
 	}()
 	for d := range deliveries {
-		h.RBCHandler(con.ctx, d.Body)
+		h(ctx, d.Body)
 		_ = d.Ack(false)
-		con.wg.Done()
-		con.cnt--
 	}
 }

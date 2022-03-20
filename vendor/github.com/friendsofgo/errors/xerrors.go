@@ -1,3 +1,4 @@
+//go:build !go1.13
 // +build !go1.13
 
 // Original package created by Dave Cheney
@@ -186,7 +187,7 @@ type withStack struct {
 	*stack
 }
 
-func (w *withStack) Cause() error { return w.error }
+func (w *withStack) Cause() error  { return w.error }
 func (w *withStack) Unwrap() error { return w.error }
 
 func (w *withStack) Format(s fmt.State, verb rune) {

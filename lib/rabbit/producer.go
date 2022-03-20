@@ -2,82 +2,65 @@ package rabbit
 
 import (
 	"encoding/json"
-	"github.com/streadway/amqp"
-	"log"
+	"errors"
 	"sungora/lib/errs"
+
+	"github.com/streadway/amqp"
 )
 
-func (pro *Producer) Queue(queueName string, data []interface{}) error {
-	_, err := instance.channel.QueueDeclare(
-		queueName, // name of the queue
-		true,      // durable
-		false,     // delete when unused
-		false,     // exclusive
-		false,     // noWait
-		nil,       // arguments
-	)
-	if err != nil {
-		return errs.NewBadRequest(err)
-	}
-
-	if pro.isConfirm {
-		if err := instance.channel.Confirm(false); err != nil {
-			return errs.NewBadRequest(err)
-		}
-		confirms := instance.channel.NotifyPublish(make(chan amqp.Confirmation, 1))
-		defer func() {
-			ln := len(data)
-			for 0 < ln {
-				if confirmed := <-confirms; confirmed.Ack {
-					log.Printf("confirmed delivery with delivery tag: %d", confirmed.DeliveryTag)
-				} else {
-					log.Printf("failed delivery of delivery tag: %d", confirmed.DeliveryTag)
-				}
-				ln--
-			}
-		}()
-	}
-
-	for i := range data {
-		d, err := json.Marshal(data[i])
-		if err != nil {
-			return errs.NewBadRequest(err)
-		}
-		if err = instance.channel.Publish(
-			pro.exchange, // publish to an exchange
-			queueName,    // routing to 0 or more queues
-			false,        // mandatory
-			false,        // immediate
-			amqp.Publishing{
-				Headers: amqp.Table{},
-				//ContentType:     "text/plain",
-				ContentType:     "application/json; charset=UTF-8",
-				ContentEncoding: "",
-				Body:            d,
-				DeliveryMode:    amqp.Transient, // 1=non-persistent, 2=persistent
-				Priority:        0,              // 0-9
-				// a bunch of application/implementation-specific fields
-			},
-		); err != nil {
-			return errs.NewBadRequest(err)
-		}
-	}
-	return nil
+type Producer struct {
+	name    string
+	confirm chan amqp.Confirmation
 }
 
-func (pro *Producer) Exchange(routeKey, queueName string, data []interface{}) error {
+func NewProducerTopic(exchange string) (*Producer, error) {
 	if err := instance.channel.ExchangeDeclare(
-		pro.exchange, // name
-		"direct",     // type TODO develop feature
-		true,         // durable
-		false,        // auto-deleted
-		false,        // internal
-		false,        // noWait
-		nil,          // arguments
+		exchange, // name
+		"topic",  // type
+		true,     // durable
+		false,    // auto-deleted
+		false,    // internal
+		false,    // noWait
+		nil,      // arguments
+	); err != nil {
+		return nil, errs.NewBadRequest(err)
+	}
+	if err := instance.channel.Confirm(false); err != nil {
+		return nil, errs.NewBadRequest(err)
+	}
+	return &Producer{
+		name:    exchange,
+		confirm: instance.channel.NotifyPublish(make(chan amqp.Confirmation, 1)),
+	}, nil
+}
+
+func (pro *Producer) Topic(routeKey string, data interface{}) error {
+	d, err := json.Marshal(data)
+	if err != nil {
+		return errs.NewBadRequest(err)
+	}
+	if err = instance.channel.Publish(
+		pro.name, // publish to an exchange
+		routeKey, // routing to 0 or more queues
+		false,    // mandatory
+		false,    // immediate
+		amqp.Publishing{
+			ContentType: "application/json; charset=UTF-8",
+			Body:        d,
+		},
 	); err != nil {
 		return errs.NewBadRequest(err)
 	}
 
+	if confirmed := <-pro.confirm; confirmed.Ack {
+		return nil
+	}
+	return errs.NewBadRequest(errors.New("failed delivery message topic"))
+}
+
+// ////
+
+func NewProducerQueue(queueName string) (*Producer, error) {
 	_, err := instance.channel.QueueDeclare(
 		queueName, // name of the queue
 		true,      // durable
@@ -87,61 +70,37 @@ func (pro *Producer) Exchange(routeKey, queueName string, data []interface{}) er
 		nil,       // arguments
 	)
 	if err != nil {
+		return nil, errs.NewBadRequest(err)
+	}
+	if err := instance.channel.Confirm(false); err != nil {
+		return nil, errs.NewBadRequest(err)
+	}
+	return &Producer{
+		name:    queueName,
+		confirm: instance.channel.NotifyPublish(make(chan amqp.Confirmation, 1)),
+	}, nil
+}
+
+func (pro *Producer) Queue(data interface{}) error {
+	d, err := json.Marshal(data)
+	if err != nil {
 		return errs.NewBadRequest(err)
 	}
-
-	if err = instance.channel.QueueBind(
-		queueName,    // name of the queue
-		routeKey,     // bindingKey
-		pro.exchange, // sourceExchange
-		false,        // noWait
-		nil,          // arguments
+	if err = instance.channel.Publish(
+		"",       // publish to an exchange
+		pro.name, // routing to 0 or more queues
+		false,    // mandatory
+		false,    // immediate
+		amqp.Publishing{
+			ContentType: "application/json; charset=UTF-8",
+			Body:        d,
+		},
 	); err != nil {
 		return errs.NewBadRequest(err)
 	}
 
-	if pro.isConfirm {
-		if err := instance.channel.Confirm(false); err != nil {
-			return errs.NewBadRequest(err)
-		}
-		confirms := instance.channel.NotifyPublish(make(chan amqp.Confirmation, 1))
-		defer func() {
-			ln := len(data)
-			for 0 < ln {
-				if confirmed := <-confirms; confirmed.Ack {
-					log.Printf("confirmed delivery with delivery tag: %d", confirmed.DeliveryTag)
-				} else {
-					log.Printf("failed delivery of delivery tag: %d", confirmed.DeliveryTag)
-				}
-				ln--
-			}
-		}()
+	if confirmed := <-pro.confirm; confirmed.Ack {
+		return nil
 	}
-
-	for i := range data {
-		d, err := json.Marshal(data[i])
-		if err != nil {
-			return errs.NewBadRequest(err)
-		}
-		if err = instance.channel.Publish(
-			pro.exchange, // publish to an exchange
-			routeKey,     // routing to 0 or more queues
-			false,        // mandatory
-			false,        // immediate
-			amqp.Publishing{
-				Headers: amqp.Table{},
-				//ContentType:     "text/plain",
-				ContentType:     "application/json; charset=UTF-8",
-				ContentEncoding: "",
-				Body:            d,
-				DeliveryMode:    amqp.Transient, // 1=non-persistent, 2=persistent
-				Priority:        0,              // 0-9
-				// a bunch of application/implementation-specific fields
-			},
-		); err != nil {
-			return errs.NewBadRequest(err)
-		}
-	}
-	return nil
-
+	return errs.NewBadRequest(errors.New("failed delivery message topic"))
 }
