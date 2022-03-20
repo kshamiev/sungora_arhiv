@@ -55,7 +55,7 @@ func TestQueueConsumer(t *testing.T) {
 		}
 	}
 
-	err = cons.Queue(ctx, h)
+	err = cons.Handler(ctx, h)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -52,7 +52,7 @@ func TestDirectConsumer(t *testing.T) {
 		}
 	}
 
-	err = cons.Topic(ctx, h)
+	err = cons.Handler(ctx, h)
 	if err != nil {
 		t.Fatal(err)
 	}

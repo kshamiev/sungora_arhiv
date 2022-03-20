@@ -10,13 +10,19 @@ import (
 	"github.com/streadway/amqp"
 )
 
-type Consumer struct {
+type consumer struct {
 	queue       string
 	consumer    string
 	isExclusive bool
+	isAck       bool
 }
 
-func NewConsumerTopic(exchange, queueName string, routeKey []string) (*Consumer, error) {
+type Consumer interface {
+	Handler(ctx context.Context, h func(ctx context.Context, data []byte)) error
+	Cancel() error
+}
+
+func NewConsumerTopic(exchange, queueName string, routeKey []string) (Consumer, error) {
 	if err := instance.channel.ExchangeDeclare(
 		exchange, // name
 		"topic",  // type
@@ -60,35 +66,15 @@ func NewConsumerTopic(exchange, queueName string, routeKey []string) (*Consumer,
 		}
 	}
 
-	return &Consumer{
+	return &consumer{
 		queue:       q.Name,
 		consumer:    typ.UUIDNew().String(),
 		isExclusive: isExclusive,
+		isAck:       isExclusive,
 	}, nil
 }
 
-func (con *Consumer) Topic(ctx context.Context, h func(ctx context.Context, data []byte)) error {
-	deliveries, err := instance.channel.Consume(
-		con.queue,       // name
-		con.consumer,    // consumerTag,
-		con.isExclusive, // noAck
-		false,           // exclusive
-		false,           // noLocal
-		false,           // noWait
-		nil,             // arguments
-	)
-	if err != nil {
-		return errs.NewBadRequest(err)
-	}
-
-	instance.wg.Add(1)
-	go con.handle(ctx, deliveries, h)
-	return nil
-}
-
-// ////
-
-func NewConsumerQueue(queueName string) (*Consumer, error) {
+func NewConsumerQueue(queueName string) (Consumer, error) {
 	q, err := instance.channel.QueueDeclare(
 		queueName, // name of the queue
 		true,      // durable
@@ -101,17 +87,19 @@ func NewConsumerQueue(queueName string) (*Consumer, error) {
 		return nil, errs.NewBadRequest(err)
 	}
 
-	return &Consumer{
+	return &consumer{
 		queue:    q.Name,
 		consumer: typ.UUIDNew().String(),
 	}, nil
 }
 
-func (con *Consumer) Queue(ctx context.Context, h func(ctx context.Context, data []byte)) error {
+// ////
+
+func (con *consumer) Handler(ctx context.Context, h func(ctx context.Context, data []byte)) error {
 	deliveries, err := instance.channel.Consume(
 		con.queue,    // name
 		con.consumer, // consumerTag,
-		false,        // noAck
+		con.isAck,    // noAck
 		false,        // exclusive
 		false,        // noLocal
 		false,        // noWait
@@ -126,9 +114,7 @@ func (con *Consumer) Queue(ctx context.Context, h func(ctx context.Context, data
 	return nil
 }
 
-// ////
-
-func (con *Consumer) Cancel() error {
+func (con *consumer) Cancel() error {
 	if err := instance.channel.Cancel(con.consumer, false); err != nil {
 		return errs.NewBadRequest(err)
 	}
@@ -136,7 +122,7 @@ func (con *Consumer) Cancel() error {
 	return nil
 }
 
-func (con *Consumer) handle(
+func (con *consumer) handle(
 	ctx context.Context,
 	deliveries <-chan amqp.Delivery,
 	h func(ctx context.Context, data []byte),
@@ -148,6 +134,8 @@ func (con *Consumer) handle(
 	}()
 	for d := range deliveries {
 		h(ctx, d.Body)
-		_ = d.Ack(false)
+		if !con.isAck {
+			_ = d.Ack(false)
+		}
 	}
 }

@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestFanoutProducer(t *testing.T) {
+func TestFanout(t *testing.T) {
 	err := Init(&Config{
 		Uri: "amqp://guest:guest@localhost:5672/",
 	})
@@ -14,29 +14,7 @@ func TestFanoutProducer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	pub, err := NewProducerTopic("test_exchange_logs")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	for _, o := range getOrders() {
-		err = pub.Topic("one.two.three.four", o)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
-
-	CloseWait()
-}
-
-func TestFanoutConsumer(t *testing.T) {
-	err := Init(&Config{
-		Uri: "amqp://guest:guest@localhost:5672/",
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-
+	// Consumer
 	cons, err := NewConsumerTopic("test_exchange_logs", "", []string{"#"})
 	if err != nil {
 		t.Fatal(err)
@@ -52,11 +30,25 @@ func TestFanoutConsumer(t *testing.T) {
 		}
 	}
 
-	err = cons.Topic(ctx, h)
+	err = cons.Handler(ctx, h)
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	// Producer
+	pub, err := NewProducerTopic("test_exchange_logs")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, o := range getOrders() {
+		err = pub.Topic("one.two.three.four", o)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	// Consumer
 	err = cons.Cancel()
 	if err != nil {
 		t.Fatal(err)
