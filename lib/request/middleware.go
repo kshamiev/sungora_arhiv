@@ -8,8 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"google.golang.org/grpc"
-
 	"sungora/lib/enum"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
@@ -23,6 +21,7 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/trace"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
 
