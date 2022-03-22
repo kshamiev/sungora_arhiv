@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"path"
 	"strings"
-	"sungora/lib/app"
 	"time"
 
 	"google.golang.org/grpc"
@@ -160,7 +159,6 @@ func (mid *Mid) Observation() func(next http.Handler) http.Handler {
 				rctx.Routes.Match(&nc, req.Method, req.RequestURI)
 
 				httpPath := strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/")
-				app.Dumper(httpPath)
 				span := trace.FromContext(ctx)
 				span.AddAttributes(trace.StringAttribute(ochttp.PathAttribute, httpPath))
 				ochttp.SetRoute(ctx, httpPath)
