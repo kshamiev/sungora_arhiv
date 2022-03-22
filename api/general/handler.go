@@ -62,7 +62,7 @@ func (hh *Handler) PageIndex(w http.ResponseWriter, r *http.Request) {
 
 	ret, err := tpl.ExecuteStorage(response.IndexHtml, variable)
 	if err != nil {
-		logger.Gist(r.Context()).Error(err)
+		logger.Get(r.Context()).Error(err)
 		rw.Bytes([]byte("ошибка шаблона"), response.IndexHtml, http.StatusBadRequest)
 		return
 	}
@@ -91,7 +91,7 @@ func (hh *Handler) PagePage(w http.ResponseWriter, r *http.Request) {
 
 	ret, err := tpl.ExecuteStorage("page/page.html", variable)
 	if err != nil {
-		logger.Gist(r.Context()).Error(err)
+		logger.Get(r.Context()).Error(err)
 		rw.Bytes([]byte("ошибка шаблона"), response.IndexHtml, http.StatusBadRequest)
 		return
 	}

@@ -18,9 +18,14 @@ type Hooks struct {
 	Graylog graylog.Config `yaml:"graylog" json:"graylog"`
 }
 
+type CtxKey string
+
 const (
 	outStdout     = "stdout"
 	outStderr     = "stderr"
 	outEmpty      = "empty"
 	formatterJSON = "json"
+	TraceID       = "trace-id"
+
+	CtxTraceID CtxKey = "trace-id"
 )

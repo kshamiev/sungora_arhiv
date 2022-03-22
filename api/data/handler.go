@@ -40,7 +40,7 @@ func (hh *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
 		rw.JSON(err)
 		return
 	}
-	lg := logger.Gist(r.Context())
+	lg := logger.Get(r.Context())
 	lg.Info(dataName[0])
 
 	rw.Bytes(data[dataName[0]].Bytes(), dataName[0], http.StatusOK)

@@ -3,7 +3,7 @@ package web
 import (
 	"fmt"
 	"net"
-
+	"sungora/lib/logger"
 	"sungora/lib/request"
 
 	"go.opencensus.io/plugin/ocgrpc"
@@ -68,7 +68,8 @@ func NewGRPCServer(cfg *GRPCConfig, opts ...grpc.ServerOption) (*GRPCServer, err
 	}
 	opts = append(opts,
 		grpc.StatsHandler(new(ocgrpc.ServerHandler)),
-		grpc.ChainUnaryInterceptor(request.LoggerInterceptor()),
+		grpc.ChainUnaryInterceptor(logger.Interceptor()),
+		grpc.ChainUnaryInterceptor(request.Interceptor()),
 	)
 
 	comp := &GRPCServer{

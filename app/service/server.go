@@ -29,7 +29,7 @@ func (ser SungoraServer) Ping(ctx context.Context, tt *pbsungora.Test) (*pbsungo
 	s := app.NewSpan(ctx)
 	s.StringAttribute("description", "qwerty qwerty qwerty")
 	defer s.End()
-	lg := logger.Gist(ctx)
+	lg := logger.Get(ctx)
 	lg.Info("SungoraServer.Ping: " + tt.Text)
 	return &pbsungora.Test{
 		Text: "Funtik",

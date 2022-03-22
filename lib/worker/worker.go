@@ -6,9 +6,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
+
 	"sungora/lib/logger"
 	"sungora/lib/response"
-	"sungora/lib/typ"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"google.golang.org/grpc/metadata"
@@ -121,16 +122,16 @@ func runScheduler(task Task, ch chan bool) {
 
 // action выполнение задачи
 func action(task Task) {
-	requestID := typ.UUIDNew().StringShort()
+	requestID := uuid.New().String()
 	ctx := context.Background()
-	lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
+	lg := logger.Get(ctx).WithField(logger.TraceID, requestID)
 
-	ctx = context.WithValue(ctx, response.CtxTraceID, requestID)
+	ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
 	ctx = logger.WithLogger(ctx, lg)
 	ctx = boil.WithDebugWriter(ctx, lg.Writer())
 
 	m := make(map[string]string)
-	m[response.LogTraceID] = requestID
+	m[logger.TraceID] = requestID
 	ctx = metadata.NewOutgoingContext(ctx, metadata.New(m))
 
 	defer func() {

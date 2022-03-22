@@ -4,7 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/hex"
 
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 )
 
 type UUID struct {
@@ -12,11 +12,11 @@ type UUID struct {
 }
 
 func UUIDNew() UUID {
-	return UUID{UUID: uuid.Must(uuid.NewV4())}
+	return UUID{UUID: uuid.New()}
 }
 
 func UUIDParse(s string) (UUID, error) {
-	u, err := uuid.FromString(s)
+	u, err := uuid.Parse(s)
 	if err != nil {
 		return UUID{}, err
 	}
@@ -24,7 +24,7 @@ func UUIDParse(s string) (UUID, error) {
 }
 
 func UUIDMustParse(s string) UUID {
-	u, err := uuid.FromString(s)
+	u, err := uuid.Parse(s)
 	if err != nil {
 		return UUID{}
 	}
@@ -32,14 +32,10 @@ func UUIDMustParse(s string) UUID {
 }
 
 func (u UUID) Value() (driver.Value, error) {
-	if u.IsNull() {
+	if u.UUID == (uuid.UUID{}) {
 		return nil, nil
 	}
 	return u.String(), nil
-}
-
-func (u UUID) Bytes() []byte {
-	return u.UUID[:]
 }
 
 func (u UUID) StringShort() string {

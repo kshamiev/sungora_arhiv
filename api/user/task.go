@@ -20,7 +20,7 @@ func NewTaskOnlineOff(st storage.Face) *TaskOnlineOff {
 }
 
 func (task *TaskOnlineOff) Action(ctx context.Context) error {
-	lg := logger.Gist(ctx)
+	lg := logger.Get(ctx)
 	lg.Info("Its's Work")
 	return nil
 }

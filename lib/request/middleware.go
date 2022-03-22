@@ -6,7 +6,10 @@ import (
 	"net/http"
 	"path"
 	"strings"
+	"sungora/lib/app"
 	"time"
+
+	"google.golang.org/grpc"
 
 	"sungora/lib/enum"
 	"sungora/lib/errs"
@@ -146,24 +149,6 @@ func (mid *Mid) VerifyToken(token string) (*response.User, error) {
 	return nil, errors.New("error get tokenObj.Claims")
 }
 
-func (mid *Mid) Logger() func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			requestID := typ.UUIDNew().StringShort()
-			ctx := r.Context()
-
-			lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
-			ctx = logger.WithLogger(ctx, lg)
-			ctx = boil.WithDebugWriter(ctx, lg.Writer())
-			ctx = context.WithValue(ctx, response.CtxTraceID, requestID)
-			ctx = metadata.AppendToOutgoingContext(ctx, response.LogTraceID, requestID)
-
-			w.Header().Add(response.LogTraceID, requestID)
-			next.ServeHTTP(w, r.WithContext(ctx))
-		})
-	}
-}
-
 func (mid *Mid) Observation() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return &ochttp.Handler{
@@ -175,18 +160,18 @@ func (mid *Mid) Observation() func(next http.Handler) http.Handler {
 				rctx.Routes.Match(&nc, req.Method, req.RequestURI)
 
 				httpPath := strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/")
+				app.Dumper(httpPath)
 				span := trace.FromContext(ctx)
 				span.AddAttributes(trace.StringAttribute(ochttp.PathAttribute, httpPath))
 				ochttp.SetRoute(ctx, httpPath)
 
 				requestID := span.SpanContext().TraceID.String()
-				lg := logger.Gist(ctx).WithField(response.LogTraceID, requestID)
+				lg := logger.Get(ctx).WithField(logger.TraceID, requestID)
 				ctx = logger.WithLogger(ctx, lg)
 				ctx = boil.WithDebugWriter(ctx, lg.Writer())
-				ctx = context.WithValue(ctx, response.CtxTraceID, requestID)
-				ctx = metadata.AppendToOutgoingContext(ctx, response.LogTraceID, requestID)
+				ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
+				ctx = metadata.AppendToOutgoingContext(ctx, logger.TraceID, requestID)
 
-				w.Header().Add(response.LogTraceID, requestID)
 				next.ServeHTTP(w, req.WithContext(ctx))
 			}),
 			FormatSpanName: func(req *http.Request) string {
@@ -198,9 +183,21 @@ func (mid *Mid) Observation() func(next http.Handler) http.Handler {
 				if rctx == nil {
 					return ""
 				}
-				return path.Join(nc.RoutePatterns...)
+				return strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/")
 			},
 			Propagation: observability.NewHTTPFormat(),
 		}
+	}
+}
+
+func Interceptor() grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (
+		resp interface{}, err error) {
+		//
+		md, ok := metadata.FromIncomingContext(ctx)
+		if ok && md.Get(string(response.CtxToken)) != nil {
+			ctx = context.WithValue(ctx, response.CtxToken, md.Get(string(response.CtxToken))[0])
+		}
+		return handler(ctx, req)
 	}
 }

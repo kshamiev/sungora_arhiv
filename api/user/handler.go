@@ -154,7 +154,7 @@ func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	lg := logger.Gist(r.Context())
+	lg := logger.Get(r.Context())
 	lg.Info("General.Test")
 
 	cli := client.GistSungoraGRPC()

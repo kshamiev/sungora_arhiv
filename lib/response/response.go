@@ -32,7 +32,7 @@ type Response struct {
 func New(r *http.Request, w http.ResponseWriter) *Response {
 	var rw = &Response{
 		response: w,
-		lg:       logger.Gist(r.Context()),
+		lg:       logger.Get(r.Context()),
 		Request:  r,
 	}
 	return rw
@@ -125,7 +125,6 @@ func (rw *Response) JSON(object interface{}) {
 			rw.lg.Trace(t)
 		}
 		object = Data{
-			Code:    rw.Request.Context().Value(CtxTraceID).(string),
 			Message: tt.Response(),
 		}
 		data, _ = json.Marshal(object)
@@ -133,13 +132,13 @@ func (rw *Response) JSON(object interface{}) {
 	case error:
 		rw.lg.Error(tt.Error())
 		object = Data{
-			Code:    rw.Request.Context().Value(CtxTraceID).(string),
 			Message: tt.Error(),
 		}
 		data, _ = json.Marshal(object)
 		status = http.StatusBadRequest
 	}
 	rw.response.Header().Set("Content-Length", strconv.Itoa(len(data)))
+	rw.response.Header().Set(logger.TraceID, rw.Request.Context().Value(logger.CtxTraceID).(string))
 	rw.response.Header().Set("Content-Type", "application/json")
 	rw.response.WriteHeader(status)
 	_, _ = rw.response.Write(data)

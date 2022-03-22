@@ -129,7 +129,7 @@ func (con *consumer) handle(
 ) {
 	defer func() {
 		if rvr := recover(); rvr != nil {
-			logger.Gist(ctx).Error(errs.NewBadRequest(fmt.Errorf("%+v", rvr)))
+			logger.Get(ctx).Error(errs.NewBadRequest(fmt.Errorf("%+v", rvr)))
 		}
 	}()
 	for d := range deliveries {

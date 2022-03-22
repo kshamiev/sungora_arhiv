@@ -6,6 +6,7 @@ app:
   signingKey: "xxx-xxx-xxx"
 
 lg:
+  title: *title
   output: "stdout" # Change (stdout | stderr | filePathRelative | empty)
   formatter: "json" # Change enum (json | text)
   level: trace # Change enum (info | warning | error | fatal | trace | debug)

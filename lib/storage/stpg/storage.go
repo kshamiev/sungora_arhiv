@@ -160,7 +160,7 @@ func (st *Storage) QueryTx(ctx context.Context, f func(qu storage.QueryTxEr) err
 	defer func() {
 		if r := recover(); r != nil || !commit {
 			if r != nil {
-				logger.Gist(ctx).Error(fmt.Sprintf("transaction panic: %s\n%s", r, string(debug.Stack())))
+				logger.Get(ctx).Error(fmt.Sprintf("transaction panic: %s\n%s", r, string(debug.Stack())))
 				err = fmt.Errorf("transaction panic: %s", r)
 				_ = pgQuery.Rollback()
 			} else if e := pgQuery.Rollback(); e != nil {

@@ -8,12 +8,10 @@ import (
 type CtxKey string
 
 const (
-	LogTraceID = "trace-id"
-	IndexHtml  = "index.html"
+	IndexHtml = "index.html"
 
-	CtxUser    CtxKey = "user"
-	CtxToken   CtxKey = "token"
-	CtxTraceID CtxKey = "trace-id"
+	CtxUser  CtxKey = "user"
+	CtxToken CtxKey = "token"
 )
 
 type User struct {
