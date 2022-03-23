@@ -18,7 +18,7 @@ func (qu *queryTx) ExecInsert(query string, arg ...interface{}) (lastInsertId in
 		return 0, err
 	}
 	res := stmt.QueryRowxContext(qu.ctx, args...)
-	if err = res.Scan(&lastInsertId); err != nil {
+	if err := res.Scan(&lastInsertId); err != nil {
 		return 0, err
 	}
 	return lastInsertId, nil

@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/volatiletech/null/v8"
-	"sungora/lib/errs"
 	"sungora/lib/storage"
+
+	"github.com/volatiletech/null/v8"
 )
 
 type User struct {
@@ -60,7 +60,7 @@ func testInsertUpdate(t *testing.T, st *Storage) chan bool {
 						}
 						id, err := qu.ExecInsert(SQL_USER_INSERT, arg...)
 						if err != nil {
-							return errs.NewBadRequest(err)
+							return err
 						}
 						// UPDATE
 						arg = []interface{}{
@@ -70,7 +70,7 @@ func testInsertUpdate(t *testing.T, st *Storage) chan bool {
 						}
 						_, err = qu.Exec(SQL_USER_UPDATE, arg...)
 						if err != nil {
-							return errs.NewBadRequest(err)
+							return err
 						}
 						// UPSERT
 						id = 1999999999
@@ -80,7 +80,7 @@ func testInsertUpdate(t *testing.T, st *Storage) chan bool {
 							GenString(3),
 						}
 						if _, err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
-							return errs.NewBadRequest(err)
+							return err
 						}
 						arg = []interface{}{
 							id,
@@ -88,7 +88,7 @@ func testInsertUpdate(t *testing.T, st *Storage) chan bool {
 							GenString(16),
 						}
 						if _, err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
-							return errs.NewBadRequest(err)
+							return err
 						}
 						return nil
 					}); err != nil {
@@ -162,7 +162,7 @@ func TestPGQuery(t *testing.T) {
 	t.Log(len(resMap))
 
 	// //// Exec TX
-	if err := st.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
+	if err = st.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
 
 		// INSERT
 		arg := []interface{}{
