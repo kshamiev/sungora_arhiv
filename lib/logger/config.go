@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	Title     string       `yaml:"title" json:"title"`         // title
 	Output    string       `yaml:"output" json:"output"`       // enum (stdout | filePathRelative)
 	Formatter string       `yaml:"formatter" json:"formatter"` // enum (json|text)
 	Level     logrus.Level `yaml:"level" json:"level"`         // enum (error|warning|info|debug|trace)

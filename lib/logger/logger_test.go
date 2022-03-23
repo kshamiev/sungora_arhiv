@@ -11,6 +11,7 @@ import (
 
 func TestLogger(t *testing.T) {
 	Init(&Config{
+		Title:     "TestTitle",
 		Output:    "stdout",
 		Formatter: "json",
 		Level:     logrus.TraceLevel,
@@ -20,7 +21,13 @@ func TestLogger(t *testing.T) {
 
 	ctx := context.Background()
 	lg := Get(ctx)
-	ctx = WithLogger(ctx, lg.WithField("key", "value"))
+	ctx = WithLogger(ctx, lg.
+		WithField("sql", "query").
+		WithFields(logrus.Fields{
+			"animal": "walrus",
+			"size":   10,
+		}),
+	)
 
 	lg.Trace("Trace message")
 	lg.Debug("Debug message")

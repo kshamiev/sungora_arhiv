@@ -66,7 +66,7 @@ func Init(config *Config) Logger {
 		inst.AddHook(hook)
 	}
 
-	instance = inst
+	instance = inst.WithField("title", config.Title)
 	return instance
 }
 
