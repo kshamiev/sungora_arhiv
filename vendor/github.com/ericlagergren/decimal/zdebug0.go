@@ -1,4 +1,3 @@
-//go:build !ddebug
 // +build !ddebug
 
 package decimal

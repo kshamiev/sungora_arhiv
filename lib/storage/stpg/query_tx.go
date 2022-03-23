@@ -2,6 +2,7 @@ package stpg
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -12,17 +13,22 @@ type queryTx struct {
 	st  *Storage
 }
 
-func (qu *queryTx) Execute(query string, arg []interface{}) error {
-	return qu.Exec(query, arg...)
-}
-
-func (qu *queryTx) Exec(query string, arg ...interface{}) error {
+func (qu *queryTx) Exec(query string, arg ...interface{}) (int64, error) {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	_, err = stmt.ExecContext(qu.ctx, args...)
-	return err
+	res, err := stmt.ExecContext(qu.ctx, args...)
+	if err != nil {
+		return 0, err
+	}
+	id, err := res.LastInsertId()
+	fmt.Println(res.RowsAffected())
+	fmt.Println(id, err)
+	if id > 0 {
+		return id, err
+	}
+	return res.RowsAffected()
 }
 
 func (qu *queryTx) Select(dest interface{}, query string, arg ...interface{}) error {
@@ -52,11 +58,12 @@ func (qu *queryTx) QuerySlice(query string, arg ...interface{}) ([]map[string]in
 }
 
 // TODO реализовать паттерн walker
-func (qu *queryTx) QueryMap(query string, arg ...interface{}) (map[string]map[string]interface{}, error) {
+func (qu *queryTx) QueryMap(query string, arg ...interface{}) (map[int64]map[string]interface{}, error) {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
 		return nil, err
 	}
+
 	return qu.st.queryMap(qu.ctx, stmt, args...)
 }
 

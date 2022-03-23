@@ -3,8 +3,6 @@ package stpg
 import (
 	"context"
 	"testing"
-
-	"sungora/lib/app"
 )
 
 // language=sql
@@ -23,7 +21,7 @@ const (
 	WHERE
 		login = $1
 	`
-	SQL_USER_INSERT = `INSERT INTO public.users (id, login, description) VALUES ($1, $2, $3)`
+	SQL_USER_INSERT = `INSERT INTO public.users (login, description) VALUES ($1, $2) RETURNING id`
 	SQL_USER_UPDATE = `UPDATE public.users SET login = $1, description = $2 WHERE id = $3`
 	SQL_USER_UPSERT = `
 	INSERT INTO public.users
@@ -47,9 +45,8 @@ var pgQueries = []string{
 func TestQuery(t *testing.T) {
 	var cfg = struct {
 		Postgresql Config `yaml:"psql"`
-	}{}
-	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
-		t.Fatal(err)
+	}{
+		Postgresql: getConfig(),
 	}
 	if err := InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)

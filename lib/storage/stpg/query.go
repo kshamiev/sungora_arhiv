@@ -11,17 +11,20 @@ type query struct {
 	st  *Storage
 }
 
-func (qu *query) Execute(query string, arg []interface{}) error {
-	return qu.Exec(query, arg...)
-}
-
-func (qu *query) Exec(query string, arg ...interface{}) error {
+func (qu *query) Exec(query string, arg ...interface{}) (int64, error) {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	_, err = stmt.ExecContext(qu.ctx, args...)
-	return err
+	res, err := stmt.ExecContext(qu.ctx, args...)
+	if err != nil {
+		return 0, err
+	}
+	id, err := res.LastInsertId()
+	if id > 0 {
+		return id, err
+	}
+	return res.RowsAffected()
 }
 
 func (qu *query) Select(dest interface{}, query string, arg ...interface{}) error {
@@ -51,11 +54,12 @@ func (qu *query) QuerySlice(query string, arg ...interface{}) ([]map[string]inte
 }
 
 // TODO реализовать паттерн walker
-func (qu *query) QueryMap(query string, arg ...interface{}) (map[string]map[string]interface{}, error) {
+func (qu *query) QueryMap(query string, arg ...interface{}) (map[int64]map[string]interface{}, error) {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
 		return nil, err
 	}
+
 	return qu.st.queryMap(qu.ctx, stmt, args...)
 }
 

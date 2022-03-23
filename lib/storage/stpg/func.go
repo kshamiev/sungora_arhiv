@@ -6,9 +6,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
-
-	"sungora/lib/typ"
 )
 
 var sqlArgsSearch = regexp.MustCompile(`\$\d{1,2}`)
@@ -74,7 +73,7 @@ func sqlIn(query string, args ...interface{}) (queryNew string, argsNew []interf
 			argsRes = ar
 			replace["$"+strconv.Itoa(index)] = strings.Join(qu, ",")
 			indexShift += num
-		case []typ.UUID:
+		case []uuid.UUID:
 			qu = make([]string, len(arg))
 			ar = make([]interface{}, len(argsRes), len(argsRes)+len(arg))
 			copy(ar, argsRes)

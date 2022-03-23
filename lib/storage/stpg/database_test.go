@@ -7,16 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"sungora/lib/app"
+	"github.com/volatiletech/null/v8"
 	"sungora/lib/errs"
 	"sungora/lib/storage"
-	"sungora/lib/typ"
-
-	"github.com/volatiletech/null/v8"
 )
 
 type User struct {
-	ID          typ.UUID    `db:"id" json:"id"`
+	ID          int64       `db:"id" json:"id"`
 	CreatedAt   time.Time   `db:"created_at" json:"created_at"`
 	Login       string      `db:"login" json:"login"`
 	Description null.String `db:"description" json:"description"`
@@ -28,9 +25,8 @@ var cntIteration = 100
 func TestPG(t *testing.T) {
 	var cfg = struct {
 		Postgresql Config `yaml:"psql"`
-	}{}
-	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
-		t.Fatal(err)
+	}{
+		Postgresql: getConfig(),
 	}
 	if err := InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)
@@ -58,42 +54,40 @@ func testInsertUpdate(t *testing.T, st *Storage) chan bool {
 				for j := 0; j < cntIteration; j++ {
 					if err := st.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
 						// INSERT
-						id := typ.UUIDNew()
 						arg := []interface{}{
-							id,
-							app.GenString(8),
-							app.GenString(8),
+							GenString(8),
+							GenString(8),
 						}
-						err := qu.Exec(SQL_USER_INSERT, arg...)
+						id, err := qu.Exec(SQL_USER_INSERT, arg...)
 						if err != nil {
 							return errs.NewBadRequest(err)
 						}
 						// UPDATE
 						arg = []interface{}{
-							app.GenString(8),
-							app.GenString(8),
+							GenString(8),
+							GenString(8),
 							id,
 						}
-						err = qu.Exec(SQL_USER_UPDATE, arg...)
+						_, err = qu.Exec(SQL_USER_UPDATE, arg...)
 						if err != nil {
 							return errs.NewBadRequest(err)
 						}
 						// UPSERT
-						id = typ.UUIDNew()
+						id = 1999999999
 						arg = []interface{}{
 							id,
-							app.GenString(16),
-							app.GenString(16),
+							GenString(16),
+							GenString(16),
 						}
-						if err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
+						if _, err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
 							return errs.NewBadRequest(err)
 						}
 						arg = []interface{}{
 							id,
-							app.GenString(16),
-							app.GenString(16),
+							GenString(16),
+							GenString(16),
 						}
-						if err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
+						if _, err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
 							return errs.NewBadRequest(err)
 						}
 						return nil
@@ -116,41 +110,42 @@ func testInsertUpdate(t *testing.T, st *Storage) chan bool {
 func TestPGQuery(t *testing.T) {
 	var cfg = struct {
 		Postgresql Config `yaml:"psql"`
-	}{}
-	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
-		t.Fatal(err)
+	}{
+		Postgresql: getConfig(),
 	}
 	if err := InitConnect(&cfg.Postgresql); err != nil {
 		t.Fatal(err)
 	}
 	st := Gist()
 
-	var resListRaw []User
+	// GET Object SLICE 1
+	var resList []User
 	login := []string{"zLVtPW2i", "gpscdIEk", "rV4VGiR9"}
-	if err := st.Query(context.TODO()).Select(&resListRaw, SQL_USER_IN, "JaJOTZvl", login, "v3iwypkK"); err != nil {
+	if err := st.Query(context.TODO()).Select(&resList, SQL_USER_IN, "JaJOTZvl", login, "v3iwypkK"); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(len(resListRaw))
+	t.Log(len(resList))
 
-	// GET Object SLICE
+	// GET Object SLICE 2
 	var resListLimit []User
 	if err := st.Query(context.TODO()).Select(&resListLimit, SQL_USER_LIMIT); err != nil {
 		t.Fatal(err)
 	}
 	t.Log(len(resListLimit))
 
-	var resList []User
-	if err := st.Query(context.TODO()).Select(&resList, SQL_USER, "testLogin"); err != nil {
+	// GET Object SLICE 3
+	var resListUsers []User
+	if err := st.Query(context.TODO()).Select(&resListUsers, SQL_USER, "testLogin"); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(len(resList))
+	t.Log(len(resListUsers))
 
 	// GET Object ONE
 	var res User
 	if err := st.Query(context.TODO()).Get(&res, SQL_USER, "testLogin"); err != nil && err != sql.ErrNoRows {
 		t.Fatal(err)
 	}
-	t.Log(res.ID.String())
+	t.Log("ID: ", res.ID)
 
 	// GET SLICE
 	resSlice, err := st.Query(context.TODO()).QuerySlice(SQL_USER, "testLogin")
@@ -171,13 +166,12 @@ func TestPGQuery(t *testing.T) {
 	if err := st.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
 
 		// INSERT
-		id := typ.UUIDNew()
 		arg := []interface{}{
-			id,
 			"Vasya Pupkin",
 			"mama@mila.ramu",
 		}
-		err = qu.Execute(SQL_USER_INSERT, arg)
+		id, err := qu.Exec(SQL_USER_INSERT, arg...)
+		t.Log(id)
 		if err != nil {
 			return err
 		}
@@ -188,19 +182,19 @@ func TestPGQuery(t *testing.T) {
 			"popcorn@popcorn.popcorn",
 			id,
 		}
-		err = qu.Execute(SQL_USER_UPDATE, arg)
+		_, err = qu.Exec(SQL_USER_UPDATE, arg...)
 		if err != nil {
 			return err
 		}
 
 		// UPSERT
-		id = typ.UUIDNew()
+		id = 1888888888
 		arg = []interface{}{
 			id,
 			"1111111111",
 			"1111111111",
 		}
-		if err = qu.Execute(SQL_USER_UPSERT, arg); err != nil {
+		if _, err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
 			return err
 		}
 		arg = []interface{}{
@@ -208,7 +202,7 @@ func TestPGQuery(t *testing.T) {
 			"2222222222222",
 			"2222222222222",
 		}
-		if err = qu.Execute(SQL_USER_UPSERT, arg); err != nil {
+		if _, err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
 			return err
 		}
 

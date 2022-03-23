@@ -201,7 +201,7 @@ func (st *Storage) querySlice(ctx context.Context, stmt *sqlx.Stmt, args ...inte
 	return results, nil
 }
 
-func (st *Storage) queryMap(ctx context.Context, stmt *sqlx.Stmt, args ...interface{}) (map[string]map[string]interface{}, error) {
+func (st *Storage) queryMap(ctx context.Context, stmt *sqlx.Stmt, args ...interface{}) (map[int64]map[string]interface{}, error) {
 	rows, err := stmt.Unsafe().QueryxContext(ctx, args...)
 	if err != nil {
 		return nil, err
@@ -218,15 +218,15 @@ func (st *Storage) queryMap(ctx context.Context, stmt *sqlx.Stmt, args ...interf
 		return nil, errors.New("ID is not result exists")
 	}
 
-	results := make(map[string]map[string]interface{})
-	results[result["id"].(string)] = result
+	results := make(map[int64]map[string]interface{})
+	results[result["id"].(int64)] = result
 
 	for rows.Next() {
 		result = make(map[string]interface{})
 		if err := rows.MapScan(result); err != nil {
 			return nil, err
 		}
-		results[result["id"].(string)] = result
+		results[result["id"].(int64)] = result
 	}
 	return results, nil
 }

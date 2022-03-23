@@ -1,5 +1,5 @@
--- +goose Up
--- SQL in this section is executed when the migration is applied.
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "moddatetime";
 
 CREATE TABLE public.users
 (
@@ -75,6 +75,12 @@ ALTER TABLE public.orders
 INSERT INTO public.users
 (login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online, metrika, created_at, updated_at)
 VALUES ('testLogin', 0, 0, 0, 0, 0, 0, false, '{}', now(), now());
+INSERT INTO public.users
+(login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online, metrika, created_at, updated_at)
+VALUES ('gpscdIEk', 0, 0, 0, 0, 0, 0, false, '{}', now(), now());
+INSERT INTO public.users
+(login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online, metrika, created_at, updated_at)
+VALUES ('v3iwypkK', 0, 0, 0, 0, 0, 0, false, '{}', now(), now());
 
 CREATE TABLE public.minio
 (
@@ -105,17 +111,3 @@ COMMENT ON COLUMN public.minio."label" IS 'дополнительные пара
 COMMENT ON COLUMN public.minio.user_login IS 'пользователь';
 COMMENT ON COLUMN public.minio.created_at IS 'дата и время создания';
 COMMENT ON COLUMN public.minio.is_confirm IS 'подтверждение загрузки';
-
-
--- +goose Down
--- SQL in this section is executed when the migration is rolled back.
-
-DROP TABLE public.orders;
-
-DROP TABLE public.users_roles;
-
-DROP TABLE public.users;
-
-DROP TABLE public.roles;
-
-DROP TABLE public.minio;
