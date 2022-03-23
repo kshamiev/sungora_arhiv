@@ -2,7 +2,6 @@ package stpg
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -13,7 +12,19 @@ type queryTx struct {
 	st  *Storage
 }
 
-func (qu *queryTx) Exec(query string, arg ...interface{}) (int64, error) {
+func (qu *queryTx) ExecInsert(query string, arg ...interface{}) (lastInsertId int64, err error) {
+	stmt, args, err := qu.PrepareQuery(query, arg...)
+	if err != nil {
+		return 0, err
+	}
+	res := stmt.QueryRowx(args...)
+	if err = res.Scan(&lastInsertId); err != nil {
+		return 0, err
+	}
+	return lastInsertId, nil
+}
+
+func (qu *queryTx) Exec(query string, arg ...interface{}) (rowsAffected int64, err error) {
 	stmt, args, err := qu.PrepareQuery(query, arg...)
 	if err != nil {
 		return 0, err
@@ -21,12 +32,6 @@ func (qu *queryTx) Exec(query string, arg ...interface{}) (int64, error) {
 	res, err := stmt.ExecContext(qu.ctx, args...)
 	if err != nil {
 		return 0, err
-	}
-	id, err := res.LastInsertId()
-	fmt.Println(res.RowsAffected())
-	fmt.Println(id, err)
-	if id > 0 {
-		return id, err
 	}
 	return res.RowsAffected()
 }

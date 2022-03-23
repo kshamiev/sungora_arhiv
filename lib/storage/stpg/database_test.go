@@ -58,14 +58,14 @@ func testInsertUpdate(t *testing.T, st *Storage) chan bool {
 							GenString(8),
 							GenString(8),
 						}
-						id, err := qu.Exec(SQL_USER_INSERT, arg...)
+						id, err := qu.ExecInsert(SQL_USER_INSERT, arg...)
 						if err != nil {
 							return errs.NewBadRequest(err)
 						}
 						// UPDATE
 						arg = []interface{}{
-							GenString(8),
-							GenString(8),
+							GenString(16),
+							GenString(16),
 							id,
 						}
 						_, err = qu.Exec(SQL_USER_UPDATE, arg...)
@@ -76,8 +76,8 @@ func testInsertUpdate(t *testing.T, st *Storage) chan bool {
 						id = 1999999999
 						arg = []interface{}{
 							id,
-							GenString(16),
-							GenString(16),
+							GenString(3),
+							GenString(3),
 						}
 						if _, err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
 							return errs.NewBadRequest(err)
@@ -145,7 +145,7 @@ func TestPGQuery(t *testing.T) {
 	if err := st.Query(context.TODO()).Get(&res, SQL_USER, "testLogin"); err != nil && err != sql.ErrNoRows {
 		t.Fatal(err)
 	}
-	t.Log("ID: ", res.ID)
+	t.Log("ID:", res.ID)
 
 	// GET SLICE
 	resSlice, err := st.Query(context.TODO()).QuerySlice(SQL_USER, "testLogin")
@@ -161,8 +161,7 @@ func TestPGQuery(t *testing.T) {
 	}
 	t.Log(len(resMap))
 
-	// //// Exec
-
+	// //// Exec TX
 	if err := st.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
 
 		// INSERT
@@ -170,8 +169,7 @@ func TestPGQuery(t *testing.T) {
 			"Vasya Pupkin",
 			"mama@mila.ramu",
 		}
-		id, err := qu.Exec(SQL_USER_INSERT, arg...)
-		t.Log(id)
+		id, err := qu.ExecInsert(SQL_USER_INSERT, arg...)
 		if err != nil {
 			return err
 		}

@@ -29,7 +29,7 @@ const (
 	VALUES
 		($1, $2, $3)
 	ON CONFLICT (id) DO UPDATE SET
-		login = $2
+		login = $2, description = $3
 	`
 )
 

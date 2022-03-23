@@ -13,8 +13,10 @@ type Face interface {
 }
 
 type QueryEr interface {
-	// insert (LastInsertId, error) or update (RowsAffected, error)
-	Exec(query string, arg ...interface{}) (int64, error)
+	// insert
+	ExecInsert(query string, arg ...interface{}) (lastInsertId int64, err error)
+	// update, delete, upsert
+	Exec(query string, arg ...interface{}) (rowsAffected int64, err error)
 	// get one object
 	Get(dest interface{}, query string, arg ...interface{}) error
 	// get more objects
