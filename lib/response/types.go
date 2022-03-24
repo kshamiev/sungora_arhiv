@@ -2,7 +2,6 @@ package response
 
 import (
 	"sungora/lib/enum"
-	"sungora/lib/typ"
 )
 
 type CtxKey string
@@ -15,7 +14,7 @@ const (
 )
 
 type User struct {
-	ID    typ.UUID
+	ID    int64
 	Login string
 	Roles []enum.Role
 }

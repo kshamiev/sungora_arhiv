@@ -344,7 +344,7 @@ func (rw *Response) GetUser() (*User, error) {
 
 func (rw *Response) GetUserTest() (*User, error) {
 	return &User{
-		ID:    typ.UUIDNew(),
+		ID:    345,
 		Login: "test",
 		Roles: []enum.Role{
 			enum.Role_DEVELOP,

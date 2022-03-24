@@ -8,13 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"sungora/lib/enum"
-	"sungora/lib/errs"
-	"sungora/lib/logger"
-	"sungora/lib/request/observability"
-	"sungora/lib/response"
-	"sungora/lib/typ"
-
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/golang-jwt/jwt/v4"
@@ -23,6 +16,12 @@ import (
 	"go.opencensus.io/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
+
+	"sungora/lib/enum"
+	"sungora/lib/errs"
+	"sungora/lib/logger"
+	"sungora/lib/request/observability"
+	"sungora/lib/response"
 )
 
 type Mid struct {
@@ -96,7 +95,7 @@ func (mid *Mid) Static(pathWww string) http.HandlerFunc {
 // GenToken генерация jwt токена с данными по соли и установка его таймаута
 func (mid *Mid) GenToken(us *response.User, dur time.Duration) (token string, err error) {
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userID": us.ID.String(),
+		"userID": us.ID,
 		"login":  us.Login,
 		"roles":  us.Roles,
 		"exp":    time.Now().Add(dur).Unix(),
@@ -124,11 +123,11 @@ func (mid *Mid) VerifyToken(token string) (*response.User, error) {
 			return nil, errors.New("error get tiken exp")
 		}
 
-		uid := typ.UUIDNew()
-		if err := uid.Scan(claims["userID"].(string)); err != nil {
-			return nil, err
+		id, ok := claims["userID"].(int64)
+		if !ok {
+			return nil, errors.New("error get tiken exp")
 		}
-		us := &response.User{ID: uid}
+		us := &response.User{ID: id}
 
 		if _, ok := claims["login"].(string); !ok {
 			return nil, errors.New("error get login")

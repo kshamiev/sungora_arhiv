@@ -11,7 +11,6 @@ import (
 	"sungora/lib/minio"
 	"sungora/lib/response"
 	"sungora/lib/storage"
-	"sungora/lib/typ"
 	"sungora/services/mdsungora"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -28,10 +27,6 @@ func NewModel(st storage.Face, dir string) *Model {
 		st:  st,
 		dir: dir,
 	}
-}
-
-func (mm *Model) UploadFile(filePath, bucket string, objID typ.UUID) (*mdsungora.Minio, error) {
-	return nil, nil
 }
 
 func (mm *Model) UploadRequest(rw *response.Response, bucket string) (mdsungora.MinioSlice, error) {

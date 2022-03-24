@@ -3,9 +3,9 @@ package rabbit
 
 import (
 	"context"
-	"sungora/lib/typ"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
@@ -69,7 +69,7 @@ func TestQueueConsumer(t *testing.T) {
 }
 
 type Order struct {
-	ID    typ.UUID        `json:"id"`
+	ID    uuid.UUID       `json:"id"`
 	Name  string          `json:"name"`
 	Price decimal.Decimal `json:"price"`
 }
@@ -77,37 +77,37 @@ type Order struct {
 func getOrders() []*Order {
 	return []*Order{
 		{
-			ID:    typ.UUIDNew(),
+			ID:    uuid.New(),
 			Name:  "Popcorn 1",
 			Price: decimal.NewFromInt(23),
 		},
 		{
-			ID:    typ.UUIDNew(),
+			ID:    uuid.New(),
 			Name:  "Popcorn 2",
 			Price: decimal.NewFromInt(657),
 		},
 		{
-			ID:    typ.UUIDNew(),
+			ID:    uuid.New(),
 			Name:  "Popcorn 3",
 			Price: decimal.NewFromInt(856),
 		},
 		{
-			ID:    typ.UUIDNew(),
+			ID:    uuid.New(),
 			Name:  "Popcorn 4",
 			Price: decimal.NewFromInt(387),
 		},
 		{
-			ID:    typ.UUIDNew(),
+			ID:    uuid.New(),
 			Name:  "Popcorn 5",
 			Price: decimal.NewFromInt(884),
 		},
 		{
-			ID:    typ.UUIDNew(),
+			ID:    uuid.New(),
 			Name:  "Popcorn 6",
 			Price: decimal.NewFromInt(165),
 		},
 		{
-			ID:    typ.UUIDNew(),
+			ID:    uuid.New(),
 			Name:  "Popcorn 7",
 			Price: decimal.NewFromInt(44),
 		},

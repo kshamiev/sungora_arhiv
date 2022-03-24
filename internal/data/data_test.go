@@ -10,7 +10,8 @@ import (
 	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/minio"
-	"sungora/lib/typ"
+
+	"github.com/google/uuid"
 )
 
 func TestMinio(t *testing.T) {
@@ -36,7 +37,7 @@ func TestMinio(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = minio.PutFile(context.Background(), "popcorn", typ.UUIDNew().String(), fp, fi.Size())
+	err = minio.PutFile(context.Background(), "popcorn", uuid.New().String(), fp, fi.Size())
 	if err != nil {
 		t.Fatal(err)
 	}

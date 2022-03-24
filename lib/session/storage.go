@@ -6,7 +6,8 @@ import (
 	"time"
 
 	"sungora/lib/response"
-	"sungora/lib/typ"
+
+	"github.com/google/uuid"
 )
 
 type SessionBus map[string]*Session
@@ -65,7 +66,7 @@ func (bus SessionBus) GetSessionCookie(
 	rw := response.New(r, w)
 	token := rw.CookieGet(cookieName)
 	if token == "" {
-		token = typ.UUIDNew().String()
+		token = uuid.New().String()
 		rw.CookieSet(cookieName, token, path)
 	}
 	return bus.GetSession(token)
