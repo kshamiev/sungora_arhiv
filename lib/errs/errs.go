@@ -2,76 +2,48 @@ package errs
 
 import (
 	"database/sql"
-	"errors"
-	"fmt"
 	"net/http"
-
-	"sungora/lib/app"
 )
 
 // NewUnauthorized new error type
 func NewUnauthorized(err error, args ...interface{}) *Errs {
-	if err == nil {
-		err = errors.New(http.StatusText(http.StatusUnauthorized))
-	}
-	t, _, _, _ := app.Trace(2)
-	return &Errs{
-		codeHTTP: http.StatusUnauthorized,
-		err:      err,
-		kind:     t,
-		message:  getMessage(args),
-	}
+	e := New(err, args...)
+	e.codeHTTP = http.StatusUnauthorized
+	return e
 }
 
 // NewNotFound new error type
 func NewNotFound(err error, args ...interface{}) *Errs {
-	if err == nil {
-		err = errors.New(http.StatusText(http.StatusNotFound))
-	}
-	t, _, _, _ := app.Trace(2)
-	return &Errs{
-		codeHTTP: http.StatusNotFound,
-		err:      err,
-		kind:     t,
-		message:  getMessage(args),
-	}
+	e := New(err, args...)
+	e.codeHTTP = http.StatusUnauthorized
+	return e
 }
 
 // NewForbidden new error type
 func NewForbidden(err error, args ...interface{}) *Errs {
-	if err == nil {
-		err = errors.New(http.StatusText(http.StatusForbidden))
-	}
-	t, _, _, _ := app.Trace(2)
-	return &Errs{
-		codeHTTP: http.StatusForbidden,
-		err:      err,
-		kind:     t,
-		message:  getMessage(args),
-	}
+	e := New(err, args...)
+	e.codeHTTP = http.StatusUnauthorized
+	return e
 }
 
 // NewBadRequest new error type
 func NewBadRequest(err error, args ...interface{}) *Errs {
-	if err == nil {
-		err = errors.New(http.StatusText(http.StatusBadRequest))
-	}
-	codeHTTP := http.StatusBadRequest
-	if sql.ErrNoRows == err {
-		codeHTTP = http.StatusNotFound
-	}
-	t, _, _, _ := app.Trace(2)
-	return &Errs{
-		codeHTTP: codeHTTP,
-		err:      err,
-		kind:     t,
-		message:  getMessage(args),
-		trace:    app.Traces(),
-	}
+	e := New(err, args...)
+	e.codeHTTP = http.StatusBadRequest
+	return e
 }
 
 // New custom error application
-func New(err error, msg Message, args ...interface{}) *Errs {
+func New(err error, args ...interface{}) *Errs {
+	var msg Message
+	if len(args) > 0 {
+		switch v := args[0].(type) {
+		case Message:
+			msg = v
+		case string:
+			msg = Message(v)
+		}
+	}
 	if err == nil {
 		err = msg.Error(args...)
 	}
@@ -79,13 +51,13 @@ func New(err error, msg Message, args ...interface{}) *Errs {
 	if sql.ErrNoRows == err {
 		codeHTTP = http.StatusNotFound
 	}
-	t, _, _, _ := app.Trace(2)
+	t, _, _, _ := Trace(2)
 	return &Errs{
 		codeHTTP: codeHTTP,
 		err:      err,
 		kind:     t,
 		message:  msg.String(args...),
-		trace:    app.Traces(),
+		trace:    Traces(),
 	}
 }
 
@@ -124,15 +96,4 @@ func (e *Errs) Response() string {
 
 func (e *Errs) Trace() []string {
 	return e.trace
-}
-
-func getMessage(args []interface{}) string {
-	switch len(args) {
-	case 0:
-		return ""
-	case 1:
-		return args[0].(string)
-	default:
-		return fmt.Sprintf(args[0].(string), args[1:]...)
-	}
 }

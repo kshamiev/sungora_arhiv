@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"sungora/lib/app"
 	"sungora/lib/errs"
+	"sungora/lib/jaeger"
 	"sungora/lib/storage"
 	"sungora/lib/typ"
 	"sungora/services/mdsungora"
@@ -22,7 +22,7 @@ func NewModel(st storage.Face) *Model {
 }
 
 func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsungora.User, error) {
-	s := app.NewSpan(ctx)
+	s := jaeger.NewSpan(ctx)
 	s.StringAttribute("param1", "fantik")
 	s.Int64Attribute("param2", 34)
 	s.Float64Attribute("param3", 45.76)

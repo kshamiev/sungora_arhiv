@@ -1,4 +1,4 @@
-package logger
+package jaeger
 
 import (
 	"contrib.go.opencensus.io/exporter/jaeger"

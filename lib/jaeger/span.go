@@ -1,9 +1,10 @@
-package app
+package jaeger
 
 import (
 	"context"
 
 	"go.opencensus.io/trace"
+	"sungora/lib/errs"
 )
 
 type Span struct {
@@ -12,7 +13,7 @@ type Span struct {
 
 func NewSpan(ctx context.Context) *Span {
 	s := &Span{}
-	t, _, fun, _ := Trace(2)
+	t, _, fun, _ := errs.Trace(2)
 	_, s.Span = trace.StartSpan(ctx, fun)
 	s.StringAttribute("location", t)
 	return s
@@ -21,7 +22,7 @@ func NewSpan(ctx context.Context) *Span {
 func NewSpanName(ctx context.Context, name string) *Span {
 	s := &Span{}
 	_, s.Span = trace.StartSpan(ctx, name)
-	t, _, _, _ := Trace(2)
+	t, _, _, _ := errs.Trace(2)
 	s.StringAttribute("location", t)
 	return s
 }

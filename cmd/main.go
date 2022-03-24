@@ -18,6 +18,7 @@ import (
 	"sungora/internal/user"
 	"sungora/lib/app"
 	"sungora/lib/errs"
+	"sungora/lib/jaeger"
 	"sungora/lib/logger"
 	"sungora/lib/minio"
 	"sungora/lib/request"
@@ -77,11 +78,11 @@ func main() {
 	}
 
 	// Jaeger
-	jaeger, err := logger.NewJaeger(&cfg.Jaeger)
+	jg, err := jaeger.NewJaeger(&cfg.Jaeger)
 	if err != nil {
 		lg.Fatal(errs.NewBadRequest(err))
 	}
-	defer jaeger.Close()
+	defer jg.Close()
 
 	// Server GRPC
 	var grpcServer *web.GRPCServer

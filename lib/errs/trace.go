@@ -1,13 +1,22 @@
-package app
+package errs
 
 import (
 	"fmt"
+	"os"
 	"path"
 	"runtime"
 	"strings"
 )
 
 var traceAllow string
+
+func init() {
+	d, _ := os.Getwd()
+	if path.Base(d) == "bin" {
+		d = path.Dir(d)
+	}
+	traceAllow = path.Dir(d)
+}
 
 func Traces() []string {
 	tr := make([]string, 0, 10)

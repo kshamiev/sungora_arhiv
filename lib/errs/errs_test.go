@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+const (
+	ErrOne Message = "Первая ошибка пользователя %d"
+)
+
 func TestErrs(t *testing.T) {
 	err := FunctionLevel2()
 	if e, ok := err.(*Errs); ok {
@@ -47,5 +51,5 @@ func FunctionLevel33() error {
 }
 
 func FunctionLevel44() error {
-	return New(nil, UserOne, 567)
+	return New(nil, ErrOne, 567)
 }

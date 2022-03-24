@@ -72,6 +72,4 @@ func (cfg *Config) SetDefault() {
 
 	// версия
 	cfg.Version = time.Now().Format(typ.TimeFormatDMGHIS)
-
-	traceAllow = cfg.DirWork
 }

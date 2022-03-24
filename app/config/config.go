@@ -2,6 +2,7 @@ package config
 
 import (
 	"sungora/lib/app"
+	"sungora/lib/jaeger"
 	"sungora/lib/minio"
 
 	"sungora/lib/logger"
@@ -14,7 +15,7 @@ type Config struct {
 	Lg         logger.Config        `yaml:"lg"`
 	ServeHTTP  web.HttpServerConfig `yaml:"http"`
 	Postgresql stpg.Config          `yaml:"psql"`
-	Jaeger     logger.JaegerConfig  `yaml:"jaeger"`
+	Jaeger     jaeger.JaegerConfig  `yaml:"jaeger"`
 	GRPCClient web.GRPCConfig       `yaml:"grpcClient"`
 	GRPCServer web.GRPCConfig       `yaml:"grpcServer"`
 	Minio      minio.Config         `yaml:"minio"`

@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"sungora/lib/app"
 	"sungora/lib/errs"
+	"sungora/lib/jaeger"
 	"sungora/lib/logger"
 	"sungora/lib/web"
 	"sungora/services/pbsungora"
@@ -27,7 +27,7 @@ func NewSampleServer(cfg *web.GRPCConfig, opts ...grpc.ServerOption) (*web.GRPCS
 }
 
 func (ser SungoraServer) Ping(ctx context.Context, tt *pbsungora.Test) (*pbsungora.Test, error) {
-	s := app.NewSpan(ctx)
+	s := jaeger.NewSpan(ctx)
 	s.StringAttribute("description", "qwerty qwerty qwerty")
 	defer s.End()
 	lg := logger.Get(ctx)
