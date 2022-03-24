@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"sungora/lib/app"
 	"sungora/lib/errs"
@@ -31,6 +32,10 @@ func (ser SungoraServer) Ping(ctx context.Context, tt *pbsungora.Test) (*pbsungo
 	defer s.End()
 	lg := logger.Get(ctx)
 	lg.Info("SungoraServer.Ping: " + tt.Text)
+	err := errors.New("sample error")
+	err = errs.NewBadRequest(err, "user message error")
+	lg.WithError(err).Error(err.(*errs.Errs).Response())
+
 	return &pbsungora.Test{
 		Text: "Funtik",
 	}, nil

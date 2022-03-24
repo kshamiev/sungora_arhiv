@@ -197,7 +197,7 @@ const docTemplate = `{
                 "summary": "Получение пользователя",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID",
                         "name": "id",
                         "in": "path",
@@ -220,7 +220,7 @@ const docTemplate = `{
                 "summary": "Изменение пользователя",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID",
                         "name": "id",
                         "in": "path",
@@ -277,7 +277,7 @@ const docTemplate = `{
                 "summary": "Удаление пользователя",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID",
                         "name": "id",
                         "in": "path",
@@ -409,9 +409,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "object_id": {
-                    "description": "файл хранения - ид объекта",
-                    "type": "string",
-                    "example": "8ca3c9c3-cf1a-47fe-8723-3f957538ce42"
+                    "description": "ид объекта",
+                    "type": "integer"
                 },
                 "user_login": {
                     "description": "пользователь",
@@ -460,8 +459,7 @@ const docTemplate = `{
                     "example": 0
                 },
                 "id": {
-                    "type": "string",
-                    "example": "8ca3c9c3-cf1a-47fe-8723-3f957538ce42"
+                    "type": "integer"
                 },
                 "is_online": {
                     "type": "boolean"
@@ -476,6 +474,10 @@ const docTemplate = `{
                 "price": {
                     "type": "number",
                     "example": 0.01
+                },
+                "sharding_id": {
+                    "type": "string",
+                    "example": "8ca3c9c3-cf1a-47fe-8723-3f957538ce42"
                 },
                 "summa_one": {
                     "type": "number",

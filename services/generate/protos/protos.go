@@ -17,10 +17,12 @@ var CustomHandlerFunc = map[string]func(int, string, string) (string, string, st
 	"[]typ.UUID":        GenerateFieldUUIDSlice,
 	"typ.UUIDS":         GenerateFieldUUIDSlice,
 	"types.StringArray": GenerateFieldStringArray,
-	"typ.UUID":          GenerateFieldUUID,
+	"typ.UUID":          GenerateFieldTypUUID,
+	"uuid.UUID":         GenerateFieldUUID,
 	"time.Time":         GenerateFieldTime,
 	"null.Time":         GenerateFieldNullTime,
 	"null.String":       GenerateFieldNullString,
+	"null.Int64":        GenerateFieldNullInt64,
 	"null.Bytes":        GenerateFieldNullBytes,
 	"null.JSON":         GenerateFieldNullJSON,
 }
@@ -49,6 +51,14 @@ func GenerateFieldNullString(i int, pType, pMessage string) (tplP, tplMFrom, tpl
 	return tplP, tplMFrom, tplMTo
 }
 
+// GenerateFieldNullInt64 конвертация - сопоставление туда и обратно
+func GenerateFieldNullInt64(i int, pType, pMessage string) (tplP, tplMFrom, tplMTo string) {
+	tplP += "\tint64 " + pMessage + " = " + strconv.Itoa(i+1) + ";\n"
+	tplMTo = fmt.Sprintf("%s: tt.%s.Int64,\n", ConvFP(pMessage), pType)
+	tplMFrom = fmt.Sprintf("%s: pbFromNullInt64(proto.%s),\n", pType, ConvFP(pMessage))
+	return tplP, tplMFrom, tplMTo
+}
+
 // GenerateFieldNullTime конвертация - сопоставление туда и обратно
 func GenerateFieldNullTime(i int, pType, pMessage string) (tplP, tplMFrom, tplMTo string) {
 	tplP += "\tgoogle.protobuf.Timestamp " + pMessage + " = " + strconv.Itoa(i+1) + ";\n"
@@ -65,11 +75,19 @@ func GenerateFieldTime(i int, pType, pMessage string) (tplP, tplMFrom, tplMTo st
 	return tplP, tplMFrom, tplMTo
 }
 
+// GenerateFieldTypUUID конвертация - сопоставление туда и обратно
+func GenerateFieldTypUUID(i int, pType, pMessage string) (tplP, tplMFrom, tplMTo string) {
+	tplP += "\tstring " + pMessage + " = " + strconv.Itoa(i+1) + ";\n"
+	tplMTo = fmt.Sprintf("%s: tt.%s.String(),\n", ConvFP(pMessage), pType)
+	tplMFrom = fmt.Sprintf("%s: typ.UUIDMustParse(proto.%s),\n", pType, ConvFP(pMessage))
+	return tplP, tplMFrom, tplMTo
+}
+
 // GenerateFieldUUID конвертация - сопоставление туда и обратно
 func GenerateFieldUUID(i int, pType, pMessage string) (tplP, tplMFrom, tplMTo string) {
 	tplP += "\tstring " + pMessage + " = " + strconv.Itoa(i+1) + ";\n"
 	tplMTo = fmt.Sprintf("%s: tt.%s.String(),\n", ConvFP(pMessage), pType)
-	tplMFrom = fmt.Sprintf("%s: typ.UUIDMustParse(proto.%s),\n", pType, ConvFP(pMessage))
+	tplMFrom = fmt.Sprintf("%s: uuid.MustParse(proto.%s),\n", pType, ConvFP(pMessage))
 	return tplP, tplMFrom, tplMTo
 }
 

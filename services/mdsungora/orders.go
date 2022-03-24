@@ -13,8 +13,6 @@ import (
 	"sync"
 	"time"
 
-	"sungora/lib/typ"
-
 	"github.com/friendsofgo/errors"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -26,13 +24,13 @@ import (
 
 // Order is an object representing the database table.
 type Order struct {
-	ID        typ.UUID  `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
-	UserID    typ.UUID  `boil:"user_id" db:"user_id" json:"user_id,omitempty" toml:"user_id" yaml:"user_id,omitempty" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
-	Number    int       `boil:"number" db:"number" json:"number" toml:"number" yaml:"number"`
-	Status    string    `boil:"status" db:"status" json:"status" toml:"status" yaml:"status"`
-	CreatedAt time.Time `boil:"created_at" db:"created_at" json:"created_at" toml:"created_at" yaml:"created_at" example:"2006-01-02T15:04:05Z"`
-	UpdatedAt time.Time `boil:"updated_at" db:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at" example:"2006-01-02T15:04:05Z"`
-	DeletedAt null.Time `boil:"deleted_at" db:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty" example:"2006-01-02T15:04:05Z"`
+	ID        int64      `boil:"id" db:"id" json:"id" toml:"id" yaml:"id"`
+	UserID    null.Int64 `boil:"user_id" db:"user_id" json:"user_id,omitempty" toml:"user_id" yaml:"user_id,omitempty" swaggertype:"number" example:"0"`
+	Number    int        `boil:"number" db:"number" json:"number" toml:"number" yaml:"number"`
+	Status    string     `boil:"status" db:"status" json:"status" toml:"status" yaml:"status"`
+	CreatedAt time.Time  `boil:"created_at" db:"created_at" json:"created_at" toml:"created_at" yaml:"created_at" example:"2006-01-02T15:04:05Z"`
+	UpdatedAt time.Time  `boil:"updated_at" db:"updated_at" json:"updated_at" toml:"updated_at" yaml:"updated_at" example:"2006-01-02T15:04:05Z"`
+	DeletedAt null.Time  `boil:"deleted_at" db:"deleted_at" json:"deleted_at,omitempty" toml:"deleted_at" yaml:"deleted_at,omitempty" example:"2006-01-02T15:04:05Z"`
 
 	R *orderR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L orderL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -76,20 +74,41 @@ var OrderTableColumns = struct {
 
 // Generated where
 
-func (w whereHelpertyp_UUID) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
-func (w whereHelpertyp_UUID) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+type whereHelpernull_Int64 struct{ field string }
+
+func (w whereHelpernull_Int64) EQ(x null.Int64) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Int64) NEQ(x null.Int64) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Int64) LT(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Int64) LTE(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Int64) GT(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Int64) GTE(x null.Int64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
+func (w whereHelpernull_Int64) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Int64) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
 var OrderWhere = struct {
-	ID        whereHelpertyp_UUID
-	UserID    whereHelpertyp_UUID
+	ID        whereHelperint64
+	UserID    whereHelpernull_Int64
 	Number    whereHelperint
 	Status    whereHelperstring
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpertime_Time
 	DeletedAt whereHelpernull_Time
 }{
-	ID:        whereHelpertyp_UUID{field: "\"orders\".\"id\""},
-	UserID:    whereHelpertyp_UUID{field: "\"orders\".\"user_id\""},
+	ID:        whereHelperint64{field: "\"orders\".\"id\""},
+	UserID:    whereHelpernull_Int64{field: "\"orders\".\"user_id\""},
 	Number:    whereHelperint{field: "\"orders\".\"number\""},
 	Status:    whereHelperstring{field: "\"orders\".\"status\""},
 	CreatedAt: whereHelpertime_Time{field: "\"orders\".\"created_at\""},
@@ -613,7 +632,7 @@ func Orders(mods ...qm.QueryMod) orderQuery {
 
 // FindOrder retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindOrder(ctx context.Context, exec boil.ContextExecutor, iD typ.UUID, selectCols ...string) (*Order, error) {
+func FindOrder(ctx context.Context, exec boil.ContextExecutor, iD int64, selectCols ...string) (*Order, error) {
 	orderObj := &Order{}
 
 	sel := "*"
@@ -1108,7 +1127,7 @@ func (o *OrderSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) e
 }
 
 // OrderExists checks if the Order row exists.
-func OrderExists(ctx context.Context, exec boil.ContextExecutor, iD typ.UUID) (bool, error) {
+func OrderExists(ctx context.Context, exec boil.ContextExecutor, iD int64) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"orders\" where \"id\"=$1 limit 1)"
 

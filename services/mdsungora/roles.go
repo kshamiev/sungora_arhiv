@@ -13,8 +13,6 @@ import (
 	"sync"
 	"time"
 
-	"sungora/lib/typ"
-
 	"github.com/friendsofgo/errors"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries"
@@ -25,9 +23,9 @@ import (
 
 // Role is an object representing the database table.
 type Role struct {
-	ID          typ.UUID `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
-	Code        string   `boil:"code" db:"code" json:"code" toml:"code" yaml:"code"`
-	Description string   `boil:"description" db:"description" json:"description" toml:"description" yaml:"description"`
+	ID          int64  `boil:"id" db:"id" json:"id" toml:"id" yaml:"id"`
+	Code        string `boil:"code" db:"code" json:"code" toml:"code" yaml:"code"`
+	Description string `boil:"description" db:"description" json:"description" toml:"description" yaml:"description"`
 
 	R *roleR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L roleL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -56,11 +54,11 @@ var RoleTableColumns = struct {
 // Generated where
 
 var RoleWhere = struct {
-	ID          whereHelpertyp_UUID
+	ID          whereHelperint64
 	Code        whereHelperstring
 	Description whereHelperstring
 }{
-	ID:          whereHelpertyp_UUID{field: "\"roles\".\"id\""},
+	ID:          whereHelperint64{field: "\"roles\".\"id\""},
 	Code:        whereHelperstring{field: "\"roles\".\"code\""},
 	Description: whereHelperstring{field: "\"roles\".\"description\""},
 }
@@ -419,7 +417,7 @@ func (roleL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular boo
 			}
 
 			for _, a := range args {
-				if queries.Equal(a, obj.ID) {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
@@ -433,7 +431,7 @@ func (roleL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular boo
 	}
 
 	query := NewQuery(
-		qm.Select("\"users\".id, \"users\".login, \"users\".description, \"users\".price, \"users\".summa_one, \"users\".summa_two, \"users\".cnt, \"users\".cnt2, \"users\".cnt4, \"users\".cnt8, \"users\".is_online, \"users\".metrika, \"users\".duration, \"users\".data, \"users\".alias, \"users\".created_at, \"users\".updated_at, \"users\".deleted_at, \"a\".\"role_id\""),
+		qm.Select("\"users\".id, \"users\".login, \"users\".description, \"users\".price, \"users\".summa_one, \"users\".summa_two, \"users\".cnt, \"users\".cnt2, \"users\".cnt4, \"users\".cnt8, \"users\".sharding_id, \"users\".is_online, \"users\".metrika, \"users\".duration, \"users\".data, \"users\".alias, \"users\".created_at, \"users\".updated_at, \"users\".deleted_at, \"a\".\"role_id\""),
 		qm.From("\"users\""),
 		qm.InnerJoin("\"users_roles\" as \"a\" on \"users\".\"id\" = \"a\".\"user_id\""),
 		qm.WhereIn("\"a\".\"role_id\" in ?", args...),
@@ -449,12 +447,12 @@ func (roleL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular boo
 
 	var resultSlice []*User
 
-	var localJoinCols []typ.UUID
+	var localJoinCols []int64
 	for results.Next() {
 		one := new(User)
-		var localJoinCol typ.UUID
+		var localJoinCol int64
 
-		err = results.Scan(&one.ID, &one.Login, &one.Description, &one.Price, &one.SummaOne, &one.SummaTwo, &one.CNT, &one.CNT2, &one.CNT4, &one.CNT8, &one.IsOnline, &one.Metrika, &one.Duration, &one.Data, &one.Alias, &one.CreatedAt, &one.UpdatedAt, &one.DeletedAt, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Login, &one.Description, &one.Price, &one.SummaOne, &one.SummaTwo, &one.CNT, &one.CNT2, &one.CNT4, &one.CNT8, &one.ShardingID, &one.IsOnline, &one.Metrika, &one.Duration, &one.Data, &one.Alias, &one.CreatedAt, &one.UpdatedAt, &one.DeletedAt, &localJoinCol)
 		if err != nil {
 			return errors.Wrap(err, "failed to scan eager loaded results for users")
 		}
@@ -494,7 +492,7 @@ func (roleL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular boo
 	for i, foreign := range resultSlice {
 		localJoinCol := localJoinCols[i]
 		for _, local := range slice {
-			if queries.Equal(local.ID, localJoinCol) {
+			if local.ID == localJoinCol {
 				local.R.Users = append(local.R.Users, foreign)
 				if foreign.R == nil {
 					foreign.R = &userR{}
@@ -638,7 +636,7 @@ func removeUsersFromRolesSlice(o *Role, related []*User) {
 			continue
 		}
 		for i, ri := range rel.R.Roles {
-			if !queries.Equal(o.ID, ri.ID) {
+			if o.ID != ri.ID {
 				continue
 			}
 
@@ -660,7 +658,7 @@ func Roles(mods ...qm.QueryMod) roleQuery {
 
 // FindRole retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindRole(ctx context.Context, exec boil.ContextExecutor, iD typ.UUID, selectCols ...string) (*Role, error) {
+func FindRole(ctx context.Context, exec boil.ContextExecutor, iD int64, selectCols ...string) (*Role, error) {
 	roleObj := &Role{}
 
 	sel := "*"
@@ -1155,7 +1153,7 @@ func (o *RoleSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 }
 
 // RoleExists checks if the Role row exists.
-func RoleExists(ctx context.Context, exec boil.ContextExecutor, iD typ.UUID) (bool, error) {
+func RoleExists(ctx context.Context, exec boil.ContextExecutor, iD int64) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"roles\" where \"id\"=$1 limit 1)"
 

@@ -13,9 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"sungora/lib/typ"
-
 	"github.com/friendsofgo/errors"
+	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -28,7 +27,7 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	ID          typ.UUID          `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
+	ID          int64             `boil:"id" db:"id" json:"id" toml:"id" yaml:"id"`
 	Login       string            `boil:"login" db:"login" json:"login" toml:"login" yaml:"login"`
 	Description null.String       `boil:"description" db:"description" json:"description,omitempty" toml:"description" yaml:"description,omitempty" swaggertype:"string"`
 	Price       decimal.Decimal   `boil:"price" db:"price" json:"price" toml:"price" yaml:"price" swaggertype:"number" example:"0.01"`
@@ -38,6 +37,7 @@ type User struct {
 	CNT2        int16             `boil:"cnt2" db:"cnt2" json:"cnt2" toml:"cnt2" yaml:"cnt2"`
 	CNT4        int               `boil:"cnt4" db:"cnt4" json:"cnt4" toml:"cnt4" yaml:"cnt4"`
 	CNT8        int64             `boil:"cnt8" db:"cnt8" json:"cnt8" toml:"cnt8" yaml:"cnt8"`
+	ShardingID  uuid.UUID         `boil:"sharding_id" db:"sharding_id" json:"sharding_id" toml:"sharding_id" yaml:"sharding_id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
 	IsOnline    bool              `boil:"is_online" db:"is_online" json:"is_online" toml:"is_online" yaml:"is_online"`
 	Metrika     null.JSON         `boil:"metrika" db:"metrika" json:"metrika,omitempty" toml:"metrika" yaml:"metrika,omitempty" swaggertype:"string" example:"JSON"`
 	Duration    time.Duration     `boil:"duration" db:"duration" json:"duration" toml:"duration" yaml:"duration" swaggertype:"number" example:"0"`
@@ -62,6 +62,7 @@ var UserColumns = struct {
 	CNT2        string
 	CNT4        string
 	CNT8        string
+	ShardingID  string
 	IsOnline    string
 	Metrika     string
 	Duration    string
@@ -81,6 +82,7 @@ var UserColumns = struct {
 	CNT2:        "cnt2",
 	CNT4:        "cnt4",
 	CNT8:        "cnt8",
+	ShardingID:  "sharding_id",
 	IsOnline:    "is_online",
 	Metrika:     "metrika",
 	Duration:    "duration",
@@ -102,6 +104,7 @@ var UserTableColumns = struct {
 	CNT2        string
 	CNT4        string
 	CNT8        string
+	ShardingID  string
 	IsOnline    string
 	Metrika     string
 	Duration    string
@@ -121,6 +124,7 @@ var UserTableColumns = struct {
 	CNT2:        "users.cnt2",
 	CNT4:        "users.cnt4",
 	CNT8:        "users.cnt8",
+	ShardingID:  "users.sharding_id",
 	IsOnline:    "users.is_online",
 	Metrika:     "users.metrika",
 	Duration:    "users.duration",
@@ -331,7 +335,7 @@ func (w whereHelpertypes_StringArray) IsNotNull() qm.QueryMod {
 }
 
 var UserWhere = struct {
-	ID          whereHelpertyp_UUID
+	ID          whereHelperint64
 	Login       whereHelperstring
 	Description whereHelpernull_String
 	Price       whereHelperdecimal_Decimal
@@ -341,6 +345,7 @@ var UserWhere = struct {
 	CNT2        whereHelperint16
 	CNT4        whereHelperint
 	CNT8        whereHelperint64
+	ShardingID  whereHelperuuid_UUID
 	IsOnline    whereHelperbool
 	Metrika     whereHelpernull_JSON
 	Duration    whereHelpertime_Duration
@@ -350,7 +355,7 @@ var UserWhere = struct {
 	UpdatedAt   whereHelpertime_Time
 	DeletedAt   whereHelpernull_Time
 }{
-	ID:          whereHelpertyp_UUID{field: "\"users\".\"id\""},
+	ID:          whereHelperint64{field: "\"users\".\"id\""},
 	Login:       whereHelperstring{field: "\"users\".\"login\""},
 	Description: whereHelpernull_String{field: "\"users\".\"description\""},
 	Price:       whereHelperdecimal_Decimal{field: "\"users\".\"price\""},
@@ -360,6 +365,7 @@ var UserWhere = struct {
 	CNT2:        whereHelperint16{field: "\"users\".\"cnt2\""},
 	CNT4:        whereHelperint{field: "\"users\".\"cnt4\""},
 	CNT8:        whereHelperint64{field: "\"users\".\"cnt8\""},
+	ShardingID:  whereHelperuuid_UUID{field: "\"users\".\"sharding_id\""},
 	IsOnline:    whereHelperbool{field: "\"users\".\"is_online\""},
 	Metrika:     whereHelpernull_JSON{field: "\"users\".\"metrika\""},
 	Duration:    whereHelpertime_Duration{field: "\"users\".\"duration\""},
@@ -394,9 +400,9 @@ func (*userR) NewStruct() *userR {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "login", "description", "price", "summa_one", "summa_two", "cnt", "cnt2", "cnt4", "cnt8", "is_online", "metrika", "duration", "data", "alias", "created_at", "updated_at", "deleted_at"}
+	userAllColumns            = []string{"id", "login", "description", "price", "summa_one", "summa_two", "cnt", "cnt2", "cnt4", "cnt8", "sharding_id", "is_online", "metrika", "duration", "data", "alias", "created_at", "updated_at", "deleted_at"}
 	userColumnsWithoutDefault = []string{"login"}
-	userColumnsWithDefault    = []string{"id", "description", "price", "summa_one", "summa_two", "cnt", "cnt2", "cnt4", "cnt8", "is_online", "metrika", "duration", "data", "alias", "created_at", "updated_at", "deleted_at"}
+	userColumnsWithDefault    = []string{"id", "description", "price", "summa_one", "summa_two", "cnt", "cnt2", "cnt4", "cnt8", "sharding_id", "is_online", "metrika", "duration", "data", "alias", "created_at", "updated_at", "deleted_at"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )
@@ -846,7 +852,7 @@ func (userL) LoadRoles(ctx context.Context, e boil.ContextExecutor, singular boo
 			}
 
 			for _, a := range args {
-				if queries.Equal(a, obj.ID) {
+				if a == obj.ID {
 					continue Outer
 				}
 			}
@@ -876,10 +882,10 @@ func (userL) LoadRoles(ctx context.Context, e boil.ContextExecutor, singular boo
 
 	var resultSlice []*Role
 
-	var localJoinCols []typ.UUID
+	var localJoinCols []int64
 	for results.Next() {
 		one := new(Role)
-		var localJoinCol typ.UUID
+		var localJoinCol int64
 
 		err = results.Scan(&one.ID, &one.Code, &one.Description, &localJoinCol)
 		if err != nil {
@@ -921,7 +927,7 @@ func (userL) LoadRoles(ctx context.Context, e boil.ContextExecutor, singular boo
 	for i, foreign := range resultSlice {
 		localJoinCol := localJoinCols[i]
 		for _, local := range slice {
-			if queries.Equal(local.ID, localJoinCol) {
+			if local.ID == localJoinCol {
 				local.R.Roles = append(local.R.Roles, foreign)
 				if foreign.R == nil {
 					foreign.R = &roleR{}
@@ -1192,7 +1198,7 @@ func removeRolesFromUsersSlice(o *User, related []*Role) {
 			continue
 		}
 		for i, ri := range rel.R.Users {
-			if !queries.Equal(o.ID, ri.ID) {
+			if o.ID != ri.ID {
 				continue
 			}
 
@@ -1214,7 +1220,7 @@ func Users(mods ...qm.QueryMod) userQuery {
 
 // FindUser retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindUser(ctx context.Context, exec boil.ContextExecutor, iD typ.UUID, selectCols ...string) (*User, error) {
+func FindUser(ctx context.Context, exec boil.ContextExecutor, iD int64, selectCols ...string) (*User, error) {
 	userObj := &User{}
 
 	sel := "*"
@@ -1709,7 +1715,7 @@ func (o *UserSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) er
 }
 
 // UserExists checks if the User row exists.
-func UserExists(ctx context.Context, exec boil.ContextExecutor, iD typ.UUID) (bool, error) {
+func UserExists(ctx context.Context, exec boil.ContextExecutor, iD int64) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"users\" where \"id\"=$1 limit 1)"
 

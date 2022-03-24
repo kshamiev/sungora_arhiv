@@ -32,6 +32,14 @@ func pbFromNullString(s string) null.String {
 	return null.StringFrom(s)
 }
 
+// pbFromNullInt64 перевод из примитива grpc в рабочий
+func pbFromNullInt64(n int64) null.Int64 {
+	if n == 0 {
+		return null.Int64{}
+	}
+	return null.Int64From(n)
+}
+
 // pbFromNullTime перевод из примитива grpc в рабочий тип
 func pbFromNullTime(d *timestamppb.Timestamp) null.Time {
 	return null.TimeFrom(d.AsTime())

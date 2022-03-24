@@ -1,9 +1,10 @@
 package mdsungora
 
 import (
-	"sungora/lib/typ"
 	"sungora/services/pbsungora"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 func NewGooseDBVersionToProto(tt *GooseDBVersion) *pbsungora.GooseDBVersion {
@@ -53,7 +54,7 @@ func NewMinioToProto(tt *Minio) *pbsungora.Minio {
 	return &pbsungora.Minio{
 		Id:        tt.ID.String(),
 		Bucket:    tt.Bucket,
-		ObjectId:  tt.ObjectID.String(),
+		ObjectId:  tt.ObjectID,
 		Name:      tt.Name,
 		FileType:  tt.FileType,
 		FileSize:  int64(tt.FileSize),
@@ -77,9 +78,9 @@ func NewMinioFromProto(proto *pbsungora.Minio) *Minio {
 		return nil
 	}
 	return &Minio{
-		ID:        typ.UUIDMustParse(proto.Id),
+		ID:        uuid.MustParse(proto.Id),
 		Bucket:    proto.Bucket,
-		ObjectID:  typ.UUIDMustParse(proto.ObjectId),
+		ObjectID:  proto.ObjectId,
 		Name:      proto.Name,
 		FileType:  proto.FileType,
 		FileSize:  int(proto.FileSize),
@@ -103,8 +104,8 @@ func NewOrderToProto(tt *Order) *pbsungora.Order {
 		return nil
 	}
 	return &pbsungora.Order{
-		Id:        tt.ID.String(),
-		UserId:    tt.UserID.String(),
+		Id:        tt.ID,
+		UserId:    tt.UserID.Int64,
 		Number:    int64(tt.Number),
 		Status:    tt.Status,
 		CreatedAt: pbToTime(tt.CreatedAt),
@@ -126,8 +127,8 @@ func NewOrderFromProto(proto *pbsungora.Order) *Order {
 		return nil
 	}
 	return &Order{
-		ID:        typ.UUIDMustParse(proto.Id),
-		UserID:    typ.UUIDMustParse(proto.UserId),
+		ID:        proto.Id,
+		UserID:    pbFromNullInt64(proto.UserId),
 		Number:    int(proto.Number),
 		Status:    proto.Status,
 		CreatedAt: pbFromTime(proto.CreatedAt),
@@ -149,7 +150,7 @@ func NewRoleToProto(tt *Role) *pbsungora.Role {
 		return nil
 	}
 	return &pbsungora.Role{
-		Id:          tt.ID.String(),
+		Id:          tt.ID,
 		Code:        tt.Code,
 		Description: tt.Description,
 	}
@@ -168,7 +169,7 @@ func NewRoleFromProto(proto *pbsungora.Role) *Role {
 		return nil
 	}
 	return &Role{
-		ID:          typ.UUIDMustParse(proto.Id),
+		ID:          proto.Id,
 		Code:        proto.Code,
 		Description: proto.Description,
 	}
@@ -187,7 +188,7 @@ func NewUserToProto(tt *User) *pbsungora.User {
 		return nil
 	}
 	return &pbsungora.User{
-		Id:          tt.ID.String(),
+		Id:          tt.ID,
 		Login:       tt.Login,
 		Description: tt.Description.String,
 		Price:       tt.Price.String(),
@@ -197,6 +198,7 @@ func NewUserToProto(tt *User) *pbsungora.User {
 		Cnt2:        int32(tt.CNT2),
 		Cnt4:        int64(tt.CNT4),
 		Cnt8:        tt.CNT8,
+		ShardingId:  tt.ShardingID.String(),
 		IsOnline:    tt.IsOnline,
 		Metrika:     tt.Metrika.JSON,
 		Duration:    tt.Duration.Nanoseconds(),
@@ -221,7 +223,7 @@ func NewUserFromProto(proto *pbsungora.User) *User {
 		return nil
 	}
 	return &User{
-		ID:          typ.UUIDMustParse(proto.Id),
+		ID:          proto.Id,
 		Login:       proto.Login,
 		Description: pbFromNullString(proto.Description),
 		Price:       pbFromDecimal(proto.Price),
@@ -231,6 +233,7 @@ func NewUserFromProto(proto *pbsungora.User) *User {
 		CNT2:        int16(proto.Cnt2),
 		CNT4:        int(proto.Cnt4),
 		CNT8:        proto.Cnt8,
+		ShardingID:  uuid.MustParse(proto.ShardingId),
 		IsOnline:    proto.IsOnline,
 		Metrika:     pbFromNullJSON(proto.Metrika),
 		Duration:    time.Duration(proto.Duration),

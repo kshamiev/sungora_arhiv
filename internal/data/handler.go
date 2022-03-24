@@ -8,8 +8,9 @@ import (
 	"sungora/lib/response"
 	"sungora/lib/storage"
 	"sungora/lib/storage/stpg"
-	"sungora/lib/typ"
 	"sungora/services/mdsungora"
+
+	"github.com/google/uuid"
 
 	"github.com/go-chi/chi"
 )
@@ -57,7 +58,7 @@ func (hh *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
 	stM := NewModel(stpg.Gist(), "")
-	res, err := stM.UploadRequest(rw, "test", typ.UUIDNew())
+	res, err := stM.UploadRequest(rw, "test")
 	if err != nil {
 		rw.JSON(err)
 		return
@@ -75,7 +76,7 @@ func (hh *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 // @Router /api/sun/data/download/{id} [get]
 func (hh *Handler) Download(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
-	id := typ.UUIDMustParse(chi.URLParam(r, "id"))
+	id := uuid.MustParse(chi.URLParam(r, "id"))
 
 	st, err := mdsungora.FindMinio(r.Context(), hh.st.DB(), id)
 	if err != nil {
@@ -83,7 +84,7 @@ func (hh *Handler) Download(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := minio.GetFile(r.Context(), st.Bucket, st.ObjectID.String())
+	res, err := minio.GetFile(r.Context(), st.Bucket, st.ID.String())
 	if err != nil {
 		rw.JSON(err)
 		return

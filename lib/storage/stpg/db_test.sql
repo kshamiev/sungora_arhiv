@@ -81,33 +81,3 @@ VALUES ('gpscdIEk', 0, 0, 0, 0, 0, 0, false);
 INSERT INTO public.users
 (login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online)
 VALUES ('v3iwypkK', 0, 0, 0, 0, 0, 0, false);
-
-CREATE TABLE public.minio
-(
-    id         uuid        NOT NULL DEFAULT uuid_generate_v4(), -- ИД
-    bucket     text        NOT NULL,                            -- папка хранения - тип объекта
-    object_id  int8        NOT NULL,                            -- файл хранения - ид объекта
-    "name"     text        NOT NULL,                            -- имя файла
-    file_type  text        NOT NULL,                            -- тип файла
-    file_size  int4        NOT NULL DEFAULT 0,                  -- размер файла
-    "label"    jsonb NULL,                                      -- дополнительные параметры файла
-    user_login text        NOT NULL,                            -- пользователь
-    created_at timestamptz NOT NULL DEFAULT now(),              -- дата и время создания
-    is_confirm bool        NOT NULL DEFAULT false,              -- подтверждение загрузки
-    CONSTRAINT minio_st_pk PRIMARY KEY (id)
-);
-CREATE INDEX minio_st_bucket_idx ON public.minio USING btree (bucket);
-CREATE UNIQUE INDEX minio_st_object_id_idx ON public.minio USING btree (object_id);
-
--- Column comments
-
-COMMENT ON COLUMN public.minio.id IS 'ИД';
-COMMENT ON COLUMN public.minio.bucket IS 'папка хранения - тип объекта';
-COMMENT ON COLUMN public.minio.object_id IS 'файл хранения - ид объекта';
-COMMENT ON COLUMN public.minio."name" IS 'имя файла';
-COMMENT ON COLUMN public.minio.file_type IS 'тип файла';
-COMMENT ON COLUMN public.minio.file_size IS 'размер файла';
-COMMENT ON COLUMN public.minio."label" IS 'дополнительные параметры файла';
-COMMENT ON COLUMN public.minio.user_login IS 'пользователь';
-COMMENT ON COLUMN public.minio.created_at IS 'дата и время создания';
-COMMENT ON COLUMN public.minio.is_confirm IS 'подтверждение загрузки';

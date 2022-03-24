@@ -73,21 +73,27 @@ ALTER TABLE public.orders
         UPDATE CASCADE ON DELETE RESTRICT;
 
 INSERT INTO public.users
-(login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online, metrika, created_at, updated_at)
-VALUES ('testLogin', 0, 0, 0, 0, 0, 0, false, '{}', now(), now());
+    (login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online)
+VALUES ('testLogin', 0, 0, 0, 0, 0, 0, false);
+INSERT INTO public.users
+    (login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online)
+VALUES ('gpscdIEk', 0, 0, 0, 0, 0, 0, false);
+INSERT INTO public.users
+    (login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online)
+VALUES ('v3iwypkK', 0, 0, 0, 0, 0, 0, false);
 
 CREATE TABLE public.minio
 (
-    id         uuid        NOT NULL DEFAULT uuid_generate_v4(), -- ИД
-    bucket     text        NOT NULL,                            -- папка хранения - тип объекта
-    object_id  int8        NOT NULL,                            -- файл хранения - ид объекта
-    "name"     text        NOT NULL,                            -- имя файла
-    file_type  text        NOT NULL,                            -- тип файла
-    file_size  int4        NOT NULL DEFAULT 0,                  -- размер файла
-    "label"    jsonb NULL,                                      -- дополнительные параметры файла
-    user_login text        NOT NULL,                            -- пользователь
-    created_at timestamptz NOT NULL DEFAULT now(),              -- дата и время создания
-    is_confirm bool        NOT NULL DEFAULT false,              -- подтверждение загрузки
+    id         uuid        NOT NULL DEFAULT uuid_generate_v4(),
+    bucket     text        NOT NULL,
+    object_id  int8        NOT NULL DEFAULT 0,
+    "name"     text        NOT NULL,
+    file_type  text        NOT NULL,
+    file_size  int4        NOT NULL DEFAULT 0,
+    "label"    jsonb NULL,
+    user_login text        NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now(),
+    is_confirm bool        NOT NULL DEFAULT false,
     CONSTRAINT minio_st_pk PRIMARY KEY (id)
 );
 CREATE INDEX minio_st_bucket_idx ON public.minio USING btree (bucket);

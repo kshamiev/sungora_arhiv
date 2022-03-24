@@ -13,9 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"sungora/lib/typ"
-
 	"github.com/friendsofgo/errors"
+	"github.com/google/uuid"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries"
@@ -25,12 +24,12 @@ import (
 )
 
 // Minio is an object representing the database table.
-type Minio struct { // ИД
-	ID typ.UUID `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
+type Minio struct { // файл хранения
+	ID uuid.UUID `boil:"id" db:"id" json:"id" toml:"id" yaml:"id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
 	// папка хранения - тип объекта
 	Bucket string `boil:"bucket" db:"bucket" json:"bucket" toml:"bucket" yaml:"bucket"`
-	// файл хранения - ид объекта
-	ObjectID typ.UUID `boil:"object_id" db:"object_id" json:"object_id" toml:"object_id" yaml:"object_id" example:"8ca3c9c3-cf1a-47fe-8723-3f957538ce42"`
+	// ид объекта
+	ObjectID int64 `boil:"object_id" db:"object_id" json:"object_id" toml:"object_id" yaml:"object_id"`
 	// имя файла
 	Name string `boil:"name" db:"name" json:"name" toml:"name" yaml:"name"`
 	// тип файла
@@ -100,24 +99,24 @@ var MinioTableColumns = struct {
 
 // Generated where
 
-type whereHelpertyp_UUID struct{ field string }
+type whereHelperuuid_UUID struct{ field string }
 
-func (w whereHelpertyp_UUID) EQ(x typ.UUID) qm.QueryMod {
+func (w whereHelperuuid_UUID) EQ(x uuid.UUID) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.EQ, x)
 }
-func (w whereHelpertyp_UUID) NEQ(x typ.UUID) qm.QueryMod {
+func (w whereHelperuuid_UUID) NEQ(x uuid.UUID) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.NEQ, x)
 }
-func (w whereHelpertyp_UUID) LT(x typ.UUID) qm.QueryMod {
+func (w whereHelperuuid_UUID) LT(x uuid.UUID) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LT, x)
 }
-func (w whereHelpertyp_UUID) LTE(x typ.UUID) qm.QueryMod {
+func (w whereHelperuuid_UUID) LTE(x uuid.UUID) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LTE, x)
 }
-func (w whereHelpertyp_UUID) GT(x typ.UUID) qm.QueryMod {
+func (w whereHelperuuid_UUID) GT(x uuid.UUID) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GT, x)
 }
-func (w whereHelpertyp_UUID) GTE(x typ.UUID) qm.QueryMod {
+func (w whereHelperuuid_UUID) GTE(x uuid.UUID) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
 
@@ -190,9 +189,9 @@ func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
 }
 
 var MinioWhere = struct {
-	ID        whereHelpertyp_UUID
+	ID        whereHelperuuid_UUID
 	Bucket    whereHelperstring
-	ObjectID  whereHelpertyp_UUID
+	ObjectID  whereHelperint64
 	Name      whereHelperstring
 	FileType  whereHelperstring
 	FileSize  whereHelperint
@@ -201,9 +200,9 @@ var MinioWhere = struct {
 	CreatedAt whereHelpertime_Time
 	IsConfirm whereHelperbool
 }{
-	ID:        whereHelpertyp_UUID{field: "\"minio\".\"id\""},
+	ID:        whereHelperuuid_UUID{field: "\"minio\".\"id\""},
 	Bucket:    whereHelperstring{field: "\"minio\".\"bucket\""},
-	ObjectID:  whereHelpertyp_UUID{field: "\"minio\".\"object_id\""},
+	ObjectID:  whereHelperint64{field: "\"minio\".\"object_id\""},
 	Name:      whereHelperstring{field: "\"minio\".\"name\""},
 	FileType:  whereHelperstring{field: "\"minio\".\"file_type\""},
 	FileSize:  whereHelperint{field: "\"minio\".\"file_size\""},
@@ -231,8 +230,8 @@ type minioL struct{}
 
 var (
 	minioAllColumns            = []string{"id", "bucket", "object_id", "name", "file_type", "file_size", "label", "user_login", "created_at", "is_confirm"}
-	minioColumnsWithoutDefault = []string{"bucket", "object_id", "name", "file_type", "user_login"}
-	minioColumnsWithDefault    = []string{"id", "file_size", "label", "created_at", "is_confirm"}
+	minioColumnsWithoutDefault = []string{"bucket", "name", "file_type", "user_login"}
+	minioColumnsWithDefault    = []string{"id", "object_id", "file_size", "label", "created_at", "is_confirm"}
 	minioPrimaryKeyColumns     = []string{"id"}
 	minioGeneratedColumns      = []string{}
 )
@@ -523,7 +522,7 @@ func Minios(mods ...qm.QueryMod) minioQuery {
 
 // FindMinio retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindMinio(ctx context.Context, exec boil.ContextExecutor, iD typ.UUID, selectCols ...string) (*Minio, error) {
+func FindMinio(ctx context.Context, exec boil.ContextExecutor, iD uuid.UUID, selectCols ...string) (*Minio, error) {
 	minioObj := &Minio{}
 
 	sel := "*"
@@ -1018,7 +1017,7 @@ func (o *MinioSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) e
 }
 
 // MinioExists checks if the Minio row exists.
-func MinioExists(ctx context.Context, exec boil.ContextExecutor, iD typ.UUID) (bool, error) {
+func MinioExists(ctx context.Context, exec boil.ContextExecutor, iD uuid.UUID) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"minio\" where \"id\"=$1 limit 1)"
 

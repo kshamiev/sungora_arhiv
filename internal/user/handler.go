@@ -1,7 +1,10 @@
 package user
 
 import (
+	"errors"
 	"net/http"
+	"strconv"
+
 	"sungora/services/pbsungora"
 
 	"sungora/app/client"
@@ -50,13 +53,19 @@ func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 // Get
 // @Tags User
 // @Summary Получение пользователя
-// @Param id path string true "ID"
+// @Param id path int true "ID"
 // @Success 200 {object} mdsungora.User ""
 // @Router /api/sun/user/{id} [get]
 func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj, err := mdsungora.FindUser(r.Context(), hh.st.DB(), typ.UUIDMustParse(chi.URLParam(r, "id")))
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	if err != nil {
+		rw.JSON(errs.NewBadRequest(err))
+		return
+	}
+
+	obj, err := mdsungora.FindUser(r.Context(), hh.st.DB(), id)
 	if err != nil {
 		rw.JSON(errs.NewBadRequest(err))
 		return
@@ -91,7 +100,7 @@ func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 // Put
 // @Tags User
 // @Summary Изменение пользователя
-// @Param id path string true "ID"
+// @Param id path int true "ID"
 // @Param data body mdsungora.User true "пользователь"
 // @Success 200 {object} mdsungora.User ""
 // @Router /api/sun/user/{id} [put]
@@ -115,14 +124,19 @@ func (hh *Handler) Put(w http.ResponseWriter, r *http.Request) {
 // Delete
 // @Tags User
 // @Summary Удаление пользователя
-// @Param id path string true "ID"
+// @Param id path int true "ID"
 // @Success 200 {string} string "OK"
 // @Router /api/sun/user/{id} [delete]
 func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj := &mdsungora.User{ID: typ.UUIDMustParse(chi.URLParam(r, "id"))}
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	if err != nil {
+		rw.JSON(errs.NewBadRequest(err))
+		return
+	}
 
+	obj := &mdsungora.User{ID: id}
 	if _, err := obj.Delete(r.Context(), hh.st.DB()); err != nil {
 		rw.JSON(errs.NewBadRequest(err))
 		return
@@ -155,7 +169,10 @@ func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	}
 
 	lg := logger.Get(r.Context())
-	lg.Info("General.Test")
+	lg.Info("User.Test")
+	err = errors.New("sample error")
+	err = errs.NewBadRequest(err, "user message error")
+	lg.WithError(err).Error(err.(*errs.Errs).Response())
 
 	cli := client.GistSungoraGRPC()
 	if _, err := cli.Ping(r.Context(), &pbsungora.Test{Text: "Fantik"}); err != nil {
