@@ -12,7 +12,6 @@ import (
 	"sungora/lib/logger"
 	"sungora/lib/response"
 	"sungora/lib/storage"
-	"sungora/lib/typ"
 	"sungora/services/mdsungora"
 
 	"github.com/go-chi/chi"
@@ -151,7 +150,7 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 // @Description Тестовый обработчик для примера
 // @Accept json
 // @Produce json
-// @Param id path string true "ID"
+// @Param id path int true "ID"
 // @Success 200 {object} mdsungora.User "пользователь"
 // @Failure 400 {string} response.Data "отрицательный ответ"
 // @Security ApiKeyAuth
@@ -161,8 +160,14 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+	if err != nil {
+		rw.JSON(errs.New(err))
+		return
+	}
+
 	usM := NewModel(hh.st)
-	us, err := usM.Load(r.Context(), typ.UUIDMustParse(chi.URLParam(r, "id")))
+	us, err := usM.Load(r.Context(), id)
 	if err != nil {
 		rw.JSON(err)
 		return

@@ -7,7 +7,6 @@ import (
 	"sungora/lib/errs"
 	"sungora/lib/jaeger"
 	"sungora/lib/storage"
-	"sungora/lib/typ"
 	"sungora/services/mdsungora"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -21,7 +20,7 @@ func NewModel(st storage.Face) *Model {
 	return &Model{st}
 }
 
-func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsungora.User, error) {
+func (mm *Model) Load(ctx context.Context, id int64) (*mdsungora.User, error) {
 	s := jaeger.NewSpan(ctx)
 	s.StringAttribute("param1", "fantik")
 	s.Int64Attribute("param2", 34)
@@ -33,7 +32,7 @@ func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsungora.User, error)
 
 	// sqlx
 	if err := mm.st.DB().GetContext(ctx, us, "SELECT * FROM users WHERE id = $1", id); err != nil {
-		return nil, errs.New(err, ErrUserTwo, id.String())
+		return nil, errs.New(err, ErrUserTwo, id)
 	}
 
 	// boiler
@@ -46,6 +45,7 @@ func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsungora.User, error)
 		return nil, err
 	}
 
+	// custom from sql (transaction)
 	if err := mm.st.QueryTx(ctx, func(qu storage.QueryTxEr) error {
 		if err := qu.Get(us, "SELECT * FROM users WHERE id = $1", id); err != nil {
 			return errs.New(err)
