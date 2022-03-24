@@ -22,11 +22,15 @@ var instance Logger = logrus.New()
 
 func Init(config *Config) Logger {
 	inst := logrus.New()
-	inst.SetLevel(config.Level)
+	level, err := logrus.ParseLevel(config.Level)
+	if err != nil {
+		level = logrus.ErrorLevel
+	}
+	inst.SetLevel(level)
 	inst.SetReportCaller(config.IsCaller)
 
 	switch config.Formatter {
-	case formatterJSON:
+	case FormatterJSON:
 		inst.SetFormatter(&logrus.JSONFormatter{
 			TimestampFormat:   typ.TimeFormatGMDHIS,
 			DisableTimestamp:  false,
@@ -41,11 +45,11 @@ func Init(config *Config) Logger {
 	}
 
 	switch config.Output {
-	case "", outEmpty:
+	case "", OutEmpty:
 		inst.SetOutput(io.Discard)
-	case outStdout:
+	case OutStdout:
 		inst.SetOutput(os.Stdout)
-	case outStderr:
+	case OutStderr:
 		inst.SetOutput(os.Stderr)
 	default:
 		fp, err := os.OpenFile(config.Output, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0o644)

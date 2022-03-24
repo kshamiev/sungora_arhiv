@@ -90,7 +90,7 @@ func InitConnect(cfg *Config) error {
 
 var mu sync.RWMutex
 
-func Gist() *Storage {
+func Gist() storage.Face {
 	if instance == nil {
 		mu.Lock()
 		if instance == nil {

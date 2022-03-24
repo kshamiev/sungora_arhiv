@@ -73,14 +73,14 @@ ALTER TABLE public.orders
         UPDATE CASCADE ON DELETE RESTRICT;
 
 INSERT INTO public.users
-(login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online, metrika, created_at, updated_at)
-VALUES ('testLogin', 0, 0, 0, 0, 0, 0, false, '{}', now(), now());
+(login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online)
+VALUES ('testLogin', 0, 0, 0, 0, 0, 0, false);
 INSERT INTO public.users
-(login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online, metrika, created_at, updated_at)
-VALUES ('gpscdIEk', 0, 0, 0, 0, 0, 0, false, '{}', now(), now());
+(login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online)
+VALUES ('gpscdIEk', 0, 0, 0, 0, 0, 0, false);
 INSERT INTO public.users
-(login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online, metrika, created_at, updated_at)
-VALUES ('v3iwypkK', 0, 0, 0, 0, 0, 0, false, '{}', now(), now());
+(login, price, summa_one, summa_two, cnt2, cnt4, cnt8, is_online)
+VALUES ('v3iwypkK', 0, 0, 0, 0, 0, 0, false);
 
 CREATE TABLE public.minio
 (

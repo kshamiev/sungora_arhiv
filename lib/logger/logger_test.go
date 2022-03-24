@@ -14,7 +14,7 @@ func TestLogger(t *testing.T) {
 		Title:     "TestTitle",
 		Output:    "stdout",
 		Formatter: "json",
-		Level:     logrus.TraceLevel,
+		Level:     "trace",
 		IsCaller:  false,
 		Hooks:     Hooks{},
 	})
