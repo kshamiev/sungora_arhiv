@@ -26,13 +26,6 @@ func NewForbidden(err error, args ...interface{}) *Errs {
 	return e
 }
 
-// NewBadRequest new error type
-func NewBadRequest(err error, args ...interface{}) *Errs {
-	e := New(err, args...)
-	e.codeHTTP = http.StatusBadRequest
-	return e
-}
-
 // New custom error application
 func New(err error, args ...interface{}) *Errs {
 	var msg Message
@@ -40,8 +33,10 @@ func New(err error, args ...interface{}) *Errs {
 		switch v := args[0].(type) {
 		case Message:
 			msg = v
+			args = args[1:]
 		case string:
 			msg = Message(v)
+			args = args[1:]
 		}
 	}
 	if err == nil {

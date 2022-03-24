@@ -63,24 +63,24 @@ func main() {
 	// Config загрузка конфигурации & Logger
 	cfg, err := config.Init(*flagConfigPath)
 	if err != nil {
-		log.Fatal(errs.NewBadRequest(err))
+		log.Fatal(errs.New(err))
 	}
 	lg := logger.Init(&cfg.Lg)
 
 	// ConnectDB postgres
 	if err = stpg.InitConnect(&cfg.Postgresql); err != nil {
-		lg.Fatal(errs.NewBadRequest(err))
+		lg.Fatal(errs.New(err))
 	}
 
 	// Minio
 	if err = minio.Init(&cfg.Minio); err != nil {
-		lg.Fatal(errs.NewBadRequest(err))
+		lg.Fatal(errs.New(err))
 	}
 
 	// Jaeger
 	jg, err := jaeger.NewJaeger(&cfg.Jaeger)
 	if err != nil {
-		lg.Fatal(errs.NewBadRequest(err))
+		lg.Fatal(errs.New(err))
 	}
 	defer jg.Close()
 

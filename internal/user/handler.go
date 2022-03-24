@@ -43,7 +43,7 @@ func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 		qm.Offset(0), qm.Limit(20),
 	).All(r.Context(), hh.st.DB())
 	if err != nil {
-		rw.JSON(errs.NewBadRequest(err))
+		rw.JSON(errs.New(err))
 		return
 	}
 
@@ -61,13 +61,13 @@ func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		rw.JSON(errs.NewBadRequest(err))
+		rw.JSON(errs.New(err))
 		return
 	}
 
 	obj, err := mdsungora.FindUser(r.Context(), hh.st.DB(), id)
 	if err != nil {
-		rw.JSON(errs.NewBadRequest(err))
+		rw.JSON(errs.New(err))
 		return
 	}
 
@@ -90,7 +90,7 @@ func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := obj.Insert(r.Context(), hh.st.DB(), boil.Infer()); err != nil {
-		rw.JSON(errs.NewBadRequest(err))
+		rw.JSON(errs.New(err))
 		return
 	}
 
@@ -114,7 +114,7 @@ func (hh *Handler) Put(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if _, err := obj.Update(r.Context(), hh.st.DB(), boil.Infer()); err != nil {
-		rw.JSON(errs.NewBadRequest(err))
+		rw.JSON(errs.New(err))
 		return
 	}
 
@@ -132,13 +132,13 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 	if err != nil {
-		rw.JSON(errs.NewBadRequest(err))
+		rw.JSON(errs.New(err))
 		return
 	}
 
 	obj := &mdsungora.User{ID: id}
 	if _, err := obj.Delete(r.Context(), hh.st.DB()); err != nil {
-		rw.JSON(errs.NewBadRequest(err))
+		rw.JSON(errs.New(err))
 		return
 	}
 
@@ -171,7 +171,7 @@ func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	lg := logger.Get(r.Context())
 	lg.Info("User.Test")
 	err = errors.New("sample error")
-	err = errs.NewBadRequest(err, "user message error")
+	err = errs.New(err, "user message error")
 	lg.WithError(err).Error(err.(*errs.Errs).Response())
 
 	cli := client.GistSungoraGRPC()

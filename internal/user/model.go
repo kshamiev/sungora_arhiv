@@ -33,12 +33,12 @@ func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsungora.User, error)
 
 	// sqlx
 	if err := mm.st.DB().GetContext(ctx, us, "SELECT * FROM users WHERE id = $1", id); err != nil {
-		return nil, errs.New(err, errs.UserTwo, id.String())
+		return nil, errs.New(err, ErrUserTwo, id.String())
 	}
 
 	// boiler
 	if err := us.Reload(ctx, mm.st.DB()); err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 
 	// custom from sql
@@ -48,7 +48,7 @@ func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsungora.User, error)
 
 	if err := mm.st.QueryTx(ctx, func(qu storage.QueryTxEr) error {
 		if err := qu.Get(us, "SELECT * FROM users WHERE id = $1", id); err != nil {
-			return errs.NewBadRequest(err)
+			return errs.New(err)
 		}
 		return nil
 	}); err != nil {
@@ -57,7 +57,7 @@ func (mm *Model) Load(ctx context.Context, id typ.UUID) (*mdsungora.User, error)
 
 	us.Duration = time.Hour + time.Minute*10 + time.Second*10
 	if _, err := us.Update(ctx, mm.st.DB(), boil.Infer()); err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 
 	return us, nil

@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	ErrOne Message = "Первая ошибка пользователя %d"
+	ErrOne    Message = "Первая ошибка пользователя %d"
+	ErrSample Message = "decimal: %d, string: %s, float %f"
 )
 
 func TestErrs(t *testing.T) {
@@ -39,7 +40,7 @@ func FunctionLevel3() error {
 }
 
 func FunctionLevel4() error {
-	return NewBadRequest(errors.New("focus pocus"), "decimal: %d, string: %s, float", 34, "popcorn")
+	return New(errors.New("focus pocus"), ErrSample, 34, "popcorn", 45.78)
 }
 
 func FunctionLevel22() error {

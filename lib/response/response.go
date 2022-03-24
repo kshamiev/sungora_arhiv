@@ -91,14 +91,14 @@ func (rw *Response) JSONBodyDecode(object interface{}) error {
 func JSONBodyDecode(r *http.Request, object interface{}) error {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 	if len(body) == 0 {
-		return errs.NewBadRequest(errors.New("the request body is empty"))
+		return errs.New(errors.New("the request body is empty"))
 	}
 	err = json.Unmarshal(body, object)
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 	return nil
 }
@@ -230,12 +230,12 @@ func (rw *Response) generalHeaderSet(fileName string, l, status int) {
 // dir папка куда будут загружены все переданные в запросе файлы
 func (rw *Response) UploadFiles(dir string) ([]string, error) {
 	if err := os.MkdirAll(dir, 0o777); err != nil {
-		return nil, errs.NewBadRequest(err, "ошибка создания хранилища")
+		return nil, errs.New(err, "ошибка создания хранилища")
 	}
 
 	mr, err := rw.Request.MultipartReader()
 	if err != nil {
-		return nil, errs.NewBadRequest(err, "ошибка получения информации о загрузке")
+		return nil, errs.New(err, "ошибка получения информации о загрузке")
 	}
 
 	var result []string
@@ -244,7 +244,7 @@ func (rw *Response) UploadFiles(dir string) ([]string, error) {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			return nil, errs.NewBadRequest(err, "ошибка получения файла")
+			return nil, errs.New(err, "ошибка получения файла")
 		}
 		fileName := part.FileName()
 		if fileName == "" {
@@ -257,7 +257,7 @@ func (rw *Response) UploadFiles(dir string) ([]string, error) {
 
 		dst, err := os.Create(path)
 		if err != nil {
-			return nil, errs.NewBadRequest(err, "ошибка создания файла")
+			return nil, errs.New(err, "ошибка создания файла")
 		}
 
 		buffer := make([]byte, 100000)
@@ -267,7 +267,7 @@ func (rw *Response) UploadFiles(dir string) ([]string, error) {
 			if err != nil && err != io.EOF {
 				_ = dst.Close()
 				_ = os.Remove(path)
-				return nil, errs.NewBadRequest(err, "ошибка чтения файла")
+				return nil, errs.New(err, "ошибка чтения файла")
 			}
 			if n == 0 {
 				break
@@ -276,14 +276,14 @@ func (rw *Response) UploadFiles(dir string) ([]string, error) {
 			if _, err = dst.Write(buffer[:n]); err != nil {
 				_ = dst.Close()
 				_ = os.Remove(path)
-				return nil, errs.NewBadRequest(err, "ошибка записи в файл")
+				return nil, errs.New(err, "ошибка записи в файл")
 			}
 		}
 		_ = dst.Close()
 		result = append(result, path)
 	}
 	if len(result) == 0 {
-		return nil, errs.NewBadRequest(errors.New("request is empty"))
+		return nil, errs.New(errors.New("request is empty"))
 	}
 	return result, nil
 }
@@ -292,7 +292,7 @@ func (rw *Response) UploadFiles(dir string) ([]string, error) {
 func (rw *Response) UploadBuffer() (fileData map[string]*bytes.Buffer, fileName []string, err error) {
 	mr, err := rw.Request.MultipartReader()
 	if err != nil {
-		return nil, nil, errs.NewBadRequest(err, "ошибка получения информации о загрузке")
+		return nil, nil, errs.New(err, "ошибка получения информации о загрузке")
 	}
 
 	fileData = map[string]*bytes.Buffer{}
@@ -302,7 +302,7 @@ func (rw *Response) UploadBuffer() (fileData map[string]*bytes.Buffer, fileName 
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			return nil, nil, errs.NewBadRequest(err, "ошибка получения файла")
+			return nil, nil, errs.New(err, "ошибка получения файла")
 		}
 		fName := part.FileName()
 		if fName == "" {
@@ -315,21 +315,21 @@ func (rw *Response) UploadBuffer() (fileData map[string]*bytes.Buffer, fileName 
 		for {
 			n, err := part.Read(buffer)
 			if err != nil && err != io.EOF {
-				return nil, nil, errs.NewBadRequest(err, "ошибка чтения файла")
+				return nil, nil, errs.New(err, "ошибка чтения файла")
 			}
 			if n == 0 {
 				break
 			}
 			read += n
 			if _, err = dst.Write(buffer[:n]); err != nil {
-				return nil, nil, errs.NewBadRequest(err, "ошибка записи в файл")
+				return nil, nil, errs.New(err, "ошибка записи в файл")
 			}
 		}
 		fileData[fName] = dst
 		fileName = append(fileName, fName)
 	}
 	if len(fileData) == 0 {
-		return nil, nil, errs.NewBadRequest(errors.New("request is empty"))
+		return nil, nil, errs.New(errors.New("request is empty"))
 	}
 	return fileData, fileName, nil
 }
@@ -357,7 +357,7 @@ func (rw *Response) GetUserTest() (*User, error) {
 func (rw *Response) GetToken() (string, error) {
 	token, ok := rw.Request.Context().Value(CtxToken).(string)
 	if !ok {
-		return "", errs.NewBadRequest(errors.New("token is not context (middleware.Auth)"))
+		return "", errs.New(errors.New("token is not context (middleware.Auth)"))
 	}
 	return token, nil
 }

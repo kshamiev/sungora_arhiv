@@ -11,7 +11,7 @@ var sungoraClient pbsungora.SungoraClient
 func InitSungoraClient(cfg *web.GRPCConfig) (*web.GRPCClient, error) {
 	grpcClient, err := web.NewGRPCClient(cfg)
 	if err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 	sungoraClient = pbsungora.NewSungoraClient(grpcClient.Conn)
 	return grpcClient, nil

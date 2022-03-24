@@ -20,7 +20,7 @@ type SungoraServer struct {
 func NewSampleServer(cfg *web.GRPCConfig, opts ...grpc.ServerOption) (*web.GRPCServer, error) {
 	grpcServer, err := web.NewGRPCServer(cfg, opts...)
 	if err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 	pbsungora.RegisterSungoraServer(grpcServer.Ser, &SungoraServer{})
 	return grpcServer, nil
@@ -33,7 +33,7 @@ func (ser SungoraServer) Ping(ctx context.Context, tt *pbsungora.Test) (*pbsungo
 	lg := logger.Get(ctx)
 	lg.Info("SungoraServer.Ping: " + tt.Text)
 	err := errors.New("sample error")
-	err = errs.NewBadRequest(err, "user message error")
+	err = errs.New(err, "user message error")
 	lg.WithError(err).Error(err.(*errs.Errs).Response())
 
 	return &pbsungora.Test{

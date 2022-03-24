@@ -49,7 +49,7 @@ func (hh *Handler) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	if ws, err = upgrader.Upgrade(w, r, wsResponse); err != nil {
-		rw.JSON(errs.NewBadRequest(err, "не удалось переключить протокол на ws"))
+		rw.JSON(errs.New(err, "не удалось переключить протокол на ws"))
 		return
 	}
 	defer func() {

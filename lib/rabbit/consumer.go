@@ -3,6 +3,7 @@ package rabbit
 import (
 	"context"
 	"fmt"
+
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/typ"
@@ -32,7 +33,7 @@ func NewConsumerTopic(exchange, queueName string, routeKey []string) (Consumer, 
 		false,    // noWait
 		nil,      // arguments
 	); err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 
 	isDurable := true
@@ -51,7 +52,7 @@ func NewConsumerTopic(exchange, queueName string, routeKey []string) (Consumer, 
 		nil,         // arguments
 	)
 	if err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 
 	for i := range routeKey {
@@ -62,7 +63,7 @@ func NewConsumerTopic(exchange, queueName string, routeKey []string) (Consumer, 
 			false,       // noWait
 			nil,         // arguments
 		); err != nil {
-			return nil, errs.NewBadRequest(err)
+			return nil, errs.New(err)
 		}
 	}
 
@@ -84,7 +85,7 @@ func NewConsumerQueue(queueName string) (Consumer, error) {
 		nil,       // arguments
 	)
 	if err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 
 	return &consumer{
@@ -106,7 +107,7 @@ func (con *consumer) Handler(ctx context.Context, h func(ctx context.Context, da
 		nil,          // arguments
 	)
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 
 	instance.wg.Add(1)
@@ -116,7 +117,7 @@ func (con *consumer) Handler(ctx context.Context, h func(ctx context.Context, da
 
 func (con *consumer) Cancel() error {
 	if err := instance.channel.Cancel(con.consumer, false); err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 	instance.wg.Done()
 	return nil
@@ -129,7 +130,7 @@ func (con *consumer) handle(
 ) {
 	defer func() {
 		if rvr := recover(); rvr != nil {
-			logger.Get(ctx).Error(errs.NewBadRequest(fmt.Errorf("%+v", rvr)))
+			logger.Get(ctx).Error(errs.New(fmt.Errorf("%+v", rvr)))
 		}
 	}()
 	for d := range deliveries {

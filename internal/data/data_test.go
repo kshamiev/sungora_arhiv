@@ -22,7 +22,7 @@ func TestMinio(t *testing.T) {
 	}
 
 	if err := minio.Init(&cfg.Minio); err != nil {
-		log.Fatal(errs.NewBadRequest(err))
+		log.Fatal(errs.New(err))
 	}
 
 	if err := minio.CreateBucket("popcorn"); err != nil {

@@ -3,8 +3,9 @@ package jaeger
 import (
 	"context"
 
-	"go.opencensus.io/trace"
 	"sungora/lib/errs"
+
+	"go.opencensus.io/trace"
 )
 
 type Span struct {

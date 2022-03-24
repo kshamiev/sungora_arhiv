@@ -1,6 +1,4 @@
 linters-settings:
-  govet:
-    check-shadowing: true
   gocyclo:
     min-complexity: 20
   maligned:
@@ -27,7 +25,6 @@ linters-settings:
 linters:
   disable-all: true
   enable:
-    - govet
     - gocyclo
     - dupl
     - lll

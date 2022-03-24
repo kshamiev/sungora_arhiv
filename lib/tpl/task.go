@@ -49,14 +49,14 @@ func (task *TaskTemplateParse) Action(ctx context.Context) error {
 func (task *TaskTemplateParse) parseFiles(dir, path string) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 
 	index := strings.ReplaceAll(path, dir+"/", "")
 
 	tpl, err := template.New(index).Funcs(functions).Parse(string(data))
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 
 	tplStore[index] = tpl

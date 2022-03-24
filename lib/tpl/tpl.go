@@ -32,7 +32,7 @@ func ExecuteStorage(viewIndex string, variables map[string]interface{}) (ret byt
 // ExecuteFile компиляция html шаблона из указанного файла и сборка контента
 func ExecuteFile(viewPath string, funcs, variables map[string]interface{}) (ret bytes.Buffer, err error) {
 	if _, err = os.Stat(viewPath); err != nil {
-		return ret, errs.NewBadRequest(err)
+		return ret, errs.New(err)
 	}
 
 	var tpl *template.Template
@@ -42,11 +42,11 @@ func ExecuteFile(viewPath string, funcs, variables map[string]interface{}) (ret 
 	}
 
 	if tpl, err = template.New(filepath.Base(viewPath)).Funcs(funcs).ParseFiles(viewPath); err != nil {
-		return ret, errs.NewBadRequest(err)
+		return ret, errs.New(err)
 	}
 
 	if err = tpl.Execute(&ret, variables); err != nil {
-		return ret, errs.NewBadRequest(err)
+		return ret, errs.New(err)
 	}
 
 	return
@@ -62,11 +62,11 @@ func ExecuteString(view string, funcs, variables map[string]interface{}) (ret by
 	}
 
 	if tpl, err = template.New(nameTpl).Funcs(funcs).Parse(view); err != nil {
-		return ret, errs.NewBadRequest(err)
+		return ret, errs.New(err)
 	}
 
 	if err = tpl.Execute(&ret, variables); err != nil {
-		return ret, errs.NewBadRequest(err)
+		return ret, errs.New(err)
 	}
 
 	return

@@ -3,6 +3,7 @@ package rabbit
 import (
 	"encoding/json"
 	"errors"
+
 	"sungora/lib/errs"
 
 	"github.com/streadway/amqp"
@@ -29,10 +30,10 @@ func NewProducerTopic(exchange string) (ProducerTopic, error) {
 		false,    // noWait
 		nil,      // arguments
 	); err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 	if err := instance.channel.Confirm(false); err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 	return &producer{
 		name:    exchange,
@@ -43,7 +44,7 @@ func NewProducerTopic(exchange string) (ProducerTopic, error) {
 func (pro *producer) Topic(routeKey string, data interface{}) error {
 	d, err := json.Marshal(data)
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 	if err = instance.channel.Publish(
 		pro.name, // publish to an exchange
@@ -55,13 +56,13 @@ func (pro *producer) Topic(routeKey string, data interface{}) error {
 			Body:        d,
 		},
 	); err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 
 	if confirmed := <-pro.confirm; confirmed.Ack {
 		return nil
 	}
-	return errs.NewBadRequest(errors.New("failed delivery message topic"))
+	return errs.New(errors.New("failed delivery message topic"))
 }
 
 // ////
@@ -80,10 +81,10 @@ func NewProducerQueue(queueName string) (ProducerQueue, error) {
 		nil,       // arguments
 	)
 	if err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 	if err := instance.channel.Confirm(false); err != nil {
-		return nil, errs.NewBadRequest(err)
+		return nil, errs.New(err)
 	}
 	return &producer{
 		name:    queueName,
@@ -94,7 +95,7 @@ func NewProducerQueue(queueName string) (ProducerQueue, error) {
 func (pro *producer) Queue(data interface{}) error {
 	d, err := json.Marshal(data)
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 	if err = instance.channel.Publish(
 		"",       // publish to an exchange
@@ -106,11 +107,11 @@ func (pro *producer) Queue(data interface{}) error {
 			Body:        d,
 		},
 	); err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 
 	if confirmed := <-pro.confirm; confirmed.Ack {
 		return nil
 	}
-	return errs.NewBadRequest(errors.New("failed delivery message topic"))
+	return errs.New(errors.New("failed delivery message topic"))
 }

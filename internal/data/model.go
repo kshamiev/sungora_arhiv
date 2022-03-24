@@ -42,7 +42,7 @@ func (mm *Model) UploadRequest(rw *response.Response, bucket string) (mdsungora.
 	res := make([]*mdsungora.Minio, 0, len(fileData))
 	for fName, buf := range fileData {
 		if buf.Len() == 0 {
-			return nil, errs.NewBadRequest(errors.New("file size zero"), "ошибка получения файла")
+			return nil, errs.New(errors.New("file size zero"), "ошибка получения файла")
 		}
 		stM := &mdsungora.Minio{}
 		stM.Bucket = bucket
@@ -54,7 +54,7 @@ func (mm *Model) UploadRequest(rw *response.Response, bucket string) (mdsungora.
 
 		err = stM.Insert(rw.Request.Context(), mm.st.DB(), boil.Infer())
 		if err != nil {
-			return nil, errs.NewBadRequest(err, "couldn't insert file info")
+			return nil, errs.New(err, "couldn't insert file info")
 		}
 
 		err = minio.PutFile(rw.Request.Context(), stM.Bucket, stM.ID.String(), buf, int64(stM.FileSize))
@@ -74,14 +74,14 @@ func (mm *Model) Confirm(ctx context.Context, obj *mdsungora.Minio) error {
 		mdsungora.MinioColumns.IsConfirm,
 		mdsungora.MinioColumns.ObjectID,
 	)); err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 	return nil
 }
 
 func (mm *Model) SaveFS(ctx context.Context, obj *mdsungora.Minio) error {
 	if err := os.MkdirAll(mm.dir, 0o777); err != nil {
-		return errs.NewBadRequest(err, "ошибка создания хранилища")
+		return errs.New(err, "ошибка создания хранилища")
 	}
 	data, err := minio.GetFile(ctx, obj.Bucket, obj.ID.String())
 	if err != nil {
@@ -89,10 +89,10 @@ func (mm *Model) SaveFS(ctx context.Context, obj *mdsungora.Minio) error {
 	}
 	fp, err := os.OpenFile(mm.dir+"/"+obj.Name, os.O_RDWR|os.O_CREATE, 0x0755)
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 	if _, err := io.Copy(fp, data); err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 	return fp.Close()
 }
@@ -119,14 +119,14 @@ func (self *Model) RemoveNotConfirm(ctx context.Context) error {
 		mdsungora.MinioWhere.IsConfirm.EQ(false),
 	).All(ctx, self.st.DB())
 	if err != nil {
-		return errs.NewBadRequest(err)
+		return errs.New(err)
 	}
 	for i := range list {
 		if err := minio.RemoveFile(list[i].Bucket, list[i].ID.String()); err != nil {
 			return err
 		}
 		if _, err := list[i].Delete(ctx, self.st.DB()); err != nil {
-			return errs.NewBadRequest(err)
+			return errs.New(err)
 		}
 	}
 	return nil
