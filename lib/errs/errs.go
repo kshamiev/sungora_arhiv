@@ -40,7 +40,7 @@ func New(err error, args ...interface{}) *Errs {
 		}
 	}
 	if err == nil {
-		err = msg.Error(args...)
+		err = msg.New(args...)
 	}
 	codeHTTP := http.StatusBadRequest
 	if sql.ErrNoRows == err {
@@ -51,7 +51,7 @@ func New(err error, args ...interface{}) *Errs {
 		codeHTTP: codeHTTP,
 		err:      err,
 		kind:     t,
-		message:  msg.String(args...),
+		message:  msg.Msg(args...),
 		trace:    Traces(),
 	}
 }
