@@ -166,7 +166,7 @@ const docTemplate = `{
                 "deprecated": true,
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "ID",
                         "name": "id",
                         "in": "path",

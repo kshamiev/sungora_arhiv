@@ -74,9 +74,9 @@ func (e *Errs) HTTPCode() int {
 // Error response advanced message to logs
 func (e *Errs) Error() string {
 	if e.err != nil {
-		return e.kind + " - " + e.err.Error()
+		return e.kind + " " + e.err.Error()
 	}
-	return e.kind + " - " + http.StatusText(e.codeHTTP)
+	return e.kind + " " + http.StatusText(e.codeHTTP)
 }
 
 // Response response message to user

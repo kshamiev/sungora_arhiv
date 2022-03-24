@@ -120,9 +120,9 @@ func (rw *Response) JSON(object interface{}) {
 	case int, int8, int16, int32, int64:
 		data = []byte(`"` + strconv.Itoa(tt.(int)) + `"`)
 	case Error:
-		rw.lg.Error(tt.Error())
+		rw.lg.WithError(tt).Error(tt.Response())
 		for _, t := range tt.Trace() {
-			rw.lg.Trace(t)
+			rw.lg.WithError(errors.New(t)).Trace()
 		}
 		object = Data{
 			Message: tt.Response(),
@@ -130,7 +130,7 @@ func (rw *Response) JSON(object interface{}) {
 		data, _ = json.Marshal(object)
 		status = tt.HTTPCode()
 	case error:
-		rw.lg.Error(tt.Error())
+		rw.lg.WithError(tt).Error()
 		object = Data{
 			Message: tt.Error(),
 		}
