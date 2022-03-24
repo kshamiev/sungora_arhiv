@@ -9,13 +9,13 @@ import (
 	"net/http/pprof"
 	"os"
 
-	"sungora/api/chat"
-	"sungora/api/data"
-	"sungora/api/general"
-	"sungora/api/user"
 	"sungora/app/client"
 	"sungora/app/config"
 	"sungora/app/service"
+	"sungora/internal/chat"
+	"sungora/internal/data"
+	"sungora/internal/general"
+	"sungora/internal/user"
 	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
@@ -56,7 +56,7 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	flagConfigPath := flag.String("c", "conf/config.yaml", "used for set path to config file")
+	flagConfigPath := flag.String("c", "etc/config.yaml", "used for set path to config file")
 	flag.Parse()
 
 	// Config загрузка конфигурации & Logger

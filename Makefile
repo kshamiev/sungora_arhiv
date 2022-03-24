@@ -15,7 +15,7 @@ dep:
 
 # Сваггер
 swag:
-	swag i --parseVendor -o app/config;
+	swag i -g cmd/main.go --parseVendor -o app/config;
 	rm -f app/config/swagger.json
 	rm -f app/config/swagger.yaml
 .PHONY: swag
@@ -37,17 +37,17 @@ test:
 
 # Сборка
 com:
-	go build -o bin/app .;
+	go build -o bin/app cmd/main.go;
 .PHONY: com
 
 # Запуск в режиме разработки
 run: com
-	bin/app -c conf/config.yaml;
+	bin/app -c etc/config.yaml;
 .PHONY: run
 
 # Запуск в режиме отладки
 dev: dep swag fmt lint test com
-	bin/app -c conf/config.yaml;
+	bin/app -c etc/config.yaml;
 .PHONY: dev
 
 # Создание шаблона миграции
@@ -95,7 +95,7 @@ dbdump-a:
 SERVICE1 := sungora
 ser-sungora:
 	@go run services/generate/main.go -step $(SERVICE1)-1
-	@sqlboiler -c conf/config.yaml -p md$(SERVICE1) -o services/md$(SERVICE1) --no-auto-timestamps --no-tests --wipe psql
+	@sqlboiler -c etc/config.yaml -p md$(SERVICE1) -o services/md$(SERVICE1) --no-auto-timestamps --no-tests --wipe psql
 	@go run services/generate/main.go -step $(SERVICE1)-2
 	@go run services/generate/main.go -step $(SERVICE1)-3
 	@cd $(DIR)/services && goimports -w .

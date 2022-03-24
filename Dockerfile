@@ -13,7 +13,7 @@ FROM kshamiev/service:v1
 WORKDIR /home/app
 
 COPY --from=build1 /home/app/bin bin
-COPY --from=build1 /home/app/conf conf
+COPY --from=build1 /home/app/etc etc
 COPY --from=build1 /home/app/www_test www_test
 
 RUN mkdir www
@@ -21,4 +21,4 @@ VOLUME www
 
 EXPOSE 8080:8080
 
-CMD bin/app -c conf/config_docker.yaml
+CMD bin/app -c etc/config_docker.yaml

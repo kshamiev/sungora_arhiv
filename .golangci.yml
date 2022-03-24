@@ -58,6 +58,7 @@ run:
   skip-dirs:
     - bin
     - conf
+    - etc
     - dev
     - doc
     - migration

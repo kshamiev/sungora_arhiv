@@ -12,7 +12,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const ConfigFilePath = "conf/config.yaml"
+const ConfigFilePath = "etc/config.yaml"
 
 func LoadConfig(fileConf string, cfg interface{}) error {
 	if fileConf == "" {
