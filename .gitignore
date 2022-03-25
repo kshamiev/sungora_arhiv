@@ -44,3 +44,5 @@ _testmain.go
 /.prj
 /conf/*.yml
 /conf/*.yaml
+/etc/*.yml
+/etc/*.yaml
