@@ -2,7 +2,6 @@ package errs
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 )
 
@@ -14,21 +13,25 @@ const (
 func TestErrs(t *testing.T) {
 	err := FunctionLevel2()
 	if e, ok := err.(*Errs); ok {
-		fmt.Println("UI error: " + e.Response())
-		fmt.Println(e.Error())
+		t.Log("(front) UI error: " + e.Response())
+		t.Log(e.Error())
 		for _, l := range e.Trace() {
-			fmt.Println(l)
+			t.Log(l)
 		}
 	}
 
 	err = FunctionLevel22()
 	if e, ok := err.(*Errs); ok {
-		fmt.Println("UI error: " + e.Response())
-		fmt.Println(e.Error())
+		t.Log("(front) UI error: " + e.Response())
+		t.Log(e.Error())
 		for _, l := range e.Trace() {
-			fmt.Println(l)
+			t.Log(l)
 		}
 	}
+
+	t.Log(ErrSample.New(34, "popcorn", 45.78))
+
+	t.Log(ErrSample.Msg(34, "popcorn", 45.78))
 }
 
 func FunctionLevel2() error {
