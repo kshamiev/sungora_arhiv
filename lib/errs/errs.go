@@ -2,6 +2,7 @@ package errs
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 )
 
@@ -40,7 +41,7 @@ func New(err error, args ...interface{}) *Errs {
 		}
 	}
 	if err == nil {
-		err = msg.New(args...)
+		err = errors.New(msg.Msg(args...))
 	}
 	codeHTTP := http.StatusBadRequest
 	if sql.ErrNoRows == err {
