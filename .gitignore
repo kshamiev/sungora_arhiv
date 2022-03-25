@@ -44,7 +44,3 @@ _testmain.go
 /.prj
 /conf/*.yml
 /conf/*.yaml
-/conf/keys/jwt.private
-/conf/keys/jwt.public
-/conf/keys/server.private
-/conf/keys/server.public

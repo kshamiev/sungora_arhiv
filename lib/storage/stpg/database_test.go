@@ -202,8 +202,8 @@ func testInsertUpdate(t *testing.T) chan bool {
 					if err := st.QueryTx(context.TODO(), func(qu storage.QueryTxEr) error {
 						// INSERT
 						arg := []interface{}{
-							genString(8),
-							genString(8),
+							storage.GenString(8),
+							storage.GenString(8),
 						}
 						id, err := qu.ExecInsert(SQL_USER_INSERT, arg...)
 						if err != nil {
@@ -211,8 +211,8 @@ func testInsertUpdate(t *testing.T) chan bool {
 						}
 						// UPDATE
 						arg = []interface{}{
-							genString(16),
-							genString(16),
+							storage.GenString(16),
+							storage.GenString(16),
 							id,
 						}
 						_, err = qu.Exec(SQL_USER_UPDATE, arg...)
@@ -223,16 +223,16 @@ func testInsertUpdate(t *testing.T) chan bool {
 						id = 1999999999
 						arg = []interface{}{
 							id,
-							genString(3),
-							genString(3),
+							storage.GenString(3),
+							storage.GenString(3),
 						}
 						if _, err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
 							return err
 						}
 						arg = []interface{}{
 							id,
-							genString(16),
-							genString(16),
+							storage.GenString(16),
+							storage.GenString(16),
 						}
 						if _, err = qu.Exec(SQL_USER_UPSERT, arg...); err != nil {
 							return err
@@ -258,15 +258,31 @@ func testInsertUpdate(t *testing.T) chan bool {
 // Benchmark_sqlIn-8        1000000              2951 ns/op            1625 B/op         37 allocs/op
 // Benchmark_sqlIn-8        1000000              1171 ns/op             439 B/op         11 allocs/op
 func Benchmark_sqlIn(b *testing.B) {
-	sql := "SELECT * FROM table WHERE filed1 = $1 AND filed2 IN($2) AND filed3 = $3"
+	s := "SELECT * FROM table WHERE filed1 = $1 AND filed2 IN($2) AND filed3 = $3"
 	// sql := "SELECT * FROM table WHERE filed1 = $1 AND filed2 = $2"
 	in := []string{"val1", "val2", "val3", "val4", "val5", "val6", "val7", "val8", "val9"}
 	b.ResetTimer()
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		_, _, err := sqlIn(sql, 23, in, "popcorn")
+		_, _, err := sqlIn(s, 23, in, "popcorn")
 		if err != nil {
 			b.Fatal(err)
 		}
+	}
+}
+
+func getConfig() Config {
+	return Config{
+		Postgres:     "",
+		User:         "postgres",
+		Pass:         "postgres",
+		Host:         "localhost",
+		Port:         5432,
+		Dbname:       "test",
+		Sslmode:      "disable",
+		Blacklist:    []string{"test"},
+		MaxIdleConns: 50,
+		MaxOpenConns: 50,
+		OcSQLTrace:   false,
 	}
 }

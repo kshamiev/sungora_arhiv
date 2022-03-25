@@ -1,4 +1,4 @@
-package stpg
+package storage
 
 import (
 	"crypto/rand"
@@ -6,29 +6,13 @@ import (
 	"math/big"
 )
 
-func getConfig() Config {
-	return Config{
-		Postgres:     "",
-		User:         "postgres",
-		Pass:         "postgres",
-		Host:         "localhost",
-		Port:         5432,
-		Dbname:       "test",
-		Sslmode:      "disable",
-		Blacklist:    []string{"test"},
-		MaxIdleConns: 50,
-		MaxOpenConns: 50,
-		OcSQLTrace:   false,
-	}
-}
-
 const (
 	num     = "0123456789"
 	strdown = "abcdefghijklmnopqrstuvwxyz"
 	strup   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 
-func genString(length int) string {
+func GenString(length int) string {
 	return randChar(length, []byte(strdown+strup+num))
 }
 
@@ -59,7 +43,7 @@ func randChar(length int, chars []byte) string {
 	}
 }
 
-func genInt(x int64) int64 {
+func GenInt(x int64) int64 {
 	safeNum, err := rand.Int(rand.Reader, big.NewInt(x))
 	if err != nil {
 		panic(err)
