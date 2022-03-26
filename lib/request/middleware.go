@@ -149,14 +149,15 @@ func (mid *Mid) VerifyToken(token string) (*response.User, error) {
 func (mid *Mid) Observation() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return &ochttp.Handler{
-			Handler: http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-				ctx := req.Context()
+			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				ctx := r.Context()
+
 				// trick to calculate real route pattern for subrouters
 				rctx := chi.RouteContext(ctx)
 				nc := chi.Context{}
-				rctx.Routes.Match(&nc, req.Method, req.RequestURI)
-
+				rctx.Routes.Match(&nc, r.Method, r.RequestURI)
 				httpPath := strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/")
+
 				span := trace.FromContext(ctx)
 				span.AddAttributes(trace.StringAttribute(ochttp.PathAttribute, httpPath))
 				ochttp.SetRoute(ctx, httpPath)
@@ -168,17 +169,13 @@ func (mid *Mid) Observation() func(next http.Handler) http.Handler {
 				ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
 				ctx = metadata.AppendToOutgoingContext(ctx, logger.TraceID, requestID)
 
-				next.ServeHTTP(w, req.WithContext(ctx))
+				next.ServeHTTP(w, r.WithContext(ctx))
 			}),
-			FormatSpanName: func(req *http.Request) string {
-				rctx := chi.RouteContext(req.Context())
+			FormatSpanName: func(r *http.Request) string {
+				// trick to calculate real route pattern for subrouters
+				rctx := chi.RouteContext(r.Context())
 				nc := chi.Context{}
-				if rctx.Routes != nil {
-					rctx.Routes.Match(&nc, req.Method, req.RequestURI)
-				}
-				if rctx == nil {
-					return ""
-				}
+				rctx.Routes.Match(&nc, r.Method, r.RequestURI)
 				return strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/")
 			},
 			Propagation: observability.NewHTTPFormat(),

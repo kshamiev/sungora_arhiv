@@ -25,6 +25,8 @@ const (
 	OutEmpty      = "empty"
 	FormatterJSON = "json"
 	TraceID       = "trace-id"
+	Title         = "title"
+	Api           = "api"
 
 	CtxTraceID CtxKey = "trace-id"
 )

@@ -1,0 +1,299 @@
+{
+  "id": null,
+  "name": "SAMPLE graylog2 pack",
+  "description": "Extractors are applied to effectively read the most important data into message fields",
+  "category": "Application logs",
+  "inputs": [
+    {
+      "id": "591379f04da4f6063d93b8ab",
+      "title": "GELF UDP 12221 Logging of sample services",
+      "configuration": {
+        "recv_buffer_size": 1048576,
+        "port": 12221,
+        "use_null_delimiter": true,
+        "max_message_size": 2097152,
+        "override_source": "",
+        "allow_override_date": false,
+        "bind_address": "0.0.0.0"
+      },
+      "static_fields": {
+        "wdservices": "true"
+      },
+      "type": "org.graylog2.inputs.gelf.udp.GELFUDPInput",
+      "global": true,
+      "extractors": [
+        {
+          "title": "Keys of message",
+          "type": "JSON",
+          "cursor_strategy": "COPY",
+          "target_field": "",
+          "source_field": "keys",
+          "configuration": {
+            "flatten": false,
+            "list_separator": ", ",
+            "kv_separator": "=",
+            "key_prefix": "",
+            "key_separator": "_",
+            "replace_key_whitespace": false,
+            "key_whitespace_replacement": "_"
+          },
+          "converters": [],
+          "condition_type": "NONE",
+          "condition_value": "",
+          "order": 0
+        },
+        {
+          "title": "Panic",
+          "type": "REGEX",
+          "cursor_strategy": "COPY",
+          "target_field": "Panic",
+          "source_field": "message",
+          "configuration": {
+            "regex_value": "^.*(panic.*)$"
+          },
+          "converters": [],
+          "condition_type": "NONE",
+          "condition_value": "",
+          "order": 1
+        },
+        {
+          "title": "Time Local",
+          "type": "GROK",
+          "cursor_strategy": "COPY",
+          "target_field": "",
+          "source_field": "todayAndNow",
+          "configuration": {
+            "grok_pattern": "%{TIMESTAMP_ISO8601}",
+            "named_captures_only": true
+          },
+          "converters": [],
+          "condition_type": "NONE",
+          "condition_value": "",
+          "order": 2
+        }
+      ]
+    }
+  ],
+  "streams": [
+    {
+      "id": "5913781a4da4f6063d93b6a5",
+      "title": "Samples service logs",
+      "description": "Все логи сервисов samples",
+      "disabled": false,
+      "matching_type": "AND",
+      "stream_rules": [
+        {
+          "type": "EXACT",
+          "field": "wdservices",
+          "value": "true",
+          "inverted": false,
+          "description": "Все сообщения пришедшие через выделенный input"
+        }
+      ],
+      "outputs": [],
+      "default_stream": false
+    }
+  ],
+  "outputs": [],
+  "dashboards": [
+    {
+      "title": "SAMPLE Services",
+      "description": "All messages from sample services",
+      "dashboard_widgets": [
+        {
+          "description": "Уровни логов за сутки",
+          "type": "QUICKVALUES",
+          "cache_time": 10,
+          "configuration": {
+            "timerange": {
+              "type": "relative",
+              "range": 86400
+            },
+            "field": "levelString",
+            "stream_id": "5913781a4da4f6063d93b6a5",
+            "query": "",
+            "show_data_table": true,
+            "show_pie_chart": true
+          },
+          "col": 1,
+          "row": 1,
+          "height": 3,
+          "width": 1
+        },
+        {
+          "description": "Количество логов за сутки",
+          "type": "STREAM_SEARCH_RESULT_COUNT",
+          "cache_time": 10,
+          "configuration": {
+            "timerange": {
+              "type": "relative",
+              "range": 86400
+            },
+            "lower_is_better": true,
+            "stream_id": "5913781a4da4f6063d93b6a5",
+            "trend": true,
+            "query": ""
+          },
+          "col": 1,
+          "row": 4,
+          "height": 1,
+          "width": 1
+        },
+        {
+          "description": "Количество логов за 5 минут",
+          "type": "STREAM_SEARCH_RESULT_COUNT",
+          "cache_time": 10,
+          "configuration": {
+            "timerange": {
+              "type": "relative",
+              "range": 300
+            },
+            "lower_is_better": true,
+            "stream_id": "5913781a4da4f6063d93b6a5",
+            "trend": true,
+            "query": ""
+          },
+          "col": 3,
+          "row": 2,
+          "height": 1,
+          "width": 1
+        },
+        {
+          "description": "Panic за 1 час",
+          "type": "STATS_COUNT",
+          "cache_time": 10,
+          "configuration": {
+            "timerange": {
+              "type": "relative",
+              "range": 3600
+            },
+            "field": "Panic",
+            "stream_id": "5913781a4da4f6063d93b6a5",
+            "trend": true,
+            "query": "",
+            "stats_function": "cardinality",
+            "lower_is_better": true
+          },
+          "col": 3,
+          "row": 1,
+          "height": 1,
+          "width": 1
+        },
+        {
+          "description": "Error за 1 час",
+          "type": "STREAM_SEARCH_RESULT_COUNT",
+          "cache_time": 10,
+          "configuration": {
+            "timerange": {
+              "type": "relative",
+              "range": 3600
+            },
+            "lower_is_better": true,
+            "stream_id": "5913781a4da4f6063d93b6a5",
+            "trend": true,
+            "query": "level:3"
+          },
+          "col": 2,
+          "row": 1,
+          "height": 1,
+          "width": 1
+        },
+        {
+          "description": "Critical за 1 час",
+          "type": "STREAM_SEARCH_RESULT_COUNT",
+          "cache_time": 10,
+          "configuration": {
+            "timerange": {
+              "type": "relative",
+              "range": 3600
+            },
+            "lower_is_better": true,
+            "stream_id": "5913781a4da4f6063d93b6a5",
+            "trend": true,
+            "query": "level:2"
+          },
+          "col": 2,
+          "row": 2,
+          "height": 1,
+          "width": 1
+        },
+        {
+          "description": "Alert за 1 час",
+          "type": "STREAM_SEARCH_RESULT_COUNT",
+          "cache_time": 10,
+          "configuration": {
+            "timerange": {
+              "type": "relative",
+              "range": 3600
+            },
+            "lower_is_better": true,
+            "stream_id": "5913781a4da4f6063d93b6a5",
+            "trend": true,
+            "query": "level:1"
+          },
+          "col": 2,
+          "row": 3,
+          "height": 1,
+          "width": 1
+        },
+        {
+          "description": "Fatal за 1 час",
+          "type": "STREAM_SEARCH_RESULT_COUNT",
+          "cache_time": 10,
+          "configuration": {
+            "timerange": {
+              "type": "relative",
+              "range": 3600
+            },
+            "lower_is_better": true,
+            "stream_id": "5913781a4da4f6063d93b6a5",
+            "trend": true,
+            "query": "level:0"
+          },
+          "col": 2,
+          "row": 4,
+          "height": 1,
+          "width": 1
+        }
+      ]
+    }
+  ],
+  "grok_patterns": [
+    {
+      "name": "MINUTE",
+      "pattern": "(?:[0-5][0-9])"
+    },
+    {
+      "name": "HOUR",
+      "pattern": "(?:2[0123]|[01]?[0-9])"
+    },
+    {
+      "name": "MONTHNUM",
+      "pattern": "(?:0?[1-9]|1[0-2])"
+    },
+    {
+      "name": "SECOND",
+      "pattern": "(?:(?:[0-5]?[0-9]|60)(?:[:.,][0-9]+)?)"
+    },
+    {
+      "name": "TIMESTAMP_ISO8601",
+      "pattern": "%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE}?"
+    },
+    {
+      "name": "MONTHDAY",
+      "pattern": "(?:(?:0[1-9])|(?:[12][0-9])|(?:3[01])|[1-9])"
+    },
+    {
+      "name": "ISO8601_TIMEZONE",
+      "pattern": "(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))"
+    },
+    {
+      "name": "MONTH",
+      "pattern": "\\b(?:Jan(?:uary|uar)?|Feb(?:ruary|ruar)?|M(?:a|ä)?r(?:ch|z)?|Apr(?:il)?|Ma(?:y|i)?|Jun(?:e|i)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|O(?:c|k)?t(?:ober)?|Nov(?:ember)?|De(?:c|z)(?:ember)?)\\b"
+    },
+    {
+      "name": "YEAR",
+      "pattern": "(?>\\d\\d){1,2}"
+    }
+  ]
+}

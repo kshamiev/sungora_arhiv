@@ -14,7 +14,7 @@ import (
 )
 
 type SungoraServer struct {
-	pbsungora.UnsafeSungoraServer
+	pbsungora.UnimplementedSungoraServer
 }
 
 func NewSampleServer(cfg *web.GRPCConfig, opts ...grpc.ServerOption) (*web.GRPCServer, error) {
@@ -26,7 +26,7 @@ func NewSampleServer(cfg *web.GRPCConfig, opts ...grpc.ServerOption) (*web.GRPCS
 	return grpcServer, nil
 }
 
-func (ser SungoraServer) Ping(ctx context.Context, tt *pbsungora.Test) (*pbsungora.Test, error) {
+func (ser *SungoraServer) Ping(ctx context.Context, tt *pbsungora.Test) (*pbsungora.Test, error) {
 	s := jaeger.NewSpan(ctx)
 	s.StringAttribute("description", "qwerty qwerty qwerty")
 	defer s.End()

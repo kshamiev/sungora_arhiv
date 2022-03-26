@@ -150,7 +150,7 @@ func initDomain(cfg *app.Config) *chi.Mux {
 
 	// domains
 	router.Group(func(router chi.Router) {
-		router.Use(mid.Observation())
+		router.Use(logger.Middleware())
 		chat.InitDomain(router)
 		data.InitDomain(router)
 		general.InitDomain(router)
