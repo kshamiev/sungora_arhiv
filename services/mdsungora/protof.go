@@ -4,8 +4,7 @@ package mdsungora
 import (
 	"time"
 
-	"sungora/lib/typ"
-
+	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 	"github.com/volatiletech/null/v8"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -61,7 +60,7 @@ func pbFromDecimal(v string) decimal.Decimal {
 	return d
 }
 
-func pbToUUIDS(list []typ.UUID) []string {
+func pbToUUIDS(list []uuid.UUID) []string {
 	uu := make([]string, len(list))
 	for i := range list {
 		uu[i] = list[i].String()
@@ -69,10 +68,10 @@ func pbToUUIDS(list []typ.UUID) []string {
 	return uu
 }
 
-func pbFromUUIDS(list []string) []typ.UUID {
-	uu := make([]typ.UUID, len(list))
+func pbFromUUIDS(list []string) []uuid.UUID {
+	uu := make([]uuid.UUID, len(list))
 	for i := range list {
-		uu[i] = typ.UUIDMustParse(list[i])
+		uu[i] = uuid.MustParse(list[i])
 	}
 	return uu
 }

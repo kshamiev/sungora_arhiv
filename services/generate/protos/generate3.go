@@ -130,7 +130,7 @@ func tagType(s string) string {
 			l[1] += tagTime
 			s = strings.Join(l, "`")
 		}
-	case strings.Contains(s, " uuid.UUID ") || strings.Contains(s, " typ.UUID "):
+	case strings.Contains(s, " uuid.UUID "):
 		l := strings.Split(s, "`")
 		f, _ := regexp.MatchString(tagUuid, s)
 		if len(l) == 3 && !f {

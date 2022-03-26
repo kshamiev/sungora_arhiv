@@ -6,8 +6,8 @@ import (
 
 	"sungora/lib/errs"
 	"sungora/lib/logger"
-	"sungora/lib/typ"
 
+	"github.com/google/uuid"
 	"github.com/streadway/amqp"
 )
 
@@ -69,7 +69,7 @@ func NewConsumerTopic(exchange, queueName string, routeKey []string) (Consumer, 
 
 	return &consumer{
 		queue:       q.Name,
-		consumer:    typ.UUIDNew().String(),
+		consumer:    uuid.New().String(),
 		isExclusive: isExclusive,
 		isAck:       isExclusive,
 	}, nil
@@ -90,7 +90,7 @@ func NewConsumerQueue(queueName string) (Consumer, error) {
 
 	return &consumer{
 		queue:    q.Name,
-		consumer: typ.UUIDNew().String(),
+		consumer: uuid.New().String(),
 	}, nil
 }
 

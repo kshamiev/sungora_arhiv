@@ -14,10 +14,8 @@ import (
 
 var CustomHandlerFunc = map[string]func(int, string, string) (string, string, string){
 	"decimal.Decimal":   GenerateFieldDecimal,
-	"[]typ.UUID":        GenerateFieldUUIDSlice,
-	"typ.UUIDS":         GenerateFieldUUIDSlice,
 	"types.StringArray": GenerateFieldStringArray,
-	"typ.UUID":          GenerateFieldTypUUID,
+	"[]uuid.UUID":       GenerateFieldUUIDSlice,
 	"uuid.UUID":         GenerateFieldUUID,
 	"time.Time":         GenerateFieldTime,
 	"null.Time":         GenerateFieldNullTime,
@@ -72,14 +70,6 @@ func GenerateFieldTime(i int, pType, pMessage string) (tplP, tplMFrom, tplMTo st
 	tplP += "\tgoogle.protobuf.Timestamp " + pMessage + " = " + strconv.Itoa(i+1) + ";\n"
 	tplMTo = fmt.Sprintf("%s: pbToTime(tt.%s),\n", ConvFP(pMessage), pType)
 	tplMFrom = fmt.Sprintf("%s: pbFromTime(proto.%s),\n", pType, ConvFP(pMessage))
-	return tplP, tplMFrom, tplMTo
-}
-
-// GenerateFieldTypUUID конвертация - сопоставление туда и обратно
-func GenerateFieldTypUUID(i int, pType, pMessage string) (tplP, tplMFrom, tplMTo string) {
-	tplP += "\tstring " + pMessage + " = " + strconv.Itoa(i+1) + ";\n"
-	tplMTo = fmt.Sprintf("%s: tt.%s.String(),\n", ConvFP(pMessage), pType)
-	tplMFrom = fmt.Sprintf("%s: typ.UUIDMustParse(proto.%s),\n", pType, ConvFP(pMessage))
 	return tplP, tplMFrom, tplMTo
 }
 

@@ -16,7 +16,6 @@ import (
 	"sungora/lib/enum"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
-	"sungora/lib/typ"
 
 	"github.com/go-chi/chi"
 )
@@ -362,16 +361,8 @@ func (rw *Response) GetToken() (string, error) {
 	return token, nil
 }
 
-func (rw *Response) GetUserAndID(r *http.Request) (*User, typ.UUID, error) {
-	us, err := rw.GetUser()
-	if err != nil {
-		return nil, typ.UUID{}, err
-	}
-	ID, err := typ.UUIDParse(chi.URLParam(r, "id"))
-	if err != nil {
-		return nil, typ.UUID{}, err
-	}
-	return us, ID, nil
+func (rw *Response) GetID(r *http.Request) (int64, error) {
+	return strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 }
 
 func (rw *Response) Access(roles ...enum.Role) bool {

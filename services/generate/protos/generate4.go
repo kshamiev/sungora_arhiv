@@ -4,7 +4,7 @@
 // Обрабатываются только публичные и помеченные тегом json поля структур.
 //
 // Из коробки обрабатывает базовые типы golang (string, bool, int..., uint..., float..., []byte, []string)
-// + typ.UUID - реализация работы с полями UUID
+// + uuid.UUID - реализация работы с полями UUID
 // + time.Time - дата и время
 // + time.Duration - время
 // + decimal.Decimal - работа с дробными числами
@@ -165,7 +165,7 @@ func (gen *Generate) ParseField(objValue reflect.Value, i int, pkgType string) (
 
 	switch propKind {
 	case reflect.String:
-		if strings.Contains(propType, "enum.") || propType == "typ.Role" {
+		if strings.Contains(propType, "enum.") {
 			tplP, tplMFrom, tplMTo = GenerateFieldEnum(i, propType, fieldName, fieldJSON)
 		} else {
 			tplP += "\tstring " + fieldJSON + " = " + strconv.Itoa(i+1) + ";\n"
