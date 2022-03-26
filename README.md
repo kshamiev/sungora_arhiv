@@ -56,15 +56,17 @@
 #### Graylog
 
 ```dockerfile
-docker run --name mongo -d mongo:4.2
+docker run --rm --name mongo -d mongo:4.2
 
-docker run --name elasticsearch \
+docker run --rm --name elasticsearch \
     -e "http.host=0.0.0.0" \
     -e "discovery.type=single-node" \
     -e "ES_JAVA_OPTS=-Xms512m -Xmx512m" \
+    -d elasticsearch:7.9.2
+    -d elasticsearch:7.16.2
     -d docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
 
-docker run --name graylog --link mongo --link elasticsearch \
+docker run --rm --name graylog --link mongo --link elasticsearch \
     -p 9000:9000 -p 12201:12201 -p 1514:1514 \
     -e GRAYLOG_HTTP_EXTERNAL_URI="http://127.0.0.1:9000/" \
     -e GRAYLOG_PASSWORD_SECRET="yESMn44eQlUXTqN2RyXqJzbxatiHZwGZwWJu9pUHNOQAQQm1NmKiQwtk7l5u6pC0m7ub6ilyFh0YqepA9" \

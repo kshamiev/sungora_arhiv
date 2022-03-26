@@ -6,7 +6,7 @@ COPY . .
 
 RUN rm -rf /home/app/bin
 
-RUN go build -o bin/app .
+RUN go build -o bin/app cmd/main.go
 
 FROM kshamiev/service:v1
 

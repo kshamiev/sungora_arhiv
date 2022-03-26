@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+  mongo:
+    image: "mongo:4.2"
+    # Other settings [...]
+  elasticsearch:
+    image: "elasticsearch:7.9.2"
+    # Other settings [...]
+  graylog:
+    image: graylog/graylog:4.2
+    # Other settings [...]
+    ports:
+      - "9000:9000"
+      - "12201:12201"
+      - "1514:1514"
+    environment:
+      GRAYLOG_TRANSPORT_EMAIL_ENABLED: "true"
+      GRAYLOG_TRANSPORT_EMAIL_HOSTNAME: smtp
+      GRAYLOG_TRANSPORT_EMAIL_PORT: 25
+      GRAYLOG_TRANSPORT_EMAIL_USE_AUTH: "false"
+      GRAYLOG_TRANSPORT_EMAIL_USE_TLS: "false"
+      GRAYLOG_TRANSPORT_EMAIL_USE_SSL: "false"
+      GRAYLOG_HTTP_EXTERNAL_URI: "http://127.0.0.1:9000/"
+      GRAYLOG_PASSWORD_SECRET: "yESMn44eQlUXTqN2RyXqJzbxatiHZwGZwWJu9pUHNOQAQQm1NmKiQwtk7l5u6pC0m7ub6ilyFh0YqepA9"
+      GRAYLOG_ROOT_PASSWORD_SHA2: "65e84be33532fb784c48129675f9eff3a682b27168c0ea744b2cf58ee02337c5"
