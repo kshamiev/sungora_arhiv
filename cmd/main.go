@@ -109,7 +109,7 @@ func main() {
 	defer worker.CloseWait()
 
 	// Server Web & Handlers
-	server, err := web.NewServer(&cfg.ServeHTTP, initDomain(&cfg.App))
+	server, err := web.NewHTTPServer(&cfg.ServeHTTP, initDomain(&cfg.App))
 	if err != nil {
 		lg.WithError(err).Fatal("new web server error")
 	}
@@ -150,6 +150,7 @@ func initDomain(cfg *app.Config) *chi.Mux {
 
 	// domains
 	router.Group(func(router chi.Router) {
+		router.Use(jaeger.Observation())
 		router.Use(logger.Middleware())
 		chat.InitDomain(router)
 		data.InitDomain(router)

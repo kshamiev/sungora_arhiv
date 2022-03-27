@@ -20,7 +20,7 @@ type Handler struct {
 
 func NewHandler() *Handler {
 	return &Handler{
-		wsBus: web.NewSocketBus(),
+		wsBus: web.NewWebSocketBus(),
 	}
 }
 

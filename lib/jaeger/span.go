@@ -40,8 +40,16 @@ func (s *Span) Float64Attribute(key string, value float64) {
 	s.Span.AddAttributes(trace.Float64Attribute(key, value))
 }
 
+func (s *Span) Float32Attribute(key string, value float32) {
+	s.Span.AddAttributes(trace.Float64Attribute(key, float64(value)))
+}
+
 func (s *Span) Int64Attribute(key string, value int64) {
 	s.Span.AddAttributes(trace.Int64Attribute(key, value))
+}
+
+func (s *Span) IntAttribute(key string, value int) {
+	s.Span.AddAttributes(trace.Int64Attribute(key, int64(value)))
 }
 
 func (s *Span) End() {

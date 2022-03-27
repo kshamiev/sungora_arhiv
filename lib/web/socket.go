@@ -25,7 +25,7 @@ var mu sync.Mutex
 // SocketBus шина обработчиков вебсокетов по идентификаторам
 type SocketBus map[string]*SocketHandler
 
-func NewSocketBus() SocketBus { return make(SocketBus) }
+func NewWebSocketBus() SocketBus { return make(SocketBus) }
 
 // SocketHandler обработчик клиентов
 type SocketHandler struct {

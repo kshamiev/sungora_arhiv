@@ -15,20 +15,23 @@ import (
 func Middleware() func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			requestID := uuid.New().String()
 			ctx := r.Context()
+			traceID, ok := ctx.Value(CtxTraceID).(string)
+			if !ok {
+				traceID = uuid.New().String()
+				ctx = context.WithValue(ctx, CtxTraceID, traceID)
+			}
 
 			rctx := chi.RouteContext(ctx)
 			nc := chi.Context{}
 			rctx.Routes.Match(&nc, r.Method, r.RequestURI)
 			p := strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/")
 
-			ctx = context.WithValue(ctx, CtxTraceID, requestID)
-			ctx = WithLogger(ctx, Get(ctx).WithField(TraceID, requestID).WithField(Api, p))
-			ctx = metadata.AppendToOutgoingContext(ctx, TraceID, requestID)
+			ctx = WithLogger(ctx, Get(ctx).WithField(TraceID, traceID).WithField(Api, p))
+			ctx = metadata.AppendToOutgoingContext(ctx, TraceID, traceID)
 			ctx = metadata.AppendToOutgoingContext(ctx, Api, p)
 
-			w.Header().Add(TraceID, requestID)
+			w.Header().Add(TraceID, traceID)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
@@ -43,10 +46,13 @@ func Interceptor() grpc.UnaryServerInterceptor {
 			ctx = context.WithValue(ctx, CtxTraceID, md.Get(TraceID)[0])
 			ctx = WithLogger(ctx, Get(ctx).WithField(TraceID, md.Get(TraceID)[0]).WithField(Api, md.Get(Api)[0]))
 		} else {
-			requestID := uuid.New().String()
-			ctx = context.WithValue(ctx, CtxTraceID, requestID)
-			ctx = WithLogger(ctx, Get(ctx).WithField(TraceID, requestID).WithField(Api, info.FullMethod))
-			ctx = metadata.AppendToOutgoingContext(ctx, TraceID, requestID)
+			traceID, ok := ctx.Value(CtxTraceID).(string)
+			if !ok {
+				traceID = uuid.New().String()
+				ctx = context.WithValue(ctx, CtxTraceID, traceID)
+			}
+			ctx = WithLogger(ctx, Get(ctx).WithField(TraceID, traceID).WithField(Api, info.FullMethod))
+			ctx = metadata.AppendToOutgoingContext(ctx, TraceID, traceID)
 			ctx = metadata.AppendToOutgoingContext(ctx, Api, info.FullMethod)
 		}
 		return handler(ctx, req)

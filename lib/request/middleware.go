@@ -4,23 +4,15 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"path"
-	"strings"
 	"time"
 
-	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/volatiletech/sqlboiler/v4/boil"
-	"go.opencensus.io/plugin/ochttp"
-	"go.opencensus.io/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
 	"sungora/lib/enum"
 	"sungora/lib/errs"
-	"sungora/lib/logger"
-	"sungora/lib/request/observability"
 	"sungora/lib/response"
 )
 
@@ -144,43 +136,6 @@ func (mid *Mid) VerifyToken(token string) (*response.User, error) {
 		return us, nil
 	}
 	return nil, errors.New("error get tokenObj.Claims")
-}
-
-func (mid *Mid) Observation() func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return &ochttp.Handler{
-			Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				ctx := r.Context()
-
-				// trick to calculate real route pattern for subrouters
-				rctx := chi.RouteContext(ctx)
-				nc := chi.Context{}
-				rctx.Routes.Match(&nc, r.Method, r.RequestURI)
-				httpPath := strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/")
-
-				span := trace.FromContext(ctx)
-				span.AddAttributes(trace.StringAttribute(ochttp.PathAttribute, httpPath))
-				ochttp.SetRoute(ctx, httpPath)
-
-				requestID := span.SpanContext().TraceID.String()
-				lg := logger.Get(ctx).WithField(logger.TraceID, requestID)
-				ctx = logger.WithLogger(ctx, lg)
-				ctx = boil.WithDebugWriter(ctx, lg.Writer())
-				ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
-				ctx = metadata.AppendToOutgoingContext(ctx, logger.TraceID, requestID)
-
-				next.ServeHTTP(w, r.WithContext(ctx))
-			}),
-			FormatSpanName: func(r *http.Request) string {
-				// trick to calculate real route pattern for subrouters
-				rctx := chi.RouteContext(r.Context())
-				nc := chi.Context{}
-				rctx.Routes.Match(&nc, r.Method, r.RequestURI)
-				return strings.ReplaceAll(path.Join(nc.RoutePatterns...), "/*/", "/")
-			},
-			Propagation: observability.NewHTTPFormat(),
-		}
-	}
 }
 
 func Interceptor() grpc.UnaryServerInterceptor {

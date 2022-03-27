@@ -27,7 +27,7 @@ type HttpServer struct {
 	lis       net.Listener
 }
 
-func NewServer(cfg *HttpServerConfig, mux http.Handler) (comp *HttpServer, err error) {
+func NewHTTPServer(cfg *HttpServerConfig, mux http.Handler) (comp *HttpServer, err error) {
 	comp = &HttpServer{
 		server: &http.Server{
 			Addr:           fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
