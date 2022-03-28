@@ -2,28 +2,30 @@ package conf
 
 import (
 	"flag"
+	"os"
 	"reflect"
 	"strings"
 
 	"github.com/spf13/viper"
+	"gopkg.in/yaml.v3"
 )
 
-func Get(cfg interface{}, envPrefix string) error {
+func Get(cfg interface{}, envPrefix string) {
 	filePath := flag.String("c", "etc/config.dev.yml", "Path to configuration file")
 	flag.Parse()
-	return GetFile(cfg, *filePath, envPrefix)
+	GetFile(cfg, *filePath, envPrefix)
 }
 
-func GetFile(cfg interface{}, filePath, envPrefix string) error {
+func GetFile(cfg interface{}, filePath, envPrefix string) {
 
-	//data, err := os.ReadFile(filePath)
-	//if err != nil {
-	//	return err
-	//}
-	//err = yaml.Unmarshal(data, cfg)
-	//if err != nil {
-	//	return err
-	//}
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		panic(err)
+	}
+	err = yaml.Unmarshal(data, cfg)
+	if err != nil {
+		panic(err)
+	}
 
 	vip := viper.New()
 	vip.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
@@ -37,8 +39,9 @@ func GetFile(cfg interface{}, filePath, envPrefix string) error {
 			panic(err)
 		}
 	}
-
-	return vip.Unmarshal(cfg)
+	if err := vip.Unmarshal(cfg); err != nil {
+		panic(err)
+	}
 }
 
 func bindEnvs(cfg *viper.Viper, cfgStruct interface{}, parts ...string) {
@@ -51,14 +54,19 @@ func bindEnvs(cfg *viper.Viper, cfgStruct interface{}, parts ...string) {
 		t := ifv.Type().Field(i)
 		tv, ok := t.Tag.Lookup("mapstructure")
 		if !ok {
-			continue
+			if tv, ok = t.Tag.Lookup("yaml"); !ok {
+				if tv, ok = t.Tag.Lookup("json"); !ok {
+					continue
+				}
+			}
 		}
 		switch v.Kind() {
 		case reflect.Struct:
 			bindEnvs(cfg, v.Interface(), append(parts, tv)...)
 		default:
 			envVar := strings.Join(append(parts, tv), ".")
-			if err := cfg.BindEnv(envVar); err != nil {
+			err := cfg.BindEnv(envVar)
+			if err != nil {
 				panic(err)
 			}
 		}
