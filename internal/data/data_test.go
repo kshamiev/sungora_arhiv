@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"sungora/app/config"
+	"sungora/internal/config"
 	"sungora/lib/errs"
 	"sungora/lib/minio"
 

@@ -15,9 +15,9 @@ dep:
 
 # Сваггер
 swag:
-	swag i --parseVendor -o app/config;
-	rm -f app/config/swagger.json
-	rm -f app/config/swagger.yaml
+	swag i --parseVendor -o internal/config;
+	rm -f internal/config/swagger.json
+	rm -f internal/config/swagger.yaml
 .PHONY: swag
 
 # FMT & GOIMPORT

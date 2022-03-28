@@ -3,7 +3,7 @@ package general
 import (
 	"net/http"
 
-	"sungora/app/config"
+	"sungora/internal/config"
 	"sungora/lib/logger"
 	"sungora/lib/response"
 	"sungora/lib/tpl"

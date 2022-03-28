@@ -54,12 +54,12 @@ run:
   tests: false
   skip-dirs:
     - bin
+    - doc
     - conf
     - etc
-    - dev
-    - doc
     - migration
-    - template
     - vendor
     - www
+    - www_test
+    - dev
   timeout: 5m

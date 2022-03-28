@@ -5,14 +5,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"sungora/services/pbsungora"
-
-	"sungora/app/client"
+	"sungora/internal/client"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/response"
 	"sungora/lib/storage"
 	"sungora/services/mdsungora"
+	"sungora/services/pbsungora"
 
 	"github.com/go-chi/chi"
 	"github.com/volatiletech/sqlboiler/v4/boil"
