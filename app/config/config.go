@@ -1,6 +1,7 @@
 package config
 
 import (
+	"flag"
 	"os"
 	"strings"
 	"time"
@@ -36,8 +37,10 @@ func Get() *Config {
 }
 
 func Init() (*Config, error) {
+	filePath := flag.String("c", "config.dev.yaml", "Path to configuration file")
+	flag.Parse()
 	config = &Config{}
-	if err := conf.Get(config, ""); err != nil {
+	if err := conf.Get(config, *filePath, ""); err != nil {
 		return nil, err
 	}
 	return config, nil

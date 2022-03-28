@@ -2,24 +2,18 @@ package tpl
 
 import (
 	"context"
+	"path/filepath"
+	"runtime"
 	"testing"
-
-	"sungora/app/config"
-	"sungora/lib/app"
 
 	"github.com/shopspring/decimal"
 )
 
 func TestTplStorage(t *testing.T) {
-	var cfg = struct {
-		App config.App `yaml:"app"`
-	}{}
-	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
-		t.Fatal(err)
-	}
-	cfg.App.SetDefault()
+	_, currentFile, _, _ := runtime.Caller(0)
+	pathTpl := filepath.Dir(currentFile) + "/www"
 
-	task := NewTaskTemplateParse(cfg.App.DirWww)
+	task := NewTaskTemplateParse(pathTpl)
 	if err := task.Action(context.Background()); err != nil {
 		t.Fatal(err)
 	}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}}</title>
+</head>
+<body>
+
+{{TplTest .Title}}
+<table cellspacing="2" cellpadding="2">
+    {{range .Goods}}
+    {{if eq .Name "Item 2"}}
+    <tr bgcolor="#f0fff0">
+        {{else}}
+    <tr bgcolor="#fff0f5">
+        {{end}}
+        <td>{{.ID}}</td>
+        <td>{{.Name}}</td>
+        <td>{{.Price}}</td>
+        <td>{{.Method.Call}}</td>
+    </tr>
+    {{end}}
+</table>
+
+</body>
+</html>

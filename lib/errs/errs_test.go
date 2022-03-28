@@ -29,9 +29,9 @@ func TestErrs(t *testing.T) {
 		}
 	}
 
-	t.Log(ErrSample.New(34, "popcorn", 45.78))
-
 	t.Log(ErrSample.Msg(34, "popcorn", 45.78))
+
+	t.Log(ErrSample)
 }
 
 func FunctionLevel2() error {

@@ -5,15 +5,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 	"sungora/lib/logger/graylog"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestYaml(t *testing.T) {
 	err := os.Setenv("PORTAL_LOG_LEVEL", "trace")
 	assert.NoError(t, err, "expected no error")
 	cfg := &Config{}
-	err = GetFile(cfg, "etc/config.yaml.yml", "portal")
+	err = Get(cfg, "config.yaml.yml", "portal")
 	assert.NoError(t, err, "expected no error")
 	assert.Equal(t, cfg.Log.Level, "trace", "expected value from env variable")
 }

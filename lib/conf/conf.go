@@ -1,8 +1,8 @@
 package conf
 
 import (
-	"flag"
 	"os"
+	"path"
 	"reflect"
 	"strings"
 
@@ -14,34 +14,39 @@ type ConfigEr interface {
 	SetDefault() error
 }
 
-func Get(cfg ConfigEr, envPrefix string) error {
-	filePath := flag.String("c", "etc/config.dev.yml", "Path to configuration file")
-	flag.Parse()
-	return GetFile(cfg, *filePath, envPrefix)
-}
-
-func GetFile(cfg ConfigEr, filePath, envPrefix string) error {
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		return err
-	}
-	if err = yaml.Unmarshal(data, cfg); err != nil {
-		return err
-	}
-
+func Get(cfg ConfigEr, fileConf, envPrefix string) error {
 	vip := viper.New()
 	vip.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	if envPrefix != "" {
 		vip.SetEnvPrefix(envPrefix)
 	}
 	bindEnvs(vip, cfg)
-	if filePath != "" {
-		vip.SetConfigFile(filePath)
+	if fileConf != "" {
+		// search config
+		d, _ := os.Getwd()
+		dd := string(os.PathSeparator) + "etc" + string(os.PathSeparator)
+		for strings.Count(d, string(os.PathSeparator)) > 1 {
+			if _, err := os.Stat(d + dd + fileConf); err != nil {
+				d = path.Dir(d)
+			} else {
+				break
+			}
+		}
+		fileConf = d + dd + fileConf
+		// yaml
+		data, err := os.ReadFile(fileConf)
+		if err != nil {
+			return err
+		}
+		if err = yaml.Unmarshal(data, cfg); err != nil {
+			return err
+		}
+		vip.SetConfigFile(fileConf)
 		if err := vip.ReadInConfig(); err != nil {
 			return err
 		}
 	}
-	if err = vip.Unmarshal(cfg); err != nil {
+	if err := vip.Unmarshal(cfg); err != nil {
 		return err
 	}
 	return cfg.SetDefault()

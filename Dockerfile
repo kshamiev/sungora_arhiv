@@ -6,7 +6,7 @@ COPY . .
 
 RUN rm -rf /home/app/bin
 
-RUN go build -o bin/app cmd/main.go
+RUN go build -o bin/app .
 
 FROM kshamiev/service:v1
 
@@ -21,4 +21,4 @@ VOLUME www
 
 EXPOSE 8080:8080
 
-CMD bin/app -c etc/config_docker.yaml
+CMD bin/app -c config_docker.yaml
