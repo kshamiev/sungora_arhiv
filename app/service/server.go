@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
+	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/jaeger"
 	"sungora/lib/logger"
-	"sungora/lib/web"
 	"sungora/services/pbsungora"
 
 	"google.golang.org/grpc"
@@ -17,8 +17,8 @@ type SungoraServer struct {
 	pbsungora.UnimplementedSungoraServer
 }
 
-func NewSampleServer(cfg *web.GRPCConfig, opts ...grpc.ServerOption) (*web.GRPCServer, error) {
-	grpcServer, err := web.NewGRPCServer(cfg, opts...)
+func NewSampleServer(cfg *app.GRPCConfig, opts ...grpc.ServerOption) (*app.GRPCServer, error) {
+	grpcServer, err := app.NewGRPCServer(cfg, opts...)
 	if err != nil {
 		return nil, errs.New(err)
 	}

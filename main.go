@@ -23,7 +23,6 @@ import (
 	"sungora/lib/request"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/tpl"
-	"sungora/lib/web"
 	"sungora/lib/worker"
 
 	"github.com/go-chi/chi"
@@ -81,7 +80,7 @@ func main() {
 	defer jg.Close()
 
 	// Server GRPC
-	var grpcServer *web.GRPCServer
+	var grpcServer *app.GRPCServer
 	if grpcServer, err = service.NewSampleServer(&cfg.GRPCServer); err != nil {
 		lg.Fatal(err)
 	}
@@ -89,7 +88,7 @@ func main() {
 	lg.Info("start grpc server: ", grpcServer.Addr)
 
 	// Client GRPC
-	var grpcClient *web.GRPCClient
+	var grpcClient *app.GRPCClient
 	if grpcClient, err = client.InitSungoraClient(&cfg.GRPCClient); err != nil {
 		lg.Fatal(err)
 	}
@@ -105,7 +104,7 @@ func main() {
 	defer worker.CloseWait()
 
 	// Server Web & Handlers
-	server, err := web.NewHTTPServer(&cfg.ServeHTTP, initDomain(&cfg.App))
+	server, err := app.NewHTTPServer(&cfg.ServeHTTP, initDomain(&cfg.App))
 	if err != nil {
 		lg.WithError(err).Fatal("new web server error")
 	}

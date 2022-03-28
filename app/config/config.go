@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"sungora/lib/app"
 	"sungora/lib/conf"
 	"sungora/lib/jaeger"
 	"sungora/lib/minio"
@@ -13,17 +14,16 @@ import (
 
 	"sungora/lib/logger"
 	"sungora/lib/storage/stpg"
-	"sungora/lib/web"
 )
 
 type Config struct {
 	App        App                  `yaml:"app"`
 	Lg         logger.Config        `yaml:"lg"`
-	ServeHTTP  web.HttpServerConfig `yaml:"http"`
+	ServeHTTP  app.HttpServerConfig `yaml:"http"`
 	Postgresql stpg.Config          `yaml:"psql"`
 	Jaeger     jaeger.JaegerConfig  `yaml:"jaeger"`
-	GRPCClient web.GRPCConfig       `yaml:"grpcClient"`
-	GRPCServer web.GRPCConfig       `yaml:"grpcServer"`
+	GRPCClient app.GRPCConfig       `yaml:"grpcClient"`
+	GRPCServer app.GRPCConfig       `yaml:"grpcServer"`
 	Minio      minio.Config         `yaml:"minio"`
 }
 

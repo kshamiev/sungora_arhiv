@@ -1,8 +1,9 @@
-package web
+package app
 
 import (
 	"fmt"
 	"net"
+
 	"sungora/lib/logger"
 	"sungora/lib/request"
 

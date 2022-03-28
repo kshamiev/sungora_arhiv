@@ -1,15 +1,15 @@
 package client
 
 import (
+	"sungora/lib/app"
 	"sungora/lib/errs"
-	"sungora/lib/web"
 	"sungora/services/pbsungora"
 )
 
 var sungoraClient pbsungora.SungoraClient
 
-func InitSungoraClient(cfg *web.GRPCConfig) (*web.GRPCClient, error) {
-	grpcClient, err := web.NewGRPCClient(cfg)
+func InitSungoraClient(cfg *app.GRPCConfig) (*app.GRPCClient, error) {
+	grpcClient, err := app.NewGRPCClient(cfg)
 	if err != nil {
 		return nil, errs.New(err)
 	}

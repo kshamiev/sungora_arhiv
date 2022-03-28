@@ -5,22 +5,22 @@ import (
 	"net/http"
 	"os"
 
+	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 	"sungora/lib/response"
-	"sungora/lib/web"
 
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 )
 
 type Handler struct {
-	wsBus web.SocketBus
+	wsBus app.SocketBus
 }
 
 func NewHandler() *Handler {
 	return &Handler{
-		wsBus: web.NewWebSocketBus(),
+		wsBus: app.NewWebSocketBus(),
 	}
 }
 
