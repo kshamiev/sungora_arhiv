@@ -1,0 +1,28 @@
+AuthGrpcServerEndpoint: :10004
+AuthGrpcMiddlewareEndpoint: :10003
+Database:
+  Url:            localhost:5432
+  Name:           portal-ext
+  Login:          postgres
+  Password:       postgres
+  TLS:            none    # none|noverify|verify : no SSL | SSL, no cert. verification | SSL with cert. verification
+  Timeout:        60      # Read/Write timeout seconds.
+  RootCert:
+Auth:
+  AuthType:       token # none чтобы оключить
+  AuthURI:        https://www.tn-profile-stage.tjdev.ru:30061/api/v1/oauth/authorize?client_id=$CLIENT_ID$&response_type=code&redirect_uri=$REDIRECT$
+  RedirectURI:    https://account.tn-dev.tjdev.ru:82/
+  TokenURI:       http://localhost:80/api/v1/oauth/token?client_id=$CLIENT_ID$&code=$CODE$&client_secret=$CLIENT_SECRET$&grant_type=authorization_code&redirect_uri=$REDIRECT$
+  RefreshURI:     http://localhost:80/api/v1/oauth/token?client_id=$CLIENT_ID$&refresh_token=$REFRESH$&client_secret=$CLIENT_SECRET$&grant_type=refresh_token&redirect_uri=$REDIRECT$
+  ClientId:       4etr3tut18u8kgwwfed9
+  ClientSecret:   d41d8cd98f00b204e9800998ecf8427e
+  TestUser:       #IvanIvanoff
+  TestCounterpartyId: 1
+  Superuser:
+CLientLogging:
+  QueueSize: 1000
+  Enabled: true
+Log:
+  Level:          dgdfgdfg        # (error|warning|info|debug|trace)
+  Format:         text        # text|json
+  Title:          auth

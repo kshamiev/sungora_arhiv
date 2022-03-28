@@ -1,0 +1,91 @@
+app:
+  token: &title "sungora-dev" # cookie name
+  sessionTimeout: 604800s
+  mode: "dev"
+  dirWww: "/www_test"
+  signingKey: "xxx-xxx-xxx"
+
+log:
+  title: *title
+  output: "stdout" # Change (stdout | stderr | filePathRelative | empty)
+  formatter: "json" # Change enum (json | text)
+  level: info # Change enum (info | warning | error | fatal | trace | debug)
+  is_caller: false
+  hooks:
+    graylog:
+      dsn: "172.17.0.4:12201"
+      host: ""
+      blacklist:
+        - field1
+        - field2
+
+http:
+  proto: "http"
+  host: "localhost"
+  port: 8080
+  writeTimeout: 60s  # Время ожидания окончания передачи ответа в секундах
+  readTimeout: 60s   # Время ожидания web запроса в секундах
+  requestTimeout: 60s # Время ожидания окончания выполнения запроса
+  maxHeaderBytes: 1048576 # Максимальный размер заголовка получаемого от браузера клиента в байтах
+
+psql:
+  user: "postgres"
+  pass: "postgres"
+  host: "localhost"
+  port: 5432
+  dbname: "sungora"
+  sslmode: "disable"
+  blacklist: [ "test" ]
+  max_idle_conns: 50
+  max_open_conns: 50
+  ocsql_trace: true
+
+jaeger:
+  title: *title
+  oc_url: "http://localhost:14268/api/traces"
+  fraction: 1
+
+grpcClient:
+  host: "localhost"
+  port: 7071
+
+grpcServer:
+  host: "localhost"
+  port: 7071
+
+minio:
+  host: "localhost:9000"
+  access_key: "admin"
+  secret_key: "xxx-xxx-xxx"
+  ssl: false
+  region: "eu-east-1"
+
+# Boiler
+types:
+  - match:
+      name: duration
+    replace:
+      type: time.Duration
+  - match:
+      db_type: uuid
+      nullable: true
+    replace:
+      type: uuid.UUID
+    imports:
+      third_party:
+        - '"github.com/google/uuid"'
+  - match:
+      db_type: uuid
+      nullable: false
+    replace:
+      type: uuid.UUID
+    imports:
+      third_party:
+        - '"github.com/google/uuid"'
+  - match:
+      db_type: numeric
+    replace:
+      type: decimal.Decimal
+    imports:
+      third_party:
+        - '"github.com/shopspring/decimal"'
