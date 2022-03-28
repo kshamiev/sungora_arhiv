@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"sungora/lib/app"
+	"sungora/lib/conf"
 	"sungora/lib/jaeger"
 	"sungora/lib/minio"
 	"sungora/lib/typ"
@@ -35,14 +35,12 @@ func Get() *Config {
 	return config
 }
 
-func Init(fileConf string) (*Config, error) {
-	cfg := &Config{}
-	if err := app.LoadConfig(fileConf, cfg); err != nil {
+func Init() (*Config, error) {
+	config = &Config{}
+	if err := conf.Get(config, ""); err != nil {
 		return nil, err
 	}
-	cfg.App.SetDefault()
-	config = cfg
-	return cfg, nil
+	return config, nil
 }
 
 // App основная общая конфигурация
@@ -57,33 +55,34 @@ type App struct {
 }
 
 // SetDefault инициализация значениями по умолчанию
-func (cfg *App) SetDefault() {
+func (cfg *Config) SetDefault() error {
 	if cfg == nil {
-		cfg = &App{}
+		cfg = &Config{}
 	}
 
 	// режим работы приложения
-	if cfg.Mode == "" {
-		cfg.Mode = "dev"
+	if cfg.App.Mode == "" {
+		cfg.App.Mode = "dev"
 	}
 
 	// пути
 	sep := string(os.PathSeparator)
-	if cfg.DirWork == "" {
-		cfg.DirWork, _ = os.Getwd()
-		sl := strings.Split(cfg.DirWork, sep)
+	if cfg.App.DirWork == "" {
+		cfg.App.DirWork, _ = os.Getwd()
+		sl := strings.Split(cfg.App.DirWork, sep)
 		if sl[len(sl)-1] == "bin" {
 			sl = sl[:len(sl)-1]
 		}
-		cfg.DirWork = strings.Join(sl, sep)
+		cfg.App.DirWork = strings.Join(sl, sep)
 	}
-	cfg.DirWww = cfg.DirWork + cfg.DirWww
+	cfg.App.DirWww = cfg.App.DirWork + cfg.App.DirWww
 
 	// сессия
-	if cfg.SessionTimeout == 0 {
-		cfg.SessionTimeout = time.Duration(14400) * time.Second
+	if cfg.App.SessionTimeout == 0 {
+		cfg.App.SessionTimeout = time.Duration(14400) * time.Second
 	}
 
 	// версия
-	cfg.Version = time.Now().Format(typ.TimeFormatDMGHIS)
+	cfg.App.Version = time.Now().Format(typ.TimeFormatDMGHIS)
+	return nil
 }

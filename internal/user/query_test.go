@@ -5,12 +5,11 @@ import (
 	"testing"
 
 	"sungora/app/config"
-	"sungora/lib/app"
 	"sungora/lib/storage/stpg"
 )
 
 func TestQuery(t *testing.T) {
-	cfg, err := config.Init(app.ConfigFilePath)
+	cfg, err := config.Init()
 	if err != nil {
 		t.Fatal(err)
 	}

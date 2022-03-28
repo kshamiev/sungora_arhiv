@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"sungora/app/config"
-	"sungora/lib/app"
 	"sungora/lib/errs"
 	"sungora/lib/minio"
 
@@ -16,7 +15,7 @@ import (
 
 func TestMinio(t *testing.T) {
 	t.Skip()
-	cfg, err := config.Init(app.ConfigFilePath)
+	cfg, err := config.Init()
 	if err != nil {
 		t.Fatal(err)
 	}

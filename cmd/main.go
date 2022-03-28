@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -57,11 +56,8 @@ import (
 // @in header
 // @name Authorization
 func main() {
-	flagConfigPath := flag.String("c", "etc/config.yaml", "used for set path to config file")
-	flag.Parse()
-
 	// App загрузка конфигурации & Logger
-	cfg, err := config.Init(*flagConfigPath)
+	cfg, err := config.Init()
 	if err != nil {
 		log.Fatal(errs.New(err))
 	}
