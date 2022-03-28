@@ -60,7 +60,7 @@ func main() {
 	flagConfigPath := flag.String("c", "etc/config.yaml", "used for set path to config file")
 	flag.Parse()
 
-	// Config загрузка конфигурации & Logger
+	// App загрузка конфигурации & Logger
 	cfg, err := config.Init(*flagConfigPath)
 	if err != nil {
 		log.Fatal(errs.New(err))
@@ -122,7 +122,7 @@ func main() {
 	app.Lock(make(chan os.Signal, 1))
 }
 
-func initDomain(cfg *app.Config) *chi.Mux {
+func initDomain(cfg *config.App) *chi.Mux {
 	mid := request.NewMid(cfg.Token, cfg.SigningKey)
 
 	router := chi.NewRouter()

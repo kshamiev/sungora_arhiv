@@ -4,10 +4,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"strings"
-	"time"
-
-	"sungora/lib/typ"
 
 	"gopkg.in/yaml.v3"
 )
@@ -29,47 +25,4 @@ func LoadConfig(fileConf string, cfg interface{}) error {
 		return err
 	}
 	return yaml.Unmarshal(data, cfg)
-}
-
-// Config основная общая конфигурация
-type Config struct {
-	Token          string        `yaml:"token"`          //
-	SessionTimeout time.Duration `yaml:"sessionTimeout"` //
-	Mode           string        `yaml:"mode"`           //
-	DirWork        string        `yaml:"dirWork"`        //
-	DirWww         string        `yaml:"dirWww"`         //
-	Version        string        `yaml:"version"`        //
-	SigningKey     string        `yaml:"signingKey"`     //
-}
-
-// SetDefault инициализация значениями по умолчанию
-func (cfg *Config) SetDefault() {
-	if cfg == nil {
-		cfg = &Config{}
-	}
-
-	// режим работы приложения
-	if cfg.Mode == "" {
-		cfg.Mode = "dev"
-	}
-
-	// пути
-	sep := string(os.PathSeparator)
-	if cfg.DirWork == "" {
-		cfg.DirWork, _ = os.Getwd()
-		sl := strings.Split(cfg.DirWork, sep)
-		if sl[len(sl)-1] == "bin" {
-			sl = sl[:len(sl)-1]
-		}
-		cfg.DirWork = strings.Join(sl, sep)
-	}
-	cfg.DirWww = cfg.DirWork + cfg.DirWww
-
-	// сессия
-	if cfg.SessionTimeout == 0 {
-		cfg.SessionTimeout = time.Duration(14400) * time.Second
-	}
-
-	// версия
-	cfg.Version = time.Now().Format(typ.TimeFormatDMGHIS)
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"sungora/app/config"
 	"sungora/lib/app"
 
 	"github.com/shopspring/decimal"
@@ -11,7 +12,7 @@ import (
 
 func TestTplStorage(t *testing.T) {
 	var cfg = struct {
-		App app.Config `yaml:"app"`
+		App config.App `yaml:"app"`
 	}{}
 	if err := app.LoadConfig(app.ConfigFilePath, &cfg); err != nil {
 		t.Fatal(err)

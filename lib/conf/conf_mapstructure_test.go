@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"sungora/lib/app"
 )
 
 func TestMapStructure(t *testing.T) {
@@ -15,7 +14,6 @@ func TestMapStructure(t *testing.T) {
 	err = GetFile(cfg, "etc/config.mapstructure.yml", "portal")
 	assert.NoError(t, err, "expected no error")
 	assert.Equal(t, cfg.Lg.Level, "trace", "expected value from env variable")
-	app.Dumper(cfg)
 }
 
 type (
@@ -58,3 +56,7 @@ type (
 		Title  string `mapstructure:"Title"`
 	}
 )
+
+func (c *Configuration) SetDefault() error {
+	return nil
+}

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"sungora/lib/app"
 	"sungora/lib/logger/graylog"
 )
 
@@ -17,7 +16,6 @@ func TestYaml(t *testing.T) {
 	err = GetFile(cfg, "etc/config.yaml.yml", "portal")
 	assert.NoError(t, err, "expected no error")
 	assert.Equal(t, cfg.Log.Level, "trace", "expected value from env variable")
-	app.Dumper(cfg)
 }
 
 type Config struct {
@@ -73,4 +71,8 @@ type Postgresql struct {
 	MaxIdleConns int      `yaml:"max_idle_conns"`
 	MaxOpenConns int      `yaml:"max_open_conns"`
 	OcSQLTrace   bool     `yaml:"ocsql_trace"`
+}
+
+func (c *Config) SetDefault() error {
+	return nil
 }
