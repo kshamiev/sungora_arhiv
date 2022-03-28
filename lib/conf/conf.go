@@ -10,21 +10,21 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func Get(cfg interface{}, envPrefix string) {
+func Get(cfg interface{}, envPrefix string) error {
 	filePath := flag.String("c", "etc/config.dev.yml", "Path to configuration file")
 	flag.Parse()
-	GetFile(cfg, *filePath, envPrefix)
+	return GetFile(cfg, *filePath, envPrefix)
 }
 
-func GetFile(cfg interface{}, filePath, envPrefix string) {
+func GetFile(cfg interface{}, filePath, envPrefix string) error {
 
 	data, err := os.ReadFile(filePath)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	err = yaml.Unmarshal(data, cfg)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	vip := viper.New()
@@ -36,12 +36,13 @@ func GetFile(cfg interface{}, filePath, envPrefix string) {
 	if filePath != "" {
 		vip.SetConfigFile(filePath)
 		if err := vip.ReadInConfig(); err != nil {
-			panic(err)
+			return err
 		}
 	}
 	if err := vip.Unmarshal(cfg); err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 func bindEnvs(cfg *viper.Viper, cfgStruct interface{}, parts ...string) {
