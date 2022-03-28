@@ -10,6 +10,7 @@ import (
 )
 
 func TestQueueProducer(t *testing.T) {
+	t.Skip()
 	err := Init(&Config{
 		Uri: "amqp://guest:guest@localhost:5672/",
 	})
@@ -33,6 +34,7 @@ func TestQueueProducer(t *testing.T) {
 }
 
 func TestQueueConsumer(t *testing.T) {
+	t.Skip()
 	err := Init(&Config{
 		Uri: "amqp://guest:guest@localhost:5672/",
 	})

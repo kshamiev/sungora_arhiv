@@ -14,7 +14,16 @@ type ConfigEr interface {
 	SetDefault() error
 }
 
-func Get(cfg ConfigEr, fileConf, envPrefix string) error {
+const FileConfig = "config.yaml"
+
+func GetDefault(cfg ConfigEr, fileConf, envPrefix string) error {
+	if err := Get(cfg, fileConf, envPrefix); err != nil {
+		return err
+	}
+	return cfg.SetDefault()
+}
+
+func Get(cfg interface{}, fileConf, envPrefix string) error {
 	vip := viper.New()
 	vip.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	if envPrefix != "" {
@@ -46,10 +55,7 @@ func Get(cfg ConfigEr, fileConf, envPrefix string) error {
 			return err
 		}
 	}
-	if err := vip.Unmarshal(cfg); err != nil {
-		return err
-	}
-	return cfg.SetDefault()
+	return vip.Unmarshal(cfg)
 }
 
 func bindEnvs(cfg *viper.Viper, cfgStruct interface{}, parts ...string) {

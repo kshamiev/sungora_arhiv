@@ -14,7 +14,7 @@ func TestYaml(t *testing.T) {
 	err := os.Setenv("PORTAL_LOG_LEVEL", "trace")
 	assert.NoError(t, err, "expected no error")
 	cfg := &Config{}
-	err = Get(cfg, "config.yaml.yml", "portal")
+	err = GetDefault(cfg, "config.yaml.yml", "portal")
 	assert.NoError(t, err, "expected no error")
 	assert.Equal(t, cfg.Log.Level, "trace", "expected value from env variable")
 }

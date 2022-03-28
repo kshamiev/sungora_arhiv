@@ -42,12 +42,12 @@ com:
 
 # Запуск в режиме разработки
 run: com
-	bin/app -c config.dev.yaml;
+	bin/app -c config.yaml;
 .PHONY: run
 
 # Запуск в режиме отладки
 dev: dep swag fmt lint test com
-	bin/app -c config.dev.yaml;
+	bin/app -c config.yaml;
 .PHONY: dev
 
 # Создание шаблона миграции
@@ -95,7 +95,7 @@ dbdump-a:
 SERVICE1 := sungora
 ser-sungora:
 	@go run services/generate/main.go -step $(SERVICE1)-1
-	@sqlboiler -c etc/config.dev.yaml -p md$(SERVICE1) -o services/md$(SERVICE1) --no-auto-timestamps --no-tests --wipe psql
+	@sqlboiler -c etc/config.yaml -p md$(SERVICE1) -o services/md$(SERVICE1) --no-auto-timestamps --no-tests --wipe psql
 	@go run services/generate/main.go -step $(SERVICE1)-2
 	@go run services/generate/main.go -step $(SERVICE1)-3
 	@cd $(DIR)/services && goimports -w .

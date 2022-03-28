@@ -4,18 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"sungora/app/config"
+	"sungora/lib/conf"
 	"sungora/lib/storage/stpg"
 )
 
 func TestQuery(t *testing.T) {
-	cfg, err := config.Init()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := stpg.InitConnect(&cfg.Postgresql); err != nil {
-		t.Fatal(err)
-	}
+	initTest(t)
 	st := stpg.Gist()
 
 	for _, q := range GetQueries() {
@@ -23,5 +17,17 @@ func TestQuery(t *testing.T) {
 			t.Log(q)
 			t.Fatal(err)
 		}
+	}
+}
+
+func initTest(t *testing.T) {
+	var cfg = struct {
+		Postgresql stpg.Config `yaml:"psql"`
+	}{}
+	if err := conf.Get(&cfg, conf.FileConfig, ""); err != nil {
+		t.Fatal(err)
+	}
+	if err := stpg.InitConnect(&cfg.Postgresql); err != nil {
+		t.Fatal(err)
 	}
 }

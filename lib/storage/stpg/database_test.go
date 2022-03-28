@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"sungora/lib/conf"
 	"sungora/lib/storage"
 
 	"github.com/volatiletech/null/v8"
@@ -21,14 +22,7 @@ type User struct {
 
 // запросы вне транзакции
 func TestPGQuery(t *testing.T) {
-	var cfg = struct {
-		Postgresql Config `yaml:"psql"`
-	}{
-		Postgresql: getConfig(),
-	}
-	if err := InitConnect(&cfg.Postgresql); err != nil {
-		t.Fatal(err)
-	}
+	initTest(t)
 	ctx := context.Background()
 	qu := Gist().Query(ctx)
 
@@ -109,14 +103,7 @@ func TestPGQuery(t *testing.T) {
 
 // запросы в транзакции
 func TestPGQueryTx(t *testing.T) {
-	var cfg = struct {
-		Postgresql Config `yaml:"psql"`
-	}{
-		Postgresql: getConfig(),
-	}
-	if err := InitConnect(&cfg.Postgresql); err != nil {
-		t.Fatal(err)
-	}
+	initTest(t)
 	ctx := context.Background()
 	st := Gist()
 
@@ -177,14 +164,7 @@ var cntGo = 90
 var cntIteration = 100
 
 func TestPG(t *testing.T) {
-	var cfg = struct {
-		Postgresql Config `yaml:"psql"`
-	}{
-		Postgresql: getConfig(),
-	}
-	if err := InitConnect(&cfg.Postgresql); err != nil {
-		t.Fatal(err)
-	}
+	initTest(t)
 
 	<-testInsertUpdate(t)
 }
@@ -271,18 +251,14 @@ func Benchmark_sqlIn(b *testing.B) {
 	}
 }
 
-func getConfig() Config {
-	return Config{
-		Postgres:     "",
-		User:         "postgres",
-		Pass:         "postgres",
-		Host:         "localhost",
-		Port:         5432,
-		Dbname:       "test",
-		Sslmode:      "disable",
-		Blacklist:    []string{"test"},
-		MaxIdleConns: 50,
-		MaxOpenConns: 50,
-		OcSQLTrace:   false,
+func initTest(t *testing.T) {
+	var cfg = struct {
+		Postgresql Config `yaml:"psql"`
+	}{}
+	if err := conf.Get(&cfg, conf.FileConfig, ""); err != nil {
+		t.Fatal(err)
+	}
+	if err := InitConnect(&cfg.Postgresql); err != nil {
+		t.Fatal(err)
 	}
 }

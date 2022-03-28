@@ -43,14 +43,7 @@ var pgQueries = []string{
 }
 
 func TestQuery(t *testing.T) {
-	var cfg = struct {
-		Postgresql Config `yaml:"psql"`
-	}{
-		Postgresql: getConfig(),
-	}
-	if err := InitConnect(&cfg.Postgresql); err != nil {
-		t.Fatal(err)
-	}
+	initTest(t)
 	st := Gist()
 
 	for i := range pgQueries {

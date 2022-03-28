@@ -11,7 +11,7 @@ func TestMapStructure(t *testing.T) {
 	err := os.Setenv("PORTAL_LOG_LEVEL", "trace")
 	assert.NoError(t, err, "expected no error")
 	cfg := &Configuration{}
-	err = Get(cfg, "config.mapstructure.yml", "portal")
+	err = GetDefault(cfg, "config.mapstructure.yml", "portal")
 	assert.NoError(t, err, "expected no error")
 	assert.Equal(t, cfg.Lg.Level, "trace", "expected value from env variable")
 }

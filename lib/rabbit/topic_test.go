@@ -7,6 +7,7 @@ import (
 )
 
 func TestTopicProducer(t *testing.T) {
+	t.Skip()
 	err := Init(&Config{
 		Uri: "amqp://guest:guest@localhost:5672/",
 	})
@@ -30,6 +31,7 @@ func TestTopicProducer(t *testing.T) {
 }
 
 func TestTopicConsumer(t *testing.T) {
+	t.Skip()
 	err := Init(&Config{
 		Uri: "amqp://guest:guest@localhost:5672/",
 	})
