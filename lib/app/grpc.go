@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"net"
 
-	"sungora/lib/logger"
-	"sungora/lib/request"
-
 	"go.opencensus.io/plugin/ocgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -67,11 +64,6 @@ func NewGRPCServer(cfg *GRPCConfig, opts ...grpc.ServerOption) (*GRPCServer, err
 		}
 		opts = append(opts, grpc.Creds(creds))
 	}
-	opts = append(opts,
-		grpc.StatsHandler(new(ocgrpc.ServerHandler)),
-		grpc.ChainUnaryInterceptor(logger.Interceptor()),
-		grpc.ChainUnaryInterceptor(request.Interceptor()),
-	)
 
 	comp := &GRPCServer{
 		Ser:       grpc.NewServer(opts...),

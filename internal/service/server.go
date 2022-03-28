@@ -8,7 +8,10 @@ import (
 	"sungora/lib/errs"
 	"sungora/lib/jaeger"
 	"sungora/lib/logger"
+	"sungora/lib/request"
 	"sungora/services/pbsungora"
+
+	"go.opencensus.io/plugin/ocgrpc"
 
 	"google.golang.org/grpc"
 )
@@ -17,7 +20,12 @@ type SungoraServer struct {
 	pbsungora.UnimplementedSungoraServer
 }
 
-func NewSampleServer(cfg *app.GRPCConfig, opts ...grpc.ServerOption) (*app.GRPCServer, error) {
+func NewSampleServer(cfg *app.GRPCConfig) (*app.GRPCServer, error) {
+	opts := []grpc.ServerOption{
+		grpc.StatsHandler(new(ocgrpc.ServerHandler)),
+		grpc.ChainUnaryInterceptor(logger.Interceptor()),
+		grpc.ChainUnaryInterceptor(request.Interceptor()),
+	}
 	grpcServer, err := app.NewGRPCServer(cfg, opts...)
 	if err != nil {
 		return nil, errs.New(err)
