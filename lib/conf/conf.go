@@ -17,7 +17,6 @@ func Get(cfg interface{}, envPrefix string) error {
 }
 
 func GetFile(cfg interface{}, filePath, envPrefix string) error {
-
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
@@ -39,10 +38,7 @@ func GetFile(cfg interface{}, filePath, envPrefix string) error {
 			return err
 		}
 	}
-	if err := vip.Unmarshal(cfg); err != nil {
-		return err
-	}
-	return nil
+	return vip.Unmarshal(cfg)
 }
 
 func bindEnvs(cfg *viper.Viper, cfgStruct interface{}, parts ...string) {
@@ -56,9 +52,7 @@ func bindEnvs(cfg *viper.Viper, cfgStruct interface{}, parts ...string) {
 		tv, ok := t.Tag.Lookup("mapstructure")
 		if !ok {
 			if tv, ok = t.Tag.Lookup("yaml"); !ok {
-				if tv, ok = t.Tag.Lookup("json"); !ok {
-					continue
-				}
+				continue
 			}
 		}
 		switch v.Kind() {
