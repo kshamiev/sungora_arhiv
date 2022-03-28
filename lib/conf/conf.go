@@ -47,7 +47,7 @@ func Get(cfg interface{}, fileConf, envPrefix string) error {
 		if err != nil {
 			return err
 		}
-		if err = yaml.Unmarshal(data, cfg); err != nil {
+		if err := yaml.Unmarshal(data, cfg); err != nil {
 			return err
 		}
 		vip.SetConfigFile(fileConf)
