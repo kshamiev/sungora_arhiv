@@ -9,10 +9,8 @@ import (
 	"sungora/lib/app"
 	"sungora/lib/conf"
 	"sungora/lib/jaeger"
-	"sungora/lib/minio"
-	"sungora/lib/typ"
-
 	"sungora/lib/logger"
+	"sungora/lib/minio"
 	"sungora/lib/storage/stpg"
 )
 
@@ -86,6 +84,6 @@ func (cfg *Config) SetDefault() error {
 	}
 
 	// версия
-	cfg.App.Version = time.Now().Format(typ.TimeFormatDMGHIS)
+	cfg.App.Version = time.Now().Format(conf.TimeFormatDMGHIS)
 	return nil
 }

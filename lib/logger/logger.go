@@ -5,10 +5,9 @@ import (
 	"io"
 	"os"
 
-	"sungora/lib/logger/graylog"
-	"sungora/lib/typ"
-
 	"github.com/sirupsen/logrus"
+	"sungora/lib/conf"
+	"sungora/lib/logger/graylog"
 )
 
 type Logger interface {
@@ -32,7 +31,7 @@ func Init(config *Config) Logger {
 	switch config.Formatter {
 	case FormatterJSON:
 		inst.SetFormatter(&logrus.JSONFormatter{
-			TimestampFormat:   typ.TimeFormatGMDHIS,
+			TimestampFormat:   conf.TimeFormatGMDHIS,
 			DisableTimestamp:  false,
 			DisableHTMLEscape: false,
 			DataKey:           "",
