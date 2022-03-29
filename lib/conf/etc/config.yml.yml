@@ -1,0 +1,34 @@
+app:
+  token: &title "sample-dev" # cookie name
+  sessionTimeout: 604800s
+  mode: "dev"
+  dirWww: "/www"
+  signingKey: "xxx-xxx-xxx"
+
+log:
+  title: *title
+  output: "stdout" # Change (stdout | stderr | filePathRelative | empty)
+  formatter: "json" # Change enum (json | text)
+  level: info # Change enum (info | warning | error | fatal | trace | debug)
+  is_caller: false
+
+http:
+  proto: "http"
+  host: "localhost"
+  port: 8080
+  writeTimeout: 60s  # Время ожидания окончания передачи ответа в секундах
+  readTimeout: 60s   # Время ожидания web запроса в секундах
+  requestTimeout: 60s # Время ожидания окончания выполнения запроса
+  maxHeaderBytes: 1048576 # Максимальный размер заголовка получаемого от браузера клиента в байтах
+
+psql:
+  user: "postgres"
+  pass: "postgres"
+  host: "localhost"
+  port: 5432
+  dbname: "sample"
+  sslmode: "disable"
+  blacklist: [ "test" ]
+  max_idle_conns: 50
+  max_open_conns: 50
+  ocsql_trace: true

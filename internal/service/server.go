@@ -4,20 +4,23 @@ import (
 	"context"
 	"errors"
 
-	"sungora/lib/app"
-	"sungora/lib/app/request"
-	"sungora/lib/errs"
-	"sungora/lib/jaeger"
-	"sungora/lib/logger"
-	"sungora/services/pbsungora"
+	"sample/lib/app"
+	"sample/lib/app/request"
+	"sample/lib/errs"
+	"sample/lib/jaeger"
+	"sample/lib/logger"
+	"sample/services/pbsample"
 
 	"go.opencensus.io/plugin/ocgrpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"google.golang.org/grpc"
 )
 
-type SungoraServer struct {
-	pbsungora.UnimplementedSungoraServer
+type SampleServer struct {
+	pbsample.UnimplementedSampleServer
 }
 
 func NewSampleServer(cfg *app.GRPCConfig) (*app.GRPCServer, error) {
@@ -30,21 +33,25 @@ func NewSampleServer(cfg *app.GRPCConfig) (*app.GRPCServer, error) {
 	if err != nil {
 		return nil, errs.New(err)
 	}
-	pbsungora.RegisterSungoraServer(grpcServer.Ser, &SungoraServer{})
+	pbsample.RegisterSampleServer(grpcServer.Ser, &SampleServer{})
 	return grpcServer, nil
 }
 
-func (ser *SungoraServer) Ping(ctx context.Context, tt *pbsungora.Test) (*pbsungora.Test, error) {
+func (ser *SampleServer) Ping(ctx context.Context, tt *pbsample.Test) (*pbsample.Test, error) {
 	s := jaeger.NewSpan(ctx)
 	s.StringAttribute("description", "qwerty qwerty qwerty")
 	defer s.End()
 	lg := logger.Get(ctx)
-	lg.Info("SungoraServer.Ping: " + tt.Text)
+	lg.Info("SampleServer.Ping: " + tt.Text)
 	err := errors.New("sample error")
 	err = errs.New(err, "user message error")
 	lg.WithError(err).Error(err.(*errs.Errs).Response())
 
-	return &pbsungora.Test{
+	return &pbsample.Test{
 		Text: "Funtik",
 	}, nil
+}
+
+func (ser *SampleServer) Version(context.Context, *emptypb.Empty) (*pbsample.Test, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Version not implemented")
 }

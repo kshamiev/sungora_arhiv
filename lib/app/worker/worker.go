@@ -8,8 +8,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"sungora/lib/app/response"
-	"sungora/lib/logger"
+	"sample/lib/app/response"
+	"sample/lib/logger"
 
 	"google.golang.org/grpc/metadata"
 )

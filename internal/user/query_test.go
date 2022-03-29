@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"sungora/lib/conf"
-	"sungora/lib/storage/stpg"
+	"sample/lib/conf"
+	"sample/lib/storage/stpg"
 )
 
 func TestQuery(t *testing.T) {

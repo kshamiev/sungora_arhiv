@@ -12,26 +12,26 @@ import (
 	"github.com/go-chi/chi/middleware"
 	httpSwagger "github.com/swaggo/http-swagger"
 
-	"sungora/internal/chat"
-	"sungora/internal/client"
-	"sungora/internal/config"
-	"sungora/internal/data"
-	"sungora/internal/general"
-	"sungora/internal/service"
-	"sungora/internal/user"
-	"sungora/lib/app"
-	"sungora/lib/app/request"
-	"sungora/lib/app/worker"
-	"sungora/lib/errs"
-	"sungora/lib/jaeger"
-	"sungora/lib/logger"
-	"sungora/lib/minio"
-	"sungora/lib/storage/stpg"
-	"sungora/lib/tpl"
+	"sample/internal/chat"
+	"sample/internal/client"
+	"sample/internal/config"
+	"sample/internal/data"
+	"sample/internal/general"
+	"sample/internal/service"
+	"sample/internal/user"
+	"sample/lib/app"
+	"sample/lib/app/request"
+	"sample/lib/app/worker"
+	"sample/lib/errs"
+	"sample/lib/jaeger"
+	"sample/lib/logger"
+	"sample/lib/minio"
+	"sample/lib/storage/stpg"
+	"sample/lib/tpl"
 )
 
-// @title Sungora API
-// @description Sungora
+// @title Sample API
+// @description Sample
 // @version 1.0.0
 // @contact.name API Support
 // @contact.email konstantin@shamiev.ru
@@ -60,7 +60,7 @@ func main() {
 	if err != nil {
 		log.Fatal(errs.New(err))
 	}
-	lg := logger.Init(&cfg.Lg)
+	lg := logger.Init(&cfg.Log)
 
 	// ConnectDB postgres
 	if err = stpg.InitConnect(&cfg.Postgresql); err != nil {
@@ -89,7 +89,7 @@ func main() {
 
 	// Client GRPC
 	var grpcClient *app.GRPCClient
-	if grpcClient, err = client.InitSungoraClient(&cfg.GRPCClient); err != nil {
+	if grpcClient, err = client.InitSampleClient(&cfg.GRPCClient); err != nil {
 		lg.Fatal(err)
 	}
 	defer grpcClient.Close()

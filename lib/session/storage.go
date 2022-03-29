@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"sungora/lib/app/response"
+	"sample/lib/app/response"
 
 	"github.com/google/uuid"
 )

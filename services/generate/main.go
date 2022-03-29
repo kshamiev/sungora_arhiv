@@ -1,7 +1,7 @@
 package main
 
 import (
-	"sungora/services/generate/protos"
+	"sample/services/generate/protos"
 )
 
 func main() {

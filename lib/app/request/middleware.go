@@ -11,8 +11,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	"sungora/lib/app/response"
-	"sungora/lib/errs"
+	"sample/lib/app/response"
+	"sample/lib/errs"
 )
 
 type Mid struct {

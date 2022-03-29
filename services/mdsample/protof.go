@@ -1,5 +1,5 @@
 // nolint deadcode
-package mdsungora
+package mdsample
 
 import (
 	"time"

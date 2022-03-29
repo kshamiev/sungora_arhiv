@@ -1,4 +1,4 @@
-# Sungora
+# Sample go application
 ---
 
 - **/api**
@@ -84,7 +84,7 @@ http://localhost:9000/
 https://www.jaegertracing.io/docs/1.20/getting-started/
 
 ```dockerfile
-docker run -d --rm --name sungora-jaeger --net sun \
+docker run -d --rm --name sample-jaeger --net sun \
     -p 16686:16686 -p 14268:14268 \
     jaegertracing/all-in-one:1.20
 ```
@@ -94,10 +94,10 @@ http://localhost:16686
 #### Minio
 
 ```dockerfile
-docker run -d --rm --name sungora-minio --net sun \
+docker run -d --rm --name sample-minio --net sun \
     -p 9020:9000 -p 9010:9001 \
     -e MINIO_ROOT_USER="admin" -e MINIO_ROOT_PASSWORD="xxx-xxx-xxx" \
-    -v /mnt/data/sungora:/data \
+    -v /mnt/data/sample:/data \
     minio/minio \
     server /data --address ":9020" --console-address ":9010"
 ```
@@ -110,7 +110,7 @@ http://localhost:9010
 #### RabbitMQ
 
 ```dockerfile
-docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
+docker run -d --rm --name sample-rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management
 ```
 
 http://localhost:15672/#/
@@ -118,12 +118,12 @@ http://localhost:15672/#/
 #### Сборка и запуск приложения
 
 ```dockerfile
-docker build --no-cache -t kshamiev/sungora .
+docker build --no-cache -t sample .
 
-docker run --rm -d --name sungora --net sun\
+docker run --rm -d --name sample --net sun\
     -p 8080:8080 \
-    --mount type=bind,src=/home/domains/sungora.local/www,dst=/home/app/www \
-    kshamiev/sungora
+    --mount type=bind,src=/home/domains/sample.local/www,dst=/home/app/www \
+    sample
 ```
 
 ### TODO or TASK

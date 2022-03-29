@@ -75,7 +75,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/mdsungora.Minio"
+                                "$ref": "#/definitions/mdsample.Minio"
                             }
                         }
                     }
@@ -177,7 +177,7 @@ const docTemplate = `{
                     "200": {
                         "description": "пользователь",
                         "schema": {
-                            "$ref": "#/definitions/mdsungora.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     },
                     "400": {
@@ -208,7 +208,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsungora.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 }
@@ -232,7 +232,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/mdsungora.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 ],
@@ -240,7 +240,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsungora.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 }
@@ -257,7 +257,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/mdsungora.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 ],
@@ -265,7 +265,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/mdsungora.User"
+                            "$ref": "#/definitions/mdsample.User"
                         }
                     }
                 }
@@ -308,7 +308,7 @@ const docTemplate = `{
                             "items": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/definitions/mdsungora.User"
+                                    "$ref": "#/definitions/mdsample.User"
                                 }
                             }
                         }
@@ -371,7 +371,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "mdsungora.Minio": {
+        "mdsample.Minio": {
             "type": "object",
             "properties": {
                 "bucket": {
@@ -409,7 +409,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "object_id": {
-                    "description": "ид объекта",
+                    "description": "файл хранения - ид объекта",
                     "type": "integer"
                 },
                 "user_login": {
@@ -418,7 +418,7 @@ const docTemplate = `{
                 }
             }
         },
-        "mdsungora.User": {
+        "mdsample.User": {
             "type": "object",
             "properties": {
                 "alias": {
@@ -527,8 +527,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{"http", "https"},
-	Title:            "Sungora API",
-	Description:      "Sungora",
+	Title:            "Sample API",
+	Description:      "Sample",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

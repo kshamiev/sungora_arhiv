@@ -8,7 +8,7 @@ import (
 	"runtime/debug"
 	"sync"
 
-	"sungora/lib/storage"
+	"sample/lib/storage"
 
 	"contrib.go.opencensus.io/integrations/ocsql"
 	// драйвер работы с БД

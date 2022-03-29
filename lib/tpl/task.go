@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"time"
 
-	"sungora/lib/errs"
+	"sample/lib/errs"
 )
 
 const TaskTemplateParseName = "TaskTemplateParse"

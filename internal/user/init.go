@@ -1,8 +1,8 @@
 package user
 
 import (
-	"sungora/lib/app/worker"
-	"sungora/lib/storage/stpg"
+	"sample/lib/app/worker"
+	"sample/lib/storage/stpg"
 
 	"github.com/go-chi/chi"
 )
@@ -18,7 +18,7 @@ func InitDomain(router chi.Router) {
 		router.Get("/", hh.Get)
 		router.Delete("/", hh.Delete)
 	})
-	router.Get("/api/sun/user-test/{id}", hh.Test)
+	router.Get("/api/sun/user-test/{id}", hh.TestUser)
 
 	// HTML
 

@@ -3,12 +3,12 @@ package data
 import (
 	"net/http"
 
-	"sungora/lib/app/response"
-	"sungora/lib/logger"
-	"sungora/lib/minio"
-	"sungora/lib/storage"
-	"sungora/lib/storage/stpg"
-	"sungora/services/mdsungora"
+	"sample/lib/app/response"
+	"sample/lib/logger"
+	"sample/lib/minio"
+	"sample/lib/storage"
+	"sample/lib/storage/stpg"
+	"sample/services/mdsample"
 
 	"github.com/google/uuid"
 
@@ -52,7 +52,7 @@ func (hh *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
 // @Summary загрузка файла на сервер (minio)
 // @Param file formData file true "загружаемый файл"
 // @Accept mpfd
-// @Success 200 {object} mdsungora.MinioSlice "информация о загрузке"
+// @Success 200 {object} mdsample.MinioSlice "информация о загрузке"
 // @Router /api/sun/data/upload [post]
 func (hh *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
@@ -78,7 +78,7 @@ func (hh *Handler) Download(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 	id := uuid.MustParse(chi.URLParam(r, "id"))
 
-	st, err := mdsungora.FindMinio(r.Context(), hh.st.DB(), id)
+	st, err := mdsample.FindMinio(r.Context(), hh.st.DB(), id)
 	if err != nil {
 		rw.JSON(err)
 		return

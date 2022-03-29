@@ -5,8 +5,8 @@ import (
 	"io"
 	"os"
 
-	"sungora/lib/conf"
-	"sungora/lib/logger/graylog"
+	"sample/lib/conf"
+	"sample/lib/logger/graylog"
 
 	"github.com/sirupsen/logrus"
 )

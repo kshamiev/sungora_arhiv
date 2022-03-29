@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"sungora/lib/errs"
+	"sample/lib/errs"
 
 	"github.com/streadway/amqp"
 )

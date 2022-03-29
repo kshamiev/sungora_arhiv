@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"sungora/lib/logger"
-	"sungora/lib/storage"
+	"sample/lib/logger"
+	"sample/lib/storage"
 )
 
 const TaskOnlineOffName = "TaskUserOnlineOff"

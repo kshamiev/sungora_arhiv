@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"sungora/internal/client"
-	"sungora/lib/app/response"
-	"sungora/lib/errs"
-	"sungora/lib/logger"
-	"sungora/lib/storage"
-	"sungora/services/mdsungora"
-	"sungora/services/pbsungora"
+	"sample/internal/client"
+	"sample/lib/app/response"
+	"sample/lib/errs"
+	"sample/lib/logger"
+	"sample/lib/storage"
+	"sample/services/mdsample"
+	"sample/services/pbsample"
 
 	"github.com/go-chi/chi"
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -31,13 +31,13 @@ func NewHandler(st storage.Face) *Handler {
 // GetSlice
 // @Tags User
 // @Summary Получение списка пользователей
-// @Success 200 {array} mdsungora.UserSlice ""
+// @Success 200 {array} mdsample.UserSlice ""
 // @Router /api/sun/users [get]
 func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	list, err := mdsungora.Users(
-		qm.OrderBy(mdsungora.UserColumns.CreatedAt+" ASC"),
+	list, err := mdsample.Users(
+		qm.OrderBy(mdsample.UserColumns.CreatedAt+" ASC"),
 		qm.Offset(0), qm.Limit(20),
 	).All(r.Context(), hh.st.DB())
 	if err != nil {
@@ -52,7 +52,7 @@ func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Summary Получение пользователя
 // @Param id path int true "ID"
-// @Success 200 {object} mdsungora.User ""
+// @Success 200 {object} mdsample.User ""
 // @Router /api/sun/user/{id} [get]
 func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
@@ -63,7 +63,7 @@ func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	obj, err := mdsungora.FindUser(r.Context(), hh.st.DB(), id)
+	obj, err := mdsample.FindUser(r.Context(), hh.st.DB(), id)
 	if err != nil {
 		rw.JSON(errs.New(err))
 		return
@@ -75,13 +75,13 @@ func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 // Post
 // @Tags User
 // @Summary Создание пользователя
-// @Param data body mdsungora.User true "пользователь"
-// @Success 200 {object} mdsungora.User ""
+// @Param data body mdsample.User true "пользователь"
+// @Success 200 {object} mdsample.User ""
 // @Router /api/sun/user/{id} [post]
 func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj := &mdsungora.User{}
+	obj := &mdsample.User{}
 	if err := rw.JSONBodyDecode(obj); err != nil {
 		rw.JSON(err)
 		return
@@ -99,13 +99,13 @@ func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 // @Tags User
 // @Summary Изменение пользователя
 // @Param id path int true "ID"
-// @Param data body mdsungora.User true "пользователь"
-// @Success 200 {object} mdsungora.User ""
+// @Param data body mdsample.User true "пользователь"
+// @Success 200 {object} mdsample.User ""
 // @Router /api/sun/user/{id} [put]
 func (hh *Handler) Put(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	obj := &mdsungora.User{}
+	obj := &mdsample.User{}
 	if err := rw.JSONBodyDecode(obj); err != nil {
 		rw.JSON(err)
 		return
@@ -134,7 +134,7 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	obj := &mdsungora.User{ID: id}
+	obj := &mdsample.User{ID: id}
 	if _, err := obj.Delete(r.Context(), hh.st.DB()); err != nil {
 		rw.JSON(errs.New(err))
 		return
@@ -143,20 +143,20 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	rw.JSON("OK")
 }
 
-// Test
+// TestUser
 // @Tags User
 // @Summary Тестовый обработчик для примера
 // @Description Тестовый обработчик для примера
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Success 200 {object} mdsungora.User "пользователь"
+// @Success 200 {object} mdsample.User "пользователь"
 // @Failure 400 {string} response.Data "отрицательный ответ"
 // @Security ApiKeyAuth
 // @Router /api/sun/user-test/{id} [get]
 // @Deprecated
 // Deprecated
-func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
+func (hh *Handler) TestUser(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
@@ -178,8 +178,8 @@ func (hh *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	err = errs.New(err, "user message error")
 	lg.WithError(err).Error(err.(*errs.Errs).Response())
 
-	cli := client.GistSungoraGRPC()
-	if _, err := cli.Ping(r.Context(), &pbsungora.Test{Text: "Fantik"}); err != nil {
+	cli := client.GistSampleGRPC()
+	if _, err := cli.Ping(r.Context(), &pbsample.Test{Text: "Fantik"}); err != nil {
 		rw.JSON(err)
 		return
 	}

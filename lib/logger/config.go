@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"sungora/lib/logger/graylog"
+	"sample/lib/logger/graylog"
 )
 
 type Config struct {

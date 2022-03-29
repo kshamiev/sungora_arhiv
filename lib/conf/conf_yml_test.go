@@ -5,8 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"sungora/lib/logger/graylog"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,11 +40,6 @@ type Log struct {
 	Formatter string `yaml:"formatter"` // enum (json|text)
 	Level     string `yaml:"level"`     // enum (error|warning|info|debug|trace)
 	IsCaller  bool   `yaml:"is_caller"` // bool
-	Hooks     Hooks  `yaml:"hooks"`
-}
-
-type Hooks struct {
-	Graylog graylog.Config `yaml:"graylog" json:"graylog"`
 }
 
 type ServeHTTP struct {

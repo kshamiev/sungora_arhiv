@@ -1,6 +1,6 @@
 package user
 
-import "sungora/lib/errs"
+import "sample/lib/errs"
 
 const (
 	ErrUserTwo errs.Message = "Вторая ошибка пользователя %d"

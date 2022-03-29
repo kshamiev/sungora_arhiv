@@ -3,10 +3,10 @@ package general
 import (
 	"net/http"
 
-	"sungora/internal/config"
-	"sungora/lib/app/response"
-	"sungora/lib/logger"
-	"sungora/lib/tpl"
+	"sample/internal/config"
+	"sample/lib/app/response"
+	"sample/lib/logger"
+	"sample/lib/tpl"
 
 	"github.com/shopspring/decimal"
 )

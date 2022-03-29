@@ -6,7 +6,7 @@ import (
 	"path"
 	"strings"
 
-	"sungora/lib/logger"
+	"sample/lib/logger"
 
 	"github.com/go-chi/chi"
 	"go.opencensus.io/plugin/ochttp"

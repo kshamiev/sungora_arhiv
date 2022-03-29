@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"sungora/lib/storage"
+	"sample/lib/storage"
 )
 
 const TaskStorageClearName = "TaskStorageClear"

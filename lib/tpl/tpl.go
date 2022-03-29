@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"sungora/lib/errs"
+	"sample/lib/errs"
 )
 
 // GetTplIndex индексы подготовленных шаблонов

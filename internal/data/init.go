@@ -1,8 +1,8 @@
 package data
 
 import (
-	"sungora/lib/app/worker"
-	"sungora/lib/storage/stpg"
+	"sample/lib/app/worker"
+	"sample/lib/storage/stpg"
 
 	"github.com/go-chi/chi"
 )

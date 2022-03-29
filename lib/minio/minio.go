@@ -4,7 +4,7 @@ import (
 	"context"
 	"io"
 
-	"sungora/lib/errs"
+	"sample/lib/errs"
 
 	"github.com/minio/minio-go"
 )

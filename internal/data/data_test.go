@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
-	"sungora/internal/config"
-	"sungora/lib/errs"
-	"sungora/lib/minio"
+	"sample/internal/config"
+	"sample/lib/errs"
+	"sample/lib/minio"
 
 	"github.com/google/uuid"
 )

@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"sungora/lib/conf"
-	"sungora/lib/storage"
+	"sample/lib/conf"
+	"sample/lib/storage"
 
 	"github.com/volatiletech/null/v8"
 )

@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"os"
 
-	"sungora/lib/app"
-	"sungora/lib/app/response"
-	"sungora/lib/errs"
-	"sungora/lib/logger"
+	"sample/lib/app"
+	"sample/lib/app/response"
+	"sample/lib/errs"
+	"sample/lib/logger"
 
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"

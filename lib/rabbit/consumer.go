@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"sungora/lib/errs"
-	"sungora/lib/logger"
+	"sample/lib/errs"
+	"sample/lib/logger"
 
 	"github.com/google/uuid"
 	"github.com/streadway/amqp"

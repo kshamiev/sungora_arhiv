@@ -3,7 +3,7 @@ package jaeger
 import (
 	"context"
 
-	"sungora/lib/errs"
+	"sample/lib/errs"
 
 	"go.opencensus.io/trace"
 )

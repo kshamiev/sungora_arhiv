@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"sungora/lib/errs"
-	"sungora/lib/logger"
+	"sample/lib/errs"
+	"sample/lib/logger"
 
 	"github.com/go-chi/chi"
 )
