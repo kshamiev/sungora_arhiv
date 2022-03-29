@@ -27,7 +27,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.1
 	go.opencensus.io v0.23.0
 	google.golang.org/genproto v0.0.0-20211203200212-54befc351ae9
-	google.golang.org/grpc v1.42.0
+	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )

@@ -7,6 +7,7 @@ import (
 	"go.opencensus.io/plugin/ocgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type GRPCConfig struct {
@@ -32,7 +33,7 @@ func NewGRPCClient(cfg *GRPCConfig, opts ...grpc.DialOption) (*GRPCClient, error
 		}
 		opts = append(opts, grpc.WithTransportCredentials(creds))
 	} else {
-		opts = append(opts, grpc.WithInsecure())
+		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}
 	opts = append(opts, grpc.WithStatsHandler(new(ocgrpc.ClientHandler)))
 

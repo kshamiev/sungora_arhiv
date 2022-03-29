@@ -5,9 +5,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/sirupsen/logrus"
 	"sungora/lib/conf"
 	"sungora/lib/logger/graylog"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Logger interface {
