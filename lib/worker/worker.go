@@ -8,8 +8,8 @@ import (
 
 	"github.com/google/uuid"
 
+	"sungora/lib/app/response"
 	"sungora/lib/logger"
-	"sungora/lib/response"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"google.golang.org/grpc/metadata"

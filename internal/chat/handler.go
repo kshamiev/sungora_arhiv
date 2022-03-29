@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"sungora/lib/app"
+	"sungora/lib/app/response"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
-	"sungora/lib/response"
 
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"

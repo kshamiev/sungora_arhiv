@@ -3,8 +3,8 @@ package request
 import (
 	"net/http"
 
+	"sungora/lib/app/response"
 	"sungora/lib/errs"
-	"sungora/lib/response"
 )
 
 // AccessMethod проверка вертикальных прав на хендлеры по ролям
