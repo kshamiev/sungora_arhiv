@@ -1,12 +1,12 @@
-package data
+package handler
 
 import (
 	"net/http"
 
+	"sample/internal/model"
 	"sample/lib/app/response"
 	"sample/lib/logger"
 	"sample/lib/minio"
-	"sample/lib/storage"
 	"sample/lib/storage/stpg"
 	"sample/services/mdsample"
 
@@ -15,16 +15,6 @@ import (
 	"github.com/go-chi/chi"
 )
 
-type Handler struct {
-	st storage.Face
-}
-
-func NewHandler(st storage.Face) *Handler {
-	return &Handler{
-		st: st,
-	}
-}
-
 // UploadFile загрузка файла на сервер
 // @Tags Data
 // @Summary загрузка файла на сервер
@@ -32,7 +22,7 @@ func NewHandler(st storage.Face) *Handler {
 // @Accept mpfd
 // @Produce octet-stream
 // @Success 200 {file} file "file"
-// @Router /api/sun/data/upload-test [post]
+// @Router /sun/api/v1/data/upload-test [post]
 func (hh *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
@@ -53,11 +43,11 @@ func (hh *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
 // @Param file formData file true "загружаемый файл"
 // @Accept mpfd
 // @Success 200 {object} mdsample.MinioSlice "информация о загрузке"
-// @Router /api/sun/data/upload [post]
+// @Router /sun/api/v1/data/upload [post]
 func (hh *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	stM := NewModel(stpg.Gist(), "")
+	stM := model.NewData(stpg.Gist(), "")
 	res, err := stM.UploadRequest(rw, "test")
 	if err != nil {
 		rw.JSON(err)
@@ -73,7 +63,7 @@ func (hh *Handler) Upload(w http.ResponseWriter, r *http.Request) {
 // @Param id path string true "ID"
 // @Produce octet-stream
 // @Success 200 {file} file "file"
-// @Router /api/sun/data/download/{id} [get]
+// @Router /sun/api/v1/data/download/{id} [get]
 func (hh *Handler) Download(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 	id := uuid.MustParse(chi.URLParam(r, "id"))

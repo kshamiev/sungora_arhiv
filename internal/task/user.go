@@ -1,4 +1,4 @@
-package user
+package task
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 
 	"sample/lib/logger"
 	"sample/lib/storage"
+	"sample/lib/storage/stpg"
 )
 
 const TaskOnlineOffName = "TaskUserOnlineOff"
@@ -15,8 +16,8 @@ type TaskOnlineOff struct {
 	st storage.Face
 }
 
-func NewTaskOnlineOff(st storage.Face) *TaskOnlineOff {
-	return &TaskOnlineOff{st: st}
+func NewTaskOnlineOff() *TaskOnlineOff {
+	return &TaskOnlineOff{st: stpg.Gist()}
 }
 
 func (task *TaskOnlineOff) Action(ctx context.Context) error {

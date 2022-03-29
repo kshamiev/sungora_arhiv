@@ -1,4 +1,4 @@
-package user
+package body
 
 import "sample/lib/errs"
 

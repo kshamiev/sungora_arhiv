@@ -23,7 +23,39 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/sun/data/download/{id}": {
+        "/index.hml": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "пример динамического контента (html)",
+                "responses": {
+                    "200": {
+                        "description": "html страница",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/page/index.html": {
+            "get": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "пример динамического контента (html)",
+                "responses": {
+                    "200": {
+                        "description": "html страница",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/sun/api/v1/data/download/{id}": {
             "get": {
                 "produces": [
                     "application/octet-stream"
@@ -51,7 +83,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/sun/data/upload": {
+        "/sun/api/v1/data/upload": {
             "post": {
                 "consumes": [
                     "multipart/form-data"
@@ -82,7 +114,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/sun/data/upload-test": {
+        "/sun/api/v1/data/upload-test": {
             "post": {
                 "consumes": [
                     "multipart/form-data"
@@ -113,7 +145,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/sun/general/ping": {
+        "/sun/api/v1/general/ping": {
             "get": {
                 "tags": [
                     "General"
@@ -129,7 +161,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/sun/general/version": {
+        "/sun/api/v1/general/version": {
             "get": {
                 "tags": [
                     "General"
@@ -145,7 +177,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/sun/user-test/{id}": {
+        "/sun/api/v1/user-sample/{id}": {
             "get": {
                 "security": [
                     {
@@ -189,7 +221,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/sun/user/{id}": {
+        "/sun/api/v1/user/{id}": {
             "get": {
                 "tags": [
                     "User"
@@ -294,7 +326,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/sun/users": {
+        "/sun/api/v1/users": {
             "get": {
                 "tags": [
                     "User"
@@ -316,7 +348,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/sun/websocket/gorilla/{id}": {
+        "/sun/api/v1/websocket/gorilla/{id}": {
             "get": {
                 "security": [
                     {
@@ -330,38 +362,6 @@ const docTemplate = `{
                 "responses": {
                     "101": {
                         "description": "Switching Protocols to websocket",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/index.hml": {
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "пример динамического контента (html)",
-                "responses": {
-                    "200": {
-                        "description": "html страница",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/page/index.html": {
-            "get": {
-                "tags": [
-                    "General"
-                ],
-                "summary": "пример динамического контента (html)",
-                "responses": {
-                    "200": {
-                        "description": "html страница",
                         "schema": {
                             "type": "string"
                         }

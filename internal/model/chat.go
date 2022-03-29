@@ -1,4 +1,4 @@
-package chat
+package model
 
 import "github.com/volatiletech/null/v8"
 

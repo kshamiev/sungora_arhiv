@@ -1,26 +1,28 @@
-package user
+package model
 
 import (
 	"context"
 	"time"
 
+	"sample/internal/body"
 	"sample/lib/errs"
 	"sample/lib/jaeger"
 	"sample/lib/storage"
+	"sample/lib/storage/stpg"
 	"sample/services/mdsample"
 
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
-type Model struct {
+type User struct {
 	st storage.Face
 }
 
-func NewModel(st storage.Face) *Model {
-	return &Model{st}
+func NewUser() *User {
+	return &User{st: stpg.Gist()}
 }
 
-func (mm *Model) Load(ctx context.Context, id int64) (*mdsample.User, error) {
+func (mm *User) Load(ctx context.Context, id int64) (*mdsample.User, error) {
 	s := jaeger.NewSpan(ctx)
 	s.StringAttribute("param1", "fantik")
 	s.Int64Attribute("param2", 34)
@@ -32,7 +34,7 @@ func (mm *Model) Load(ctx context.Context, id int64) (*mdsample.User, error) {
 
 	// sqlx
 	if err := mm.st.DB().GetContext(ctx, us, "SELECT * FROM users WHERE id = $1", id); err != nil {
-		return nil, errs.New(err, ErrUserTwo, id)
+		return nil, errs.New(err, body.ErrUserTwo, id)
 	}
 
 	// boiler

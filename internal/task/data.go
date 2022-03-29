@@ -1,10 +1,12 @@
-package data
+package task
 
 import (
 	"context"
 	"time"
 
+	"sample/internal/model"
 	"sample/lib/storage"
+	"sample/lib/storage/stpg"
 )
 
 const TaskStorageClearName = "TaskStorageClear"
@@ -13,10 +15,12 @@ type TaskStorageClear struct {
 	st storage.Face
 }
 
-func NewTaskStorageClear(st storage.Face) *TaskStorageClear { return &TaskStorageClear{st: st} }
+func NewTaskStorageClear() *TaskStorageClear {
+	return &TaskStorageClear{st: stpg.Gist()}
+}
 
 func (task *TaskStorageClear) Action(ctx context.Context) error {
-	stM := NewModel(task.st, "")
+	stM := model.NewData(task.st, "")
 	return stM.RemoveNotConfirm(ctx)
 }
 

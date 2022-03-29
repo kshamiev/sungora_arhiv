@@ -1,9 +1,10 @@
-package general
+package handler
 
 import (
 	"net/http"
 
 	"sample/internal/config"
+	"sample/internal/model"
 	"sample/lib/app/response"
 	"sample/lib/logger"
 	"sample/lib/tpl"
@@ -11,18 +12,11 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type Handler struct {
-}
-
-func NewHandler() *Handler {
-	return &Handler{}
-}
-
 // Ping ping
 // @Tags General
 // @Summary ping
 // @Success 200 {string} string "OK"
-// @Router /api/sun/general/ping [get]
+// @Router /sun/api/v1/general/ping [get]
 func (hh *Handler) Ping(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 	rw.JSON("OK")
@@ -32,7 +26,7 @@ func (hh *Handler) Ping(w http.ResponseWriter, r *http.Request) {
 // @Tags General
 // @Summary получение версии приложения
 // @Success 200 {string} string "version"
-// @Router /api/sun/general/version [get]
+// @Router /sun/api/v1/general/version [get]
 func (hh *Handler) Version(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 	rw.JSON(config.Get().App.Version)
@@ -49,7 +43,7 @@ func (hh *Handler) PageIndex(w http.ResponseWriter, r *http.Request) {
 		r.URL.Path = response.IndexHtml
 	}
 
-	goods := Goods{
+	goods := model.Goods{
 		{ID: 37, Name: "Item 10", Price: decimal.NewFromFloat(23.76)},
 		{ID: 49, Name: "Item 2", Price: decimal.NewFromFloat(87.42)},
 		{ID: 54, Name: "Item 30", Price: decimal.NewFromFloat(38.23)},
@@ -78,7 +72,7 @@ func (hh *Handler) PageIndex(w http.ResponseWriter, r *http.Request) {
 func (hh *Handler) PagePage(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
-	goods := Goods{
+	goods := model.Goods{
 		{ID: 37, Name: "Item 10", Price: decimal.NewFromFloat(23.76)},
 		{ID: 49, Name: "Item 2", Price: decimal.NewFromFloat(87.42)},
 		{ID: 54, Name: "Item 30", Price: decimal.NewFromFloat(38.23)},

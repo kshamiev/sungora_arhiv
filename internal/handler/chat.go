@@ -1,11 +1,11 @@
-package chat
+package handler
 
 import (
 	"context"
 	"net/http"
 	"os"
 
-	"sample/lib/app"
+	"sample/internal/model"
 	"sample/lib/app/response"
 	"sample/lib/errs"
 	"sample/lib/logger"
@@ -14,22 +14,12 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type Handler struct {
-	wsBus app.SocketBus
-}
-
-func NewHandler() *Handler {
-	return &Handler{
-		wsBus: app.NewWebSocketBus(),
-	}
-}
-
 // WebSocketSample пример работы с веб-сокетом (http://localhost:8080/assets/gorilla/index.html)
 // @Tags Websocket
 // @Summary пример работы с веб-сокетом (http://localhost:8080/assets/gorilla/index.html)
 // @Success 101 {string} string "Switching Protocols to websocket"
 // @Security ApiKeyAuth
-// @Router /api/sun/websocket/gorilla/{id} [get]
+// @Router /sun/api/v1/websocket/gorilla/{id} [get]
 func (hh *Handler) WebSocketSample(w http.ResponseWriter, r *http.Request) {
 	var (
 		ws         *websocket.Conn
@@ -83,7 +73,7 @@ func (cli *chatWS) HookStartClient(cntClient int) error {
 // HookGetMessage метод при получении данных из вебсокета пользователя
 func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
 	lg := logger.Get(cli.Ctx)
-	msg := &Message{}
+	msg := &model.Message{}
 	if err := cli.Ws.ReadJSON(msg); err != nil {
 		return nil, err
 	}
@@ -100,9 +90,9 @@ func (cli *chatWS) HookGetMessage(cntClient int) (interface{}, error) {
 // HookSendMessage метод при отправке данных пользователю
 func (cli *chatWS) HookSendMessage(msg interface{}, cntClient int) error {
 	lg := logger.Get(cli.Ctx)
-	res := &Message{}
+	res := &model.Message{}
 	switch o := msg.(type) {
-	case *Message:
+	case *model.Message:
 		res = o
 	case response.Error:
 		lg.WithError(o).Error(o.Response())

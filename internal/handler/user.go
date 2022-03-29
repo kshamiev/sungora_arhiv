@@ -1,4 +1,4 @@
-package user
+package handler
 
 import (
 	"errors"
@@ -6,10 +6,10 @@ import (
 	"strconv"
 
 	"sample/internal/client"
+	"sample/internal/model"
 	"sample/lib/app/response"
 	"sample/lib/errs"
 	"sample/lib/logger"
-	"sample/lib/storage"
 	"sample/services/mdsample"
 	"sample/services/pbsample"
 
@@ -18,21 +18,11 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-type Handler struct {
-	st storage.Face
-}
-
-func NewHandler(st storage.Face) *Handler {
-	return &Handler{
-		st: st,
-	}
-}
-
 // GetSlice
 // @Tags User
 // @Summary Получение списка пользователей
 // @Success 200 {array} mdsample.UserSlice ""
-// @Router /api/sun/users [get]
+// @Router /sun/api/v1/users [get]
 func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
@@ -53,7 +43,7 @@ func (hh *Handler) GetSlice(w http.ResponseWriter, r *http.Request) {
 // @Summary Получение пользователя
 // @Param id path int true "ID"
 // @Success 200 {object} mdsample.User ""
-// @Router /api/sun/user/{id} [get]
+// @Router /sun/api/v1/user/{id} [get]
 func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
@@ -77,7 +67,7 @@ func (hh *Handler) Get(w http.ResponseWriter, r *http.Request) {
 // @Summary Создание пользователя
 // @Param data body mdsample.User true "пользователь"
 // @Success 200 {object} mdsample.User ""
-// @Router /api/sun/user/{id} [post]
+// @Router /sun/api/v1/user/{id} [post]
 func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
@@ -101,7 +91,7 @@ func (hh *Handler) Post(w http.ResponseWriter, r *http.Request) {
 // @Param id path int true "ID"
 // @Param data body mdsample.User true "пользователь"
 // @Success 200 {object} mdsample.User ""
-// @Router /api/sun/user/{id} [put]
+// @Router /sun/api/v1/user/{id} [put]
 func (hh *Handler) Put(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
@@ -124,7 +114,7 @@ func (hh *Handler) Put(w http.ResponseWriter, r *http.Request) {
 // @Summary Удаление пользователя
 // @Param id path int true "ID"
 // @Success 200 {string} string "OK"
-// @Router /api/sun/user/{id} [delete]
+// @Router /sun/api/v1/user/{id} [delete]
 func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
@@ -143,7 +133,7 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	rw.JSON("OK")
 }
 
-// TestUser
+// Sample
 // @Tags User
 // @Summary Тестовый обработчик для примера
 // @Description Тестовый обработчик для примера
@@ -153,10 +143,10 @@ func (hh *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} mdsample.User "пользователь"
 // @Failure 400 {string} response.Data "отрицательный ответ"
 // @Security ApiKeyAuth
-// @Router /api/sun/user-test/{id} [get]
+// @Router /sun/api/v1/user-sample/{id} [get]
 // @Deprecated
 // Deprecated
-func (hh *Handler) TestUser(w http.ResponseWriter, r *http.Request) {
+func (hh *Handler) Sample(w http.ResponseWriter, r *http.Request) {
 	rw := response.New(r, w)
 
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
@@ -165,7 +155,7 @@ func (hh *Handler) TestUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	usM := NewModel(hh.st)
+	usM := model.NewUser()
 	us, err := usM.Load(r.Context(), id)
 	if err != nil {
 		rw.JSON(err)

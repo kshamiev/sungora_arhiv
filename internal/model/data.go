@@ -1,4 +1,4 @@
-package data
+package model
 
 import (
 	"context"
@@ -17,19 +17,19 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-type Model struct {
+type Data struct {
 	st  storage.Face
 	dir string
 }
 
-func NewModel(st storage.Face, dir string) *Model {
-	return &Model{
+func NewData(st storage.Face, dir string) *Data {
+	return &Data{
 		st:  st,
 		dir: dir,
 	}
 }
 
-func (mm *Model) UploadRequest(rw *response.Response, bucket string) (mdsample.MinioSlice, error) {
+func (mm *Data) UploadRequest(rw *response.Response, bucket string) (mdsample.MinioSlice, error) {
 	fileData, _, err := rw.UploadBuffer()
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func (mm *Model) UploadRequest(rw *response.Response, bucket string) (mdsample.M
 	return res, nil
 }
 
-func (mm *Model) Confirm(ctx context.Context, obj *mdsample.Minio) error {
+func (mm *Data) Confirm(ctx context.Context, obj *mdsample.Minio) error {
 	obj.IsConfirm = true
 	if _, err := obj.Update(ctx, mm.st.DB(), boil.Whitelist(
 		mdsample.MinioColumns.IsConfirm,
@@ -79,7 +79,7 @@ func (mm *Model) Confirm(ctx context.Context, obj *mdsample.Minio) error {
 	return nil
 }
 
-func (mm *Model) SaveFS(ctx context.Context, obj *mdsample.Minio) error {
+func (mm *Data) SaveFS(ctx context.Context, obj *mdsample.Minio) error {
 	if err := os.MkdirAll(mm.dir, 0o777); err != nil {
 		return errs.New(err, "ошибка создания хранилища")
 	}
@@ -97,7 +97,7 @@ func (mm *Model) SaveFS(ctx context.Context, obj *mdsample.Minio) error {
 	return fp.Close()
 }
 
-func (mm *Model) GetFiles(ctx context.Context, bucket string, objID int64) (mdsample.MinioSlice, error) {
+func (mm *Data) GetFiles(ctx context.Context, bucket string, objID int64) (mdsample.MinioSlice, error) {
 	return mdsample.Minios(
 		mdsample.MinioWhere.Bucket.EQ(bucket),
 		mdsample.MinioWhere.ObjectID.EQ(objID),
@@ -106,7 +106,7 @@ func (mm *Model) GetFiles(ctx context.Context, bucket string, objID int64) (mdsa
 	).All(ctx, mm.st.DB())
 }
 
-func (mm *Model) GetFilesBucket(ctx context.Context, bucket string) (mdsample.MinioSlice, error) {
+func (mm *Data) GetFilesBucket(ctx context.Context, bucket string) (mdsample.MinioSlice, error) {
 	return mdsample.Minios(
 		mdsample.MinioWhere.Bucket.EQ(bucket),
 		qm.OrderBy(mdsample.MinioColumns.CreatedAt+" DESC"),
@@ -114,7 +114,7 @@ func (mm *Model) GetFilesBucket(ctx context.Context, bucket string) (mdsample.Mi
 	).All(ctx, mm.st.DB())
 }
 
-func (self *Model) RemoveNotConfirm(ctx context.Context) error {
+func (self *Data) RemoveNotConfirm(ctx context.Context) error {
 	list, err := mdsample.Minios(
 		mdsample.MinioWhere.IsConfirm.EQ(false),
 	).All(ctx, self.st.DB())
