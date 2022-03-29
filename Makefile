@@ -47,7 +47,7 @@ run: com
 
 # Запуск в режиме отладки
 dev: dep swag fmt lint test com
-	rm -d vendor
+	rm -rd vendor
 	bin/app -c config.yml;
 .PHONY: dev
 
