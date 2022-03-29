@@ -34,7 +34,7 @@ func (mm *Model) UploadRequest(rw *response.Response, bucket string) (mdsungora.
 	if err != nil {
 		return nil, err
 	}
-	us, err := rw.GetUserTest()
+	us, err := rw.GetUser()
 	if err != nil {
 		return nil, err
 	}

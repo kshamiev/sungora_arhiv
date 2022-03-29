@@ -13,7 +13,6 @@ import (
 	"strings"
 	"time"
 
-	"sungora/lib/enum"
 	"sungora/lib/errs"
 	"sungora/lib/logger"
 
@@ -341,18 +340,6 @@ func (rw *Response) GetUser() (*User, error) {
 	return us, nil
 }
 
-func (rw *Response) GetUserTest() (*User, error) {
-	return &User{
-		ID:    345,
-		Login: "test",
-		Roles: []enum.Role{
-			enum.Role_DEVELOP,
-			enum.Role_ADMIN,
-			enum.Role_MODERATOR,
-		},
-	}, nil
-}
-
 func (rw *Response) GetToken() (string, error) {
 	token, ok := rw.Request.Context().Value(CtxToken).(string)
 	if !ok {
@@ -365,7 +352,7 @@ func (rw *Response) GetID(r *http.Request) (int64, error) {
 	return strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 }
 
-func (rw *Response) Access(roles ...enum.Role) bool {
+func (rw *Response) Access(roles ...string) bool {
 	us, ok := rw.Request.Context().Value(CtxUser).(*User)
 	if !ok {
 		return false

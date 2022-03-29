@@ -1,9 +1,5 @@
 package response
 
-import (
-	"sungora/lib/enum"
-)
-
 type CtxKey string
 
 const (
@@ -16,7 +12,7 @@ const (
 type User struct {
 	ID    int64
 	Login string
-	Roles []enum.Role
+	Roles []string
 }
 
 type Error interface {

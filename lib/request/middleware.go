@@ -11,7 +11,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	"sungora/lib/enum"
 	"sungora/lib/errs"
 	"sungora/lib/response"
 )
@@ -129,9 +128,9 @@ func (mid *Mid) VerifyToken(token string) (*response.User, error) {
 		if _, ok := claims["roles"].([]interface{}); !ok {
 			return nil, errors.New("error get roles")
 		}
-		us.Roles = make([]enum.Role, len(claims["roles"].([]interface{})))
+		us.Roles = make([]string, len(claims["roles"].([]interface{})))
 		for i, role := range claims["roles"].([]interface{}) {
-			us.Roles[i] = enum.Role(role.(string))
+			us.Roles[i] = role.(string)
 		}
 		return us, nil
 	}
