@@ -12,7 +12,6 @@ import (
 func TestTplStorage(t *testing.T) {
 	_, currentFile, _, _ := runtime.Caller(0)
 	pathTpl := filepath.Dir(currentFile) + "/www"
-
 	task := NewTaskTemplateParse(pathTpl)
 	if err := task.Action(context.Background()); err != nil {
 		t.Fatal(err)
@@ -23,9 +22,8 @@ func TestTplStorage(t *testing.T) {
 		{ID: 49, Name: "Item 2", Price: decimal.NewFromFloat(87.42)},
 		{ID: 54, Name: "Item 30", Price: decimal.NewFromFloat(38.23)},
 	}
-
 	variable := map[string]interface{}{
-		"Title": "Fantik",
+		"Title": "TestTplStorage",
 		"Goods": goods,
 	}
 
@@ -37,15 +35,34 @@ func TestTplStorage(t *testing.T) {
 	}
 }
 
-func TestTpl(t *testing.T) {
+func TestFile(t *testing.T) {
+	_, currentFile, _, _ := runtime.Caller(0)
+	pathTpl := filepath.Dir(currentFile) + "/www/index.html"
+
 	goods := Goods{
 		{ID: 23, Name: "Item 1", Price: decimal.NewFromFloat(45.76)},
 		{ID: 34, Name: "Item 2", Price: decimal.NewFromFloat(12.42)},
 		{ID: 45, Name: "Item 3", Price: decimal.NewFromFloat(74.23)},
 	}
-
 	variable := map[string]interface{}{
-		"Title": "Funtik",
+		"Title": "TestFile",
+		"Goods": goods,
+	}
+
+	_, err := ExecuteFile(pathTpl, functions, variable)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestString(t *testing.T) {
+	goods := Goods{
+		{ID: 23, Name: "Item 1", Price: decimal.NewFromFloat(45.76)},
+		{ID: 34, Name: "Item 2", Price: decimal.NewFromFloat(12.42)},
+		{ID: 45, Name: "Item 3", Price: decimal.NewFromFloat(74.23)},
+	}
+	variable := map[string]interface{}{
+		"Title": "TestString",
 		"Goods": goods,
 	}
 
@@ -54,6 +71,8 @@ func TestTpl(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+// ////
 
 type Good struct {
 	ID     uint64

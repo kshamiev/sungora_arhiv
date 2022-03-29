@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-var tplStore = map[string]*template.Template{}
 var tplStoreInfo = map[string]time.Time{}
+var tplStore = map[string]*template.Template{}
 
 var functions = map[string]interface{}{
 	"TplTest": TplTest,
