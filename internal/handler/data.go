@@ -3,16 +3,15 @@ package handler
 import (
 	"net/http"
 
+	"github.com/go-chi/chi"
+	"github.com/google/uuid"
+
 	"sample/internal/model"
 	"sample/lib/app/response"
 	"sample/lib/logger"
 	"sample/lib/minio"
 	"sample/lib/storage/stpg"
 	"sample/services/mdsample"
-
-	"github.com/google/uuid"
-
-	"github.com/go-chi/chi"
 )
 
 // UploadFile загрузка файла на сервер

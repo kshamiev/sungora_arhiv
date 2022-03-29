@@ -7,10 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"sample/lib/conf"
-	"sample/lib/storage"
-
 	"github.com/volatiletech/null/v8"
+
+	"sample/lib/storage"
 )
 
 type User struct {
@@ -252,13 +251,19 @@ func Benchmark_sqlIn(b *testing.B) {
 }
 
 func initTest(t *testing.T) {
-	var cfg = struct {
-		Postgresql Config `yaml:"psql"`
-	}{}
-	if err := conf.Get(&cfg, conf.FileConfig, ""); err != nil {
-		t.Fatal(err)
-	}
-	if err := InitConnect(&cfg.Postgresql); err != nil {
+	if err := InitConnect(&Config{
+		Postgres:     "",
+		User:         "postgres",
+		Pass:         "postgres",
+		Host:         "localhost",
+		Port:         5432,
+		Dbname:       "test",
+		Sslmode:      "disable",
+		Blacklist:    []string{"test"},
+		MaxIdleConns: 50,
+		MaxOpenConns: 50,
+		OcSQLTrace:   false,
+	}); err != nil {
 		t.Fatal(err)
 	}
 }

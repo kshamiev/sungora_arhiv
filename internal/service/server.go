@@ -4,19 +4,18 @@ import (
 	"context"
 	"errors"
 
+	"go.opencensus.io/plugin/ocgrpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/emptypb"
+
 	"sample/lib/app"
 	"sample/lib/app/request"
 	"sample/lib/errs"
 	"sample/lib/jaeger"
 	"sample/lib/logger"
 	"sample/services/pbsample"
-
-	"go.opencensus.io/plugin/ocgrpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/emptypb"
-
-	"google.golang.org/grpc"
 )
 
 type SampleServer struct {

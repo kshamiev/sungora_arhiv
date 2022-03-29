@@ -4,6 +4,10 @@ import (
 	"net/http"
 	"net/http/pprof"
 
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
+
 	"sample/internal/config"
 	"sample/internal/task"
 	"sample/lib/app"
@@ -13,10 +17,6 @@ import (
 	"sample/lib/logger"
 	"sample/lib/storage"
 	"sample/lib/storage/stpg"
-
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 type Handler struct {

@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-chi/chi"
+	"github.com/gorilla/websocket"
+
 	"sample/internal/model"
 	"sample/lib/app/response"
 	"sample/lib/errs"
 	"sample/lib/logger"
-
-	"github.com/go-chi/chi"
-	"github.com/gorilla/websocket"
 )
 
 // WebSocketSample пример работы с веб-сокетом (http://localhost:8080/assets/gorilla/index.html)

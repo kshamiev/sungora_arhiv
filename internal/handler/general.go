@@ -3,13 +3,13 @@ package handler
 import (
 	"net/http"
 
+	"github.com/shopspring/decimal"
+
 	"sample/internal/config"
 	"sample/internal/model"
 	"sample/lib/app/response"
 	"sample/lib/logger"
 	"sample/lib/tpl"
-
-	"github.com/shopspring/decimal"
 )
 
 // Ping ping

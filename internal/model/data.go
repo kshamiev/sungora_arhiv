@@ -7,14 +7,14 @@ import (
 	"os"
 	"time"
 
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
+
 	"sample/lib/app/response"
 	"sample/lib/errs"
 	"sample/lib/minio"
 	"sample/lib/storage"
 	"sample/services/mdsample"
-
-	"github.com/volatiletech/sqlboiler/v4/boil"
-	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
 type Data struct {

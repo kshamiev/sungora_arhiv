@@ -4,14 +4,14 @@ import (
 	"context"
 	"time"
 
+	"github.com/volatiletech/sqlboiler/v4/boil"
+
 	"sample/internal/body"
 	"sample/lib/errs"
 	"sample/lib/jaeger"
 	"sample/lib/storage"
 	"sample/lib/storage/stpg"
 	"sample/services/mdsample"
-
-	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 type User struct {
