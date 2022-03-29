@@ -11,7 +11,6 @@ import (
 	"sungora/lib/app/response"
 	"sungora/lib/logger"
 
-	"github.com/volatiletech/sqlboiler/v4/boil"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -28,17 +27,12 @@ type scheduler struct {
 }
 
 var instance *scheduler
-var mu sync.RWMutex
 
-func Init() {
+func init() {
 	if instance == nil {
-		mu.Lock()
-		if instance == nil {
-			instance = &scheduler{
-				pullWork: make(map[string]chan bool),
-			}
+		instance = &scheduler{
+			pullWork: make(map[string]chan bool),
 		}
-		mu.Unlock()
 	}
 }
 
@@ -123,15 +117,14 @@ func runScheduler(task Task, ch chan bool) {
 // action выполнение задачи
 func action(task Task) {
 	requestID := uuid.New().String()
-	ctx := context.Background()
-	lg := logger.Get(ctx).WithField(logger.TraceID, requestID)
+	ctx := context.WithValue(context.Background(), logger.CtxTraceID, requestID)
 
-	ctx = context.WithValue(ctx, logger.CtxTraceID, requestID)
+	lg := logger.Get(ctx).WithField(logger.TraceID, requestID).WithField(logger.Api, task.Name())
 	ctx = logger.WithLogger(ctx, lg)
-	ctx = boil.WithDebugWriter(ctx, lg.Writer())
 
 	m := make(map[string]string)
 	m[logger.TraceID] = requestID
+	m[logger.Api] = task.Name()
 	ctx = metadata.NewOutgoingContext(ctx, metadata.New(m))
 
 	defer func() {

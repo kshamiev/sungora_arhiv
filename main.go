@@ -95,7 +95,6 @@ func main() {
 	defer grpcClient.Close()
 
 	// Workflow
-	worker.Init()
 	task := tpl.NewTaskTemplateParse(cfg.App.DirWww)
 	if err = task.Action(context.Background()); err != nil {
 		lg.Fatal(err)
