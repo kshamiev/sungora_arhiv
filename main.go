@@ -8,6 +8,10 @@ import (
 	"net/http/pprof"
 	"os"
 
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	httpSwagger "github.com/swaggo/http-swagger"
+
 	"sungora/internal/chat"
 	"sungora/internal/client"
 	"sungora/internal/config"
@@ -17,17 +21,13 @@ import (
 	"sungora/internal/user"
 	"sungora/lib/app"
 	"sungora/lib/app/request"
+	"sungora/lib/app/worker"
 	"sungora/lib/errs"
 	"sungora/lib/jaeger"
 	"sungora/lib/logger"
 	"sungora/lib/minio"
 	"sungora/lib/storage/stpg"
 	"sungora/lib/tpl"
-	"sungora/lib/worker"
-
-	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
-	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // @title Sungora API

@@ -1,8 +1,8 @@
 package user
 
 import (
+	"sungora/lib/app/worker"
 	"sungora/lib/storage/stpg"
-	"sungora/lib/worker"
 
 	"github.com/go-chi/chi"
 )
