@@ -1,11 +1,11 @@
 app:
-  token: &title "sungora-dev" # cookie name
+  token: &title "sample-dev" # cookie name
   sessionTimeout: 604800s
   mode: "dev"
-  dirWww: "/www_test"
+  dirWww: "/www"
   signingKey: "xxx-xxx-xxx"
 
-lg:
+log:
   title: *title
   output: "stdout" # Change (stdout | stderr | filePathRelative | empty)
   formatter: "json" # Change enum (json | text)
@@ -33,7 +33,7 @@ psql:
   pass: "postgres"
   host: "192.168.1.73"
   port: 5432
-  dbname: "sungora"
+  dbname: "sample"
   sslmode: "disable"
   blacklist: [ "test" ]
   max_idle_conns: 50
@@ -42,19 +42,19 @@ psql:
 
 jaeger:
   title: *title
-  oc_url: "http://sungora-jaeger:14268/api/traces"
+  oc_url: "http://sample-jaeger:14268/api/traces"
   fraction: 1
 
 grpcClient:
   host: "localhost"
-  port: 7071
+  port: 7070
 
 grpcServer:
   host: "localhost"
-  port: 7071
+  port: 7070
 
 minio:
-  host: "sungora-minio:9020"
+  host: "sample-minio:9020"
   access_key: "admin"
   secret_key: "xxx-xxx-xxx"
   ssl: false

@@ -60,6 +60,5 @@ run:
     - migration
     - vendor
     - www
-    - www_test
     - dev
   timeout: 5m

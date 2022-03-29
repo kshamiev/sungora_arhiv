@@ -35,7 +35,7 @@ func Get() *Config {
 }
 
 func Init() (*Config, error) {
-	filePath := flag.String("c", "config.yaml", "Path to configuration file")
+	filePath := flag.String("c", "config.yml", "Path to configuration file")
 	flag.Parse()
 	config = &Config{}
 	if err := conf.GetDefault(config, *filePath, ""); err != nil {

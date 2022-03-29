@@ -14,7 +14,7 @@ type ConfigEr interface {
 	SetDefault() error
 }
 
-const FileConfig = "config.yaml"
+const FileConfig = "config.yml"
 
 func GetDefault(cfg ConfigEr, fileConf, envPrefix string) error {
 	if err := Get(cfg, fileConf, envPrefix); err != nil {

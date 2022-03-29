@@ -42,12 +42,12 @@ com:
 
 # Запуск в режиме разработки
 run: com
-	bin/app -c config.yaml;
+	bin/app -c config.yml;
 .PHONY: run
 
 # Запуск в режиме отладки
 dev: dep swag fmt lint test com
-	bin/app -c config.yaml;
+	bin/app -c config.yml;
 .PHONY: dev
 
 # Создание шаблона миграции
@@ -92,17 +92,17 @@ dbdump-a:
 
 # Инженеринг моделей по существующей структуре БД
 
-SERVICE1 := sungora
-ser-sungora:
+SERVICE1 := sample
+ser-sample:
 	@go run services/generate/main.go -step $(SERVICE1)-1
-	@sqlboiler -c etc/config.yaml -p md$(SERVICE1) -o services/md$(SERVICE1) --no-auto-timestamps --no-tests --wipe psql
+	@sqlboiler -c etc/config.yml -p md$(SERVICE1) -o services/md$(SERVICE1) --no-auto-timestamps --no-tests --wipe psql
 	@go run services/generate/main.go -step $(SERVICE1)-2
 	@go run services/generate/main.go -step $(SERVICE1)-3
 	@cd $(DIR)/services && goimports -w .
 	@go run services/generate/main.go -step $(SERVICE1)-4
 	@cd $(DIR)/services && protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative pb$(SERVICE1)/*.proto;
 	@cd $(DIR)/services && go fmt ./... && goimports -w .
-.PHONY: ser-sungora
+.PHONY: ser-sample
 
 # Help
 h:
@@ -120,7 +120,7 @@ h:
 	@echo "    mig-up		- Миграция вверх до конца"
 	@echo "    dbinit		- Восстановление БД из дампа bin/dump.sql (БД должна существовать)"
 	@echo "    dbdump		- Создание дампа БД bin/dump.sql"
-	@echo "    ser-sungora:		- Инженеринг типов по БД и работа с GRPC в парадигме масштабируемого сервиса"
+	@echo "    ser-sample:		- Инженеринг типов по БД и работа с GRPC в парадигме масштабируемого сервиса"
 
 .PHONY: h
 help: h

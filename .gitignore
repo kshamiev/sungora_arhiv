@@ -22,7 +22,6 @@ _dev
 /cache
 /run
 /eev
-/www
 
 # Architecture specific extensions/prefixes
 *.[568vq]
