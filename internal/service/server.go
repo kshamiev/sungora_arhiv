@@ -5,10 +5,10 @@ import (
 	"errors"
 
 	"sungora/lib/app"
+	"sungora/lib/app/request"
 	"sungora/lib/errs"
 	"sungora/lib/jaeger"
 	"sungora/lib/logger"
-	"sungora/lib/request"
 	"sungora/services/pbsungora"
 
 	"go.opencensus.io/plugin/ocgrpc"
