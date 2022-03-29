@@ -1,4 +1,4 @@
-package worker
+package sheduler
 
 import (
 	"context"
@@ -7,11 +7,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/metadata"
 
 	"sample/lib/app/response"
 	"sample/lib/logger"
-
-	"google.golang.org/grpc/metadata"
 )
 
 type Task interface {
@@ -28,7 +27,7 @@ type scheduler struct {
 
 var instance *scheduler
 
-func init() {
+func Init() {
 	if instance == nil {
 		instance = &scheduler{
 			pullWork: make(map[string]chan bool),

@@ -13,10 +13,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-chi/chi"
+
 	"sample/lib/errs"
 	"sample/lib/logger"
-
-	"github.com/go-chi/chi"
 )
 
 // Response Сопровождение входящего запроса и ответ на него

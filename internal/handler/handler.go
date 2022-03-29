@@ -12,11 +12,12 @@ import (
 	"sample/internal/task"
 	"sample/lib/app"
 	"sample/lib/app/request"
-	"sample/lib/app/worker"
+	"sample/lib/app/sheduler"
 	"sample/lib/jaeger"
 	"sample/lib/logger"
 	"sample/lib/storage"
 	"sample/lib/storage/stpg"
+	"sample/lib/tpl"
 )
 
 type Handler struct {
@@ -32,11 +33,7 @@ func NewHandler() *Handler {
 }
 
 func Routing(cfg *config.App) *chi.Mux {
-	mid := request.NewMid(cfg.Token, cfg.SigningKey)
-
 	router := chi.NewRouter()
-	router.Use(mid.Cors().Handler)
-	router.Use(middleware.Recoverer)
 
 	if cfg.Mode == "dev" {
 		// swagger
@@ -58,7 +55,10 @@ func Routing(cfg *config.App) *chi.Mux {
 	// static
 	router.Handle("/assets/*", http.FileServer(http.Dir(cfg.DirWww)))
 
+	mid := request.NewMid(cfg.Token, cfg.SigningKey)
 	router.Group(func(r chi.Router) {
+		r.Use(mid.Cors().Handler)
+		r.Use(middleware.Recoverer)
 		r.Use(jaeger.Observation())
 		r.Use(logger.Middleware())
 		hh := NewHandler()
@@ -72,7 +72,6 @@ func Routing(cfg *config.App) *chi.Mux {
 			r.Delete("/", hh.Delete)
 		})
 		r.Get("/sun/api/v1/user-sample/{id}", hh.Sample)
-		worker.AddStart(task.NewTaskOnlineOff())
 
 		// chat
 		r.HandleFunc("/sun/api/v1/websocket/gorilla/{id}", hh.WebSocketSample)
@@ -83,17 +82,23 @@ func Routing(cfg *config.App) *chi.Mux {
 			router.Post("/upload", hh.Upload)
 			router.Get("/download/{id}", hh.Download)
 		})
-		worker.AddStart(task.NewTaskStorageClear())
 
-		// general and html
+		// general
 		r.Route("/sun/api/v1/general", func(r chi.Router) {
 			r.Get("/ping", hh.Ping)
 			r.Get("/version", hh.Version)
 		})
+
+		// html
 		r.Get("/", hh.PageIndex)
 		r.Get("/index.html", hh.PageIndex)
 		r.Get("/page/*", hh.PagePage)
 	})
+
+	// task bg
+	sheduler.AddStart(task.NewTaskOnlineOff())
+	sheduler.AddStart(task.NewTaskStorageClear())
+	sheduler.AddStart(tpl.NewTaskTemplateParse(cfg.DirWww))
 
 	return router
 }

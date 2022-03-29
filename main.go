@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -11,13 +10,12 @@ import (
 	"sample/internal/handler"
 	"sample/internal/service"
 	"sample/lib/app"
-	"sample/lib/app/worker"
+	"sample/lib/app/sheduler"
 	"sample/lib/errs"
 	"sample/lib/jaeger"
 	"sample/lib/logger"
 	"sample/lib/minio"
 	"sample/lib/storage/stpg"
-	"sample/lib/tpl"
 )
 
 // @title Sample API
@@ -85,12 +83,8 @@ func main() {
 	defer grpcClient.Close()
 
 	// Workflow
-	task := tpl.NewTaskTemplateParse(cfg.App.DirWww)
-	if err = task.Action(context.Background()); err != nil {
-		lg.Fatal(err)
-	}
-	worker.AddStart(task)
-	defer worker.CloseWait()
+	sheduler.Init()
+	defer sheduler.CloseWait()
 
 	// Server Web & Handlers
 	server, err := app.NewHTTPServer(&cfg.ServeHTTP, handler.Routing(&cfg.App))
